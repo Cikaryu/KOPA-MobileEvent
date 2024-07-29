@@ -6,14 +6,14 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class TestingMobilePage extends StatefulWidget {
-  const TestingMobilePage({super.key});
+class TestingView extends StatefulWidget {
+  const TestingView({super.key});
 
   @override
-  TestingMobilePageState createState() => TestingMobilePageState();
+  TestingViewState createState() => TestingViewState();
 }
 
-class TestingMobilePageState extends State<TestingMobilePage> {
+class TestingViewState extends State<TestingView> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
 
