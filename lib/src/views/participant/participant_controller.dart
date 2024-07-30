@@ -1,14 +1,10 @@
-
-
 import 'package:app_kopabali/src/core/base_import.dart';
 
-
-
-class TestingController extends GetxController {
+class ParticipantController extends GetxController {
   bool canPop = true;
-  String? qrCodeResult;
+  var selectedIndex = 0.obs;
+  PageController pageController = PageController();
   // File? image;
-
 
   @override
   onInit() {
@@ -30,6 +26,10 @@ class TestingController extends GetxController {
     Get.back();
   }
 
+  void changeTabIndex(int index) {
+    selectedIndex.value = index;
+    pageController.jumpToPage(index);
+  }
   // Future<void> openCamera() async {
   //   final picker = ImagePicker();
   //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -38,12 +38,5 @@ class TestingController extends GetxController {
   //     update(); // Update the state to reflect the new image
   //   }
   // }
-  void setQRCodeResult(String result) {
-    qrCodeResult = result;
-    update();
-  }
-  void clearQRCodeResult() {
-    qrCodeResult = null;
-    update();
-  }
+
 }

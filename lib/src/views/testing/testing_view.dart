@@ -1,62 +1,69 @@
-import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/testing/testing_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
-
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:get/get.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class TestingView extends StatefulWidget {
-  const TestingView({super.key});
+  const TestingView({Key? key}) : super(key: key);
 
   @override
   TestingViewState createState() => TestingViewState();
 }
 
 class TestingViewState extends State<TestingView> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
+  bool isScanning = true; // Status untuk mengatur apakah pemindaian aktif
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<TestingController>(
-      builder: (testingController) => PopScope(
-        canPop: testingController.canPop,
-        child: Scaffold(
+      init: TestingController(), // Inisialisasi controller
+      builder: (testingController) {
+        return Scaffold(
           backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text('Scan QR Code'),
+          ),
           body: Column(
             children: <Widget>[
               Expanded(
                 flex: 5,
-                child: QRView(
-                  key: qrKey,
-                  onQRViewCreated: (QRViewController qrController) {
-                    this.controller = qrController;
-                    qrController.scannedDataStream.listen((scanData) {
-                      testingController.setQRCodeResult(scanData.code!);
-                      Get.snackbar("QR Code Result", scanData.code!);
-                    });
-                  },
-                ),
+                child: isScanning
+                    ? MobileScanner(
+                        controller: MobileScannerController(detectionSpeed: DetectionSpeed.noDuplicates),
+                        onDetect: (capture) {
+                          final List<Barcode> barcodes = capture.barcodes;
+                          if (barcodes.isNotEmpty) {
+                            final String code = barcodes.first.rawValue ?? '';
+                            testingController.setQRCodeResult(code);
+                            setState(() {
+                              isScanning = false;
+                            });
+                          }
+                        },
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Result: ${testingController.qrCodeResult}'),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  isScanning = true;
+                                  testingController.clearQRCodeResult();
+                                });
+                              },
+                              child: Text('Scan Another QR Code'),
+                            ),
+                          ],
+                        ),
+                      ),
               ),
-              Expanded(
-                flex: 1,
-                child: Center(
-                  child: (testingController.qrCodeResult != null)
-                      ? Text('Result: ${testingController.qrCodeResult}')
-                      : Text('Scan a code'),
-                ),
-              )
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
