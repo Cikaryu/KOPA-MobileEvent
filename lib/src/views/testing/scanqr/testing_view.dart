@@ -1,4 +1,4 @@
-import 'package:app_kopabali/src/views/testing/testing_controller.dart';
+import 'package:app_kopabali/src/views/testing/scanqr/testing_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
