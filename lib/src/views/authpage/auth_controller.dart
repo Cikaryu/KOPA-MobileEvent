@@ -4,7 +4,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/Section/signin_section.dart';
 import 'package:app_kopabali/src/views/authpage/Section/signup_section.dart';
 
-class AuthController extends GetxController {
+class LoginPageController extends GetxController {
   PageController pageController = PageController();
   String targetView = "SignIN";
 

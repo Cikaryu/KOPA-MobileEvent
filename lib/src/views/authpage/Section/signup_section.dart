@@ -6,8 +6,8 @@ class SignupSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AuthController>(
-      init: AuthController(),
+    return GetBuilder<LoginPageController>(
+      init: LoginPageController(),
       builder: (controller) => Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         appBar: AppBar(
@@ -135,6 +135,74 @@ class SignupSection extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text("Data Participant Kit", style: TextStyle(fontSize: 24)),
+                SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    hintText: "Ukuran T-Shirt",
+                    prefixIcon: Icon(Icons.format_size),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  value: null,
+                  items: [
+                    DropdownMenuItem(
+                      value: "S",
+                      child: Text("S"),
+                    ),
+                    DropdownMenuItem(
+                      value: "M",
+                      child: Text("M"),
+                    ),
+                    DropdownMenuItem(
+                      value: "L",
+                      child: Text("L"),
+                    ),
+                    DropdownMenuItem(
+                      value: "XL",
+                      child: Text("XL"),
+                    ),
+                  ],
+                  onChanged: (value) {},
+                ),
+                SizedBox(height: 20),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    hintText: "Ukuran Polo Shirt",
+                    prefixIcon: Icon(Icons.format_size),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  value: null,
+                  items: [
+                    DropdownMenuItem(
+                      value: "S",
+                      child: Text("S"),
+                    ),
+                    DropdownMenuItem(
+                      value: "M",
+                      child: Text("M"),
+                    ),
+                    DropdownMenuItem(
+                      value: "L",
+                      child: Text("L"),
+                    ),
+                    DropdownMenuItem(
+                      value: "XL",
+                      child: Text("XL"),
+                    ),
+                  ],
+                  onChanged: (value) {},
+                ),
+                SizedBox(height: 20),
+                Text("Data Benefit", style: TextStyle(fontSize: 24)),
                 SizedBox(height: 20),
                 DropdownButtonFormField<String>(
                   decoration: InputDecoration(

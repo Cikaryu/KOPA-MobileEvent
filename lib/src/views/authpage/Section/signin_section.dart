@@ -8,8 +8,8 @@ class SignINSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AuthController>(
-      init: AuthController(),
+    return GetBuilder<LoginPageController>(
+      init: LoginPageController(),
       builder: (controller) => Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         body: Column(

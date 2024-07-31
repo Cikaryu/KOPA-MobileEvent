@@ -8,8 +8,8 @@ class AuthPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AuthController>(
-      init: AuthController(),
+    return GetBuilder<LoginPageController>(
+      init: LoginPageController(),
       builder: (controller) => Scaffold(
         body: PageView.builder(
           itemCount: 2,
