@@ -1,4 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ParticipantController extends GetxController {
   bool canPop = true;
@@ -38,5 +40,9 @@ class ParticipantController extends GetxController {
   //     update(); // Update the state to reflect the new image
   //   }
   // }
-
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await FirebaseAuth.instance.signOut();
+  }
 }
