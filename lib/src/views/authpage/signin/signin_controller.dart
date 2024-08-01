@@ -5,6 +5,7 @@ import 'package:app_kopabali/src/routes/app_pages.dart';
 
 class SigninController extends GetxController {
   bool showPassword = false;
+  
   @override
   onInit() {
     super.onInit();

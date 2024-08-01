@@ -38,8 +38,8 @@ class SignInView extends StatelessWidget {
                     SizedBox(height: 40),
                     TextField(
                       decoration: InputDecoration(
-                        hintText: "Email",
-                        prefixIcon: Icon(Icons.email),
+                        hintText: "Username",
+                        prefixIcon: Icon(Icons.person),
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
