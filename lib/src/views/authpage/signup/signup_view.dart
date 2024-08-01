@@ -1,379 +1,302 @@
-// ignore_for_file: sort_child_properties_last
-
-import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:app_kopabali/src/core/base_import.dart';
+import 'dart:io';
 
 class SignupView extends StatelessWidget {
-  const SignupView({super.key});
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _areaController = TextEditingController();
+  final TextEditingController _divisiController = TextEditingController();
+  final TextEditingController _departmentController = TextEditingController();
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _nomorWhatsappController =
+      TextEditingController();
+  final TextEditingController _nomorKtpController = TextEditingController();
+  final TextEditingController _ukuranTShirtController = TextEditingController();
+  final TextEditingController _ukuranPoloShirtController =
+      TextEditingController();
+  final TextEditingController _tipeEWalletController = TextEditingController();
+  final TextEditingController _nomorEWalletController = TextEditingController();
+
+  SignupView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SignUpController>(
-      init: SignUpController(),
-      builder: (controller) => Scaffold(
-        backgroundColor: Color(0xFFF5F5F5),
-        appBar: AppBar(
-          title: Text("Sign up"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: controller.tapSignin,
-          ),
-          backgroundColor: Color(0xFFF5F5F5),
-        ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Container(
-            width: Get.width,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 20),
-                Text("Data Pribadi", style: TextStyle(fontSize: 24)),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Nama",
-                    prefixIcon: Icon(Icons.person),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+    final SignupController signupController =
+      Get.put(SignupController());
+    final List<String> ukuranOptions = ['S', 'M', 'L', 'XL', 'XXL'];
+    final List<String> eWalletOptions = [
+      'Dana',
+      'OVO',
+      'GoPay',
+      'LinkAja',
+      'Jenius',
+      'ShopeePay',
+      'PayPal'
+    ];
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Register')),
+      body: signupController.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(labelText: 'Email'),
+                      validator: (value) {
+                        String pattern =
+                            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                        RegExp regex = RegExp(pattern);
+                        if (value!.isEmpty) {
+                          return 'Please enter your email';
+                        } else if (!regex.hasMatch(value) ||
+                            !value.endsWith('.com')) {
+                          return 'Please enter a valid email.';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Email",
-                    prefixIcon: Icon(Icons.email),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(labelText: 'Password'),
+                      obscureText: true,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your password' : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Area",
-                    prefixIcon: Icon(Icons.location_on),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(labelText: 'Name'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your name' : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Divisi",
-                    prefixIcon: Icon(Icons.work),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _areaController,
+                      decoration: InputDecoration(labelText: 'Area'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your area' : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Department",
-                    prefixIcon: Icon(Icons.business),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _divisiController,
+                      decoration: InputDecoration(labelText: 'Divisi'),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your divisi' : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Alamat",
-                    prefixIcon: Icon(Icons.home),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _departmentController,
+                      decoration: InputDecoration(labelText: 'Department'),
+                      validator: (value) => value!.isEmpty
+                          ? 'Please enter your department'
+                          : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Nomor Whatsapp",
-                    prefixIcon: Icon(Icons.phone),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _alamatController,
+                      decoration: InputDecoration(labelText: 'Alamat'),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z0-9., ]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your alamat' : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Nomor KTP",
-                    prefixIcon: Icon(Icons.credit_card),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+                    TextFormField(
+                      controller: _nomorWhatsappController,
+                      decoration: InputDecoration(labelText: 'Nomor Whatsapp'),
+                      keyboardType: TextInputType.number,
+                      maxLength: 12,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your nomor' : null,
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Container(
-                      width: 210,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(Icons.person, size: 100, color: Colors.grey[500]),
+                    TextFormField(
+                      controller: _nomorKtpController,
+                      decoration: InputDecoration(labelText: 'Nomor KTP'),
+                      keyboardType: TextInputType.number,
+                      maxLength: 16,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your KTP' : null,
                     ),
-                    SizedBox(width: 20),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(labelText: 'Ukuran T-Shirt'),
+                      items: ukuranOptions.map((String ukuran) {
+                        return DropdownMenuItem<String>(
+                          value: ukuran,
+                          child: Text(ukuran),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        _ukuranTShirtController.text = newValue!;
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a size' : null,
+                    ),
+                    DropdownButtonFormField<String>(
+                      decoration:
+                          InputDecoration(labelText: 'Ukuran Polo Shirt'),
+                      items: ukuranOptions.map((String ukuran) {
+                        return DropdownMenuItem<String>(
+                          value: ukuran,
+                          child: Text(ukuran),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        _ukuranPoloShirtController.text = newValue!;
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a size' : null,
+                    ),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(labelText: 'Tipe E-Wallet'),
+                      items: eWalletOptions.map((String tipe) {
+                        return DropdownMenuItem<String>(
+                          value: tipe,
+                          child: Text(tipe),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        _tipeEWalletController.text = newValue!;
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a type' : null,
+                    ),
+                    TextFormField(
+                      controller: _nomorEWalletController,
+                      decoration: InputDecoration(labelText: 'Nomor E-Wallet'),
+                      keyboardType: TextInputType.number,
+                      maxLength: 12,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your E-Wallet' : null,
+                    ),
+                    SizedBox(height: 20),
+                    Text('Submit Foto Diri'),
                     ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[300],
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text("Foto Diri",
-                          style: TextStyle(color: Colors.white)),
+                      onPressed: () => _showImageSourceDialog(
+                          context, 'selfie', signupController),
+                      child: Text('Pick Selfie or Capture'),
                     ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Container(
-                      width: 210,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(Icons.person, size: 100, color: Colors.grey[500]),
-                    ),
-                    SizedBox(width: 20),
+                    if (signupController.selfieImage != null)
+                      Image.file(signupController.selfieImage!),
+                    SizedBox(height: 20),
+                    Text('Submit Foto KTP'),
                     ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[300],
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text("Foto KTP",
-                          style: TextStyle(color: Colors.white)),
+                      onPressed: () => _showImageSourceDialog(
+                          context, 'ktp', signupController),
+                      child: Text('Pick KTP or Capture'),
+                    ),
+                    if (signupController.ktpImage != null)
+                      Image.file(signupController.ktpImage!),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            await signupController.registerUser(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                              name: _nameController.text,
+                              area: _areaController.text,
+                              divisi: _divisiController.text,
+                              department: _departmentController.text,
+                              alamat: _alamatController.text,
+                              nomorWhatsapp: _nomorWhatsappController.text,
+                              nomorKtp: _nomorKtpController.text,
+                              ukuranTShirt: _ukuranTShirtController.text,
+                              ukuranPoloShirt: _ukuranPoloShirtController.text,
+                              tipeEWallet: _tipeEWalletController.text,
+                              nomorEWallet: _nomorEWalletController.text,
+                              context: context,
+                              participant: 'participant',
+                            );
+                          } catch (error) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Error'),
+                                  content: Text(error.toString()),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
+                      },
+                      child: Text('Register'),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text("Data Participant Kit", style: TextStyle(fontSize: 24)),
-                SizedBox(height: 20),
-                DropdownButtonFormField2<String>(
-                  decoration: InputDecoration(
-                    hintText: "Ukuran T-Shirt",
-                    prefixIcon: Icon(Icons.format_size),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300],
-                    ),
-                    width: 100,
-                    offset: Offset(252, 55),
-                    elevation: 5,
-                    padding: EdgeInsets.all(10),
-                  ),
-                  value: null,
-                  items: [
-                    DropdownMenuItem(
-                      value: "S",
-                      child: Text("S"),
-                    ),
-                    DropdownMenuItem(
-                      value: "M",
-                      child: Text("M"),
-                    ),
-                    DropdownMenuItem(
-                      value: "L",
-                      child: Text("L"),
-                    ),
-                    DropdownMenuItem(
-                      value: "XL",
-                      child: Text("XL"),
-                    ),
-                  ],
-                  onChanged: (value) {},
+              ),
+            ),
+    );
+  }
+
+  void _showImageSourceDialog(BuildContext context, String type,
+      SignupController signupController) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Choose Image Source'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Text('Camera'),
+                  onTap: () {
+                    _pickImage(ImageSource.camera, type, signupController);
+                    Navigator.of(context).pop();
+                  },
                 ),
-                SizedBox(height: 20),
-                DropdownButtonFormField2<String>(
-                  decoration: InputDecoration(
-                    hintText: "Ukuran Polo Shirt",
-                    prefixIcon: Icon(Icons.format_size),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300],
-                    ),
-                    width: 100,
-                    offset: Offset(252, 55),
-                    elevation: 5,
-                    padding: EdgeInsets.all(10),
-                  ),
-                  value: null,
-                  items: [
-                    DropdownMenuItem(
-                      value: "S",
-                      child: Text("S"),
-                    ),
-                    DropdownMenuItem(
-                      value: "M",
-                      child: Text("M"),
-                    ),
-                    DropdownMenuItem(
-                      value: "L",
-                      child: Text("L"),
-                    ),
-                    DropdownMenuItem(
-                      value: "XL",
-                      child: Text("XL"),
-                    ),
-                  ],
-                  onChanged: (value) {},
+                SizedBox(height: 10),
+                GestureDetector(
+                  child: Text('Gallery'),
+                  onTap: () {
+                    _pickImage(ImageSource.gallery, type, signupController);
+                    Navigator.of(context).pop();
+                  },
                 ),
-                SizedBox(height: 20),
-                Text("Data Benefit", style: TextStyle(fontSize: 24)),
-                SizedBox(height: 20),
-                DropdownButtonFormField2<String>(
-                  decoration: InputDecoration(
-                    hintText: "E-wallet",
-                    prefixIcon: Icon(Icons.account_balance_wallet),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300],
-                    ),
-                    width: 150,
-                    offset: Offset(202, 55),
-                    elevation: 5,
-                    padding: EdgeInsets.all(10),
-                  ),
-                  value: null,
-                  items: [
-                    DropdownMenuItem(
-                      value: "OVO",
-                      child: Text("OVO"),
-                    ),
-                    DropdownMenuItem(
-                      value: "GoPay",
-                      child: Text("GoPay"),
-                    ),
-                    DropdownMenuItem(
-                      value: "Dana",
-                      child: Text("Dana"),
-                    ),
-                    DropdownMenuItem(
-                      value: "ShopeePay",
-                      child: Text("ShopeePay"),
-                    ),
-                  ],
-                  onChanged: (value) {},
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Nomor E-Wallet",
-                    prefixIcon: Icon(Icons.credit_card),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Already have an account? ",
-                      style: TextStyle(color: Colors.grey[800], fontSize: 12),
-                    ),
-                    InkWell(
-                      onTap: controller.tapSignin,
-                      child: Text(
-                        "Sign in",
-                        style: TextStyle(color: Colors.blue[300], fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Sign up", style: TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[300],
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 150, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 40),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  void _pickImage(ImageSource source, String type,
+      SignupController signupController) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      if (type == 'selfie') {
+        signupController.setSelfieImage(File(pickedFile.path));
+      } else {
+        signupController.setKtpImage(File(pickedFile.path));
+      }
+    }
   }
 }

@@ -1,123 +1,58 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last
-
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
 
-class SignInView extends StatelessWidget {
-  const SignInView({super.key});
+class SigninView extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SigninController>(
-      init: SigninController(),
-      builder: (controller) => Scaffold(
-        backgroundColor: Color(0xFFF5F5F5),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+final SigninController signinController =
+      Get.put(SigninController());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      signinController.checkLoginStatus(context);
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Container(
-                child: Column(
-                  children: [
-                    Text(
-                      "Sign In",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Selamat datang",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    SizedBox(height: 40),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "Username",
-                        prefixIcon: Icon(Icons.person),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextFormField(
-                      obscureText: controller.showPassword ? false : true,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        prefixIcon: Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(controller.showPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            controller.togglePasswordVisibility();
-                          },
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(
-              height: 8,
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: controller.tapForgetPass,
-                    child: Text(
-                      "Forget Password?",
-                      style: TextStyle(color: Colors.blue[300], fontSize: 12),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
+            SizedBox(height: 20),
             ElevatedButton(
-              child: Text(
-                'Login',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[300],
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 140),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
+              onPressed: () async {
+                await signinController.loginUser(
+                  email: emailController.text,
+                  password: passwordController.text,
+                  context: context,
+                );
+              },
+              child: signinController.isLoading
+                  ? CircularProgressIndicator()
+                  : Text('Login'),
             ),
             ElevatedButton(
               child: Text(
                 'Sign up',
                 style: TextStyle(color: Colors.white),
               ),
-              onPressed: controller.tapSignup,
+              onPressed: (){Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => SignupView()),
+                );},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue[300],
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 134),
@@ -125,7 +60,16 @@ class SignInView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            )
+            ),
+            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ForgotPasswordView()),
+                );
+              },
+              child: Text('Forgot Password?'),
+            ),
           ],
         ),
       ),
