@@ -83,9 +83,9 @@ class SignInView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: () {},
+                    onTap: controller.tapForgetPass,
                     child: Text(
-                      "Forgot Password?",
+                      "Forget Password?",
                       style: TextStyle(color: Colors.blue[300], fontSize: 12),
                     ),
                   ),
