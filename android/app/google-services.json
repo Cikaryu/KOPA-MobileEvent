@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "802279302687",
+    "project_id": "kopaevent-testing",
+    "storage_bucket": "kopaevent-testing.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802279302687:android:7f9a1c2e0b84fbb61d172a",
+        "android_client_info": {
+          "package_name": "com.example.app_kopabali"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACyw9QvISHiv1mURMTy2rIv_h6h3xVxI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802279302687:android:7f9a1c2e0b84fbb61d172a",
+        "android_client_info": {
+          "package_name": "com.example.app_kopabali"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACyw9QvISHiv1mURMTy2rIv_h6h3xVxI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

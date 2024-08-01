@@ -2,6 +2,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
+import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/testing/testing_view.dart';
 
 part 'app_routes.dart';
@@ -10,11 +11,11 @@ abstract class AppPages {
   static final routes = [
     GetPage(
       name: AppRoutes.signin,
-      page: () =>  SigninView(),
+      page: () => SigninView(),
     ),
     GetPage(
       name: AppRoutes.signup,
-      page: () =>  SignupView(),
+      page: () => SignupView(),
     ),
     GetPage(
       name: AppRoutes.forgetpassword,
@@ -24,5 +25,6 @@ abstract class AppPages {
       name: AppRoutes.testing,
       page: () => const TestingView(),
     ),
+    GetPage(name: AppRoutes.participant, page: () => ParticipantView())
   ];
 }
