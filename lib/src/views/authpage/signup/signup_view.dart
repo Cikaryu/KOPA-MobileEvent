@@ -137,6 +137,62 @@ class SignupView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
+                Row(
+                  children: [
+                    Container(
+                      width: 210,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.person, size: 100, color: Colors.grey[500]),
+                    ),
+                    SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[300],
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text("Foto Diri",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Container(
+                      width: 210,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.person, size: 100, color: Colors.grey[500]),
+                    ),
+                    SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[300],
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text("Foto KTP",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
                 Text("Data Participant Kit", style: TextStyle(fontSize: 24)),
                 SizedBox(height: 20),
                 DropdownButtonFormField2<String>(
