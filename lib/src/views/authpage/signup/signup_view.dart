@@ -1,20 +1,23 @@
-import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/auth_controller.dart';
+// ignore_for_file: sort_child_properties_last
 
-class SignupSection extends StatelessWidget {
-  const SignupSection({super.key});
+import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+
+class SignupView extends StatelessWidget {
+  const SignupView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LoginPageController>(
-      init: LoginPageController(),
+    return GetBuilder<SignUpController>(
+      init: SignUpController(),
       builder: (controller) => Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         appBar: AppBar(
           title: Text("Sign up"),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: controller.tapSignIN,
+            onPressed: controller.tapSignin,
           ),
           backgroundColor: Color(0xFFF5F5F5),
         ),
@@ -136,7 +139,7 @@ class SignupSection extends StatelessWidget {
                 SizedBox(height: 20),
                 Text("Data Participant Kit", style: TextStyle(fontSize: 24)),
                 SizedBox(height: 20),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
                     hintText: "Ukuran T-Shirt",
                     prefixIcon: Icon(Icons.format_size),
@@ -146,6 +149,16 @@ class SignupSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
+                  ),
+                  dropdownStyleData: DropdownStyleData(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                    ),
+                    width: 100,
+                    offset: Offset(252, 55),
+                    elevation: 5,
+                    padding: EdgeInsets.all(10),
                   ),
                   value: null,
                   items: [
@@ -169,7 +182,7 @@ class SignupSection extends StatelessWidget {
                   onChanged: (value) {},
                 ),
                 SizedBox(height: 20),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
                     hintText: "Ukuran Polo Shirt",
                     prefixIcon: Icon(Icons.format_size),
@@ -179,6 +192,16 @@ class SignupSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
+                  ),
+                  dropdownStyleData: DropdownStyleData(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                    ),
+                    width: 100,
+                    offset: Offset(252, 55),
+                    elevation: 5,
+                    padding: EdgeInsets.all(10),
                   ),
                   value: null,
                   items: [
@@ -204,7 +227,7 @@ class SignupSection extends StatelessWidget {
                 SizedBox(height: 20),
                 Text("Data Benefit", style: TextStyle(fontSize: 24)),
                 SizedBox(height: 20),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
                     hintText: "E-wallet",
                     prefixIcon: Icon(Icons.account_balance_wallet),
@@ -214,6 +237,16 @@ class SignupSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
+                  ),
+                  dropdownStyleData: DropdownStyleData(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                    ),
+                    width: 150,
+                    offset: Offset(202, 55),
+                    elevation: 5,
+                    padding: EdgeInsets.all(10),
                   ),
                   value: null,
                   items: [
@@ -255,21 +288,21 @@ class SignupSection extends StatelessWidget {
                   children: [
                     Text(
                       "Already have an account? ",
-                      style: TextStyle(color: Colors.grey[800], fontSize: 10),
+                      style: TextStyle(color: Colors.grey[800], fontSize: 12),
                     ),
                     InkWell(
-                      onTap: controller.tapSignIN,
+                      onTap: controller.tapSignin,
                       child: Text(
                         "Sign in",
-                        style: TextStyle(color: Colors.blue[300], fontSize: 10),
+                        style: TextStyle(color: Colors.blue[300], fontSize: 12),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text("Sign UP", style: TextStyle(color: Colors.white)),
+                  child: Text("Sign up", style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[300],
                     padding:

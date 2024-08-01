@@ -1,15 +1,15 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/auth_controller.dart';
+import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
 
-class SignINSection extends StatelessWidget {
-  const SignINSection({super.key});
+class SignInView extends StatelessWidget {
+  const SignInView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LoginPageController>(
-      init: LoginPageController(),
+    return GetBuilder<SigninController>(
+      init: SigninController(),
       builder: (controller) => Scaffold(
         backgroundColor: Color(0xFFF5F5F5),
         body: Column(
@@ -68,37 +68,25 @@ class SignINSection extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 8,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Don't have an account? ",
-                    style: TextStyle(color: Colors.grey[800], fontSize: 10),
-                  ),
-                  InkWell(
-                    onTap: controller.tapSignUP,
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(color: Colors.blue[300], fontSize: 10),
-                    ),
-                  ),
-                  SizedBox(width: 10),
                   InkWell(
                     onTap: () {},
                     child: Text(
                       "Forgot Password?",
-                      style: TextStyle(color: Colors.blue[300], fontSize: 10),
+                      style: TextStyle(color: Colors.blue[300], fontSize: 12),
                     ),
                   ),
                 ],
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 8,
             ),
             ElevatedButton(
               child: Text(
@@ -109,6 +97,23 @@ class SignINSection extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue[300],
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 140),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              child: Text(
+                'Sign up',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: controller.tapSignup,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[300],
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 134),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
