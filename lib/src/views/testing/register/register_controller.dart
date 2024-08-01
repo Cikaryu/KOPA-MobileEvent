@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -47,6 +48,7 @@ class RegisterController with ChangeNotifier {
     required String tipeEWallet,
     required String nomorEWallet,
     required BuildContext context,
+    required String participant,
   }) async {
     try {
       setLoading(true);
@@ -60,9 +62,9 @@ class RegisterController with ChangeNotifier {
 
       // Upload images to Firebase Storage
       String selfieUrl = await _uploadImageToStorage(_selfieImage!,
-          '/participant/selfie_participant/${userCredential.user!.uid}.jpg');
+          '/users/participant/${userCredential.user!.uid}/selfie/selfie.jpg');
       String ktpUrl = await _uploadImageToStorage(_ktpImage!,
-          '/participant/ktp_participant/${userCredential.user!.uid}.jpg');
+          '/users/participant/${userCredential.user!.uid}/ktp/ktp.jpg');
 
       // Generate unique QR code
       String uniqueId = Uuid().v4();
@@ -71,7 +73,7 @@ class RegisterController with ChangeNotifier {
 
       // Upload QR code image to Firebase Storage
       String qrCodeUrl = await _uploadImageToStorage(File(_qrCodePath!),
-          '/participant/qr_codes_participant/${userCredential.user!.uid}_qr.png');
+          '/users/participant/${userCredential.user!.uid}/qr/qr.jpg');
 
       // Save user data to Firestore
       await FirebaseFirestore.instance
@@ -93,10 +95,13 @@ class RegisterController with ChangeNotifier {
         'ktpUrl': ktpUrl,
         'qrCodeUrl': qrCodeUrl,
         'emailVerified': false,
+        'role': participant,
       });
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
+
+      await logout();
 
       // Show success dialog and navigate to login
       showDialog(
@@ -110,7 +115,7 @@ class RegisterController with ChangeNotifier {
                 child: Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacementNamed('/loginpage');
+                  Navigator.of(context).pushReplacementNamed('/login');
                 },
               ),
             ],
@@ -140,6 +145,11 @@ class RegisterController with ChangeNotifier {
     } finally {
       setLoading(false);
     }
+  }
+  Future<void> logout() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear(); // Clear preferences
+  await FirebaseAuth.instance.signOut(); // Sign out from Firebase
   }
 
   Future<void> _generateQRCode(String uniqueId, String userId) async {

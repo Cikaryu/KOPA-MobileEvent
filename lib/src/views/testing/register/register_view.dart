@@ -14,10 +14,12 @@ class RegisterView extends StatelessWidget {
   final TextEditingController _divisiController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _nomorWhatsappController = TextEditingController();
+  final TextEditingController _nomorWhatsappController =
+      TextEditingController();
   final TextEditingController _nomorKtpController = TextEditingController();
   final TextEditingController _ukuranTShirtController = TextEditingController();
-  final TextEditingController _ukuranPoloShirtController = TextEditingController();
+  final TextEditingController _ukuranPoloShirtController =
+      TextEditingController();
   final TextEditingController _tipeEWalletController = TextEditingController();
   final TextEditingController _nomorEWalletController = TextEditingController();
 
@@ -25,11 +27,19 @@ class RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final registerController = Provider.of<RegisterController>(context);
     final List<String> ukuranOptions = ['S', 'M', 'L', 'XL', 'XXL'];
-    final List<String> eWalletOptions = ['Dana', 'OVO', 'GoPay', 'LinkAja', 'Jenius', 'ShopeePay', 'PayPal'];
+    final List<String> eWalletOptions = [
+      'Dana',
+      'OVO',
+      'GoPay',
+      'LinkAja',
+      'Jenius',
+      'ShopeePay',
+      'PayPal'
+    ];
 
     return Scaffold(
       appBar: AppBar(title: Text('Register')),
-      body: registerController.isLoading 
+      body: registerController.isLoading
           ? Center(child: CircularProgressIndicator())
           : Form(
               key: _formKey,
@@ -41,11 +51,13 @@ class RegisterView extends StatelessWidget {
                       controller: _emailController,
                       decoration: InputDecoration(labelText: 'Email'),
                       validator: (value) {
-                        String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                        String pattern =
+                            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                         RegExp regex = RegExp(pattern);
                         if (value!.isEmpty) {
                           return 'Please enter your email';
-                        } else if (!regex.hasMatch(value) || !value.endsWith('.com')) {
+                        } else if (!regex.hasMatch(value) ||
+                            !value.endsWith('.com')) {
                           return 'Please enter a valid email.';
                         }
                         return null;
@@ -55,49 +67,65 @@ class RegisterView extends StatelessWidget {
                       controller: _passwordController,
                       decoration: InputDecoration(labelText: 'Password'),
                       obscureText: true,
-                      validator: (value) => value!.isEmpty ? 'Please enter your password' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your password' : null,
                     ),
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(labelText: 'Name'),
-                      validator: (value) => value!.isEmpty ? 'Please enter your name' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your name' : null,
                     ),
                     TextFormField(
                       controller: _areaController,
                       decoration: InputDecoration(labelText: 'Area'),
-                      validator: (value) => value!.isEmpty ? 'Please enter your area' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your area' : null,
                     ),
                     TextFormField(
                       controller: _divisiController,
                       decoration: InputDecoration(labelText: 'Divisi'),
-                      validator: (value) => value!.isEmpty ? 'Please enter your divisi' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your divisi' : null,
                     ),
                     TextFormField(
                       controller: _departmentController,
                       decoration: InputDecoration(labelText: 'Department'),
-                      validator: (value) => value!.isEmpty ? 'Please enter your department' : null,
+                      validator: (value) => value!.isEmpty
+                          ? 'Please enter your department'
+                          : null,
                     ),
                     TextFormField(
                       controller: _alamatController,
                       decoration: InputDecoration(labelText: 'Alamat'),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9., ]'))],
-                      validator: (value) => value!.isEmpty ? 'Please enter your alamat' : null,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z0-9., ]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your alamat' : null,
                     ),
                     TextFormField(
                       controller: _nomorWhatsappController,
                       decoration: InputDecoration(labelText: 'Nomor Whatsapp'),
                       keyboardType: TextInputType.number,
                       maxLength: 12,
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-                      validator: (value) => value!.isEmpty ? 'Please enter your nomor' : null,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your nomor' : null,
                     ),
                     TextFormField(
                       controller: _nomorKtpController,
                       decoration: InputDecoration(labelText: 'Nomor KTP'),
                       keyboardType: TextInputType.number,
                       maxLength: 16,
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-                      validator: (value) => value!.isEmpty ? 'Please enter your KTP' : null,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your KTP' : null,
                     ),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(labelText: 'Ukuran T-Shirt'),
@@ -110,10 +138,12 @@ class RegisterView extends StatelessWidget {
                       onChanged: (String? newValue) {
                         _ukuranTShirtController.text = newValue!;
                       },
-                      validator: (value) => value == null ? 'Please select a size' : null,
+                      validator: (value) =>
+                          value == null ? 'Please select a size' : null,
                     ),
                     DropdownButtonFormField<String>(
-                      decoration: InputDecoration(labelText: 'Ukuran Polo Shirt'),
+                      decoration:
+                          InputDecoration(labelText: 'Ukuran Polo Shirt'),
                       items: ukuranOptions.map((String ukuran) {
                         return DropdownMenuItem<String>(
                           value: ukuran,
@@ -123,7 +153,8 @@ class RegisterView extends StatelessWidget {
                       onChanged: (String? newValue) {
                         _ukuranPoloShirtController.text = newValue!;
                       },
-                      validator: (value) => value == null ? 'Please select a size' : null,
+                      validator: (value) =>
+                          value == null ? 'Please select a size' : null,
                     ),
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(labelText: 'Tipe E-Wallet'),
@@ -136,31 +167,37 @@ class RegisterView extends StatelessWidget {
                       onChanged: (String? newValue) {
                         _tipeEWalletController.text = newValue!;
                       },
-                      validator: (value) => value == null ? 'Please select a type' : null,
+                      validator: (value) =>
+                          value == null ? 'Please select a type' : null,
                     ),
                     TextFormField(
                       controller: _nomorEWalletController,
                       decoration: InputDecoration(labelText: 'Nomor E-Wallet'),
                       keyboardType: TextInputType.number,
                       maxLength: 12,
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-                      validator: (value) => value!.isEmpty ? 'Please enter your E-Wallet' : null,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                      ],
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter your E-Wallet' : null,
                     ),
                     SizedBox(height: 20),
                     Text('Submit Foto Diri'),
                     ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(context, 'selfie', registerController),
+                      onPressed: () => _showImageSourceDialog(
+                          context, 'selfie', registerController),
                       child: Text('Pick Selfie or Capture'),
                     ),
-                    if (registerController.selfieImage != null) 
+                    if (registerController.selfieImage != null)
                       Image.file(registerController.selfieImage!),
                     SizedBox(height: 20),
                     Text('Submit Foto KTP'),
                     ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(context, 'ktp', registerController),
+                      onPressed: () => _showImageSourceDialog(
+                          context, 'ktp', registerController),
                       child: Text('Pick KTP or Capture'),
                     ),
-                    if (registerController.ktpImage != null) 
+                    if (registerController.ktpImage != null)
                       Image.file(registerController.ktpImage!),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -182,6 +219,7 @@ class RegisterView extends StatelessWidget {
                               tipeEWallet: _tipeEWalletController.text,
                               nomorEWallet: _nomorEWalletController.text,
                               context: context,
+                              participant: 'participant',
                             );
                           } catch (error) {
                             showDialog(
@@ -213,7 +251,8 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  void _showImageSourceDialog(BuildContext context, String type, RegisterController registerController) {
+  void _showImageSourceDialog(BuildContext context, String type,
+      RegisterController registerController) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -245,7 +284,8 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  void _pickImage(ImageSource source, String type, RegisterController registerController) async {
+  void _pickImage(ImageSource source, String type,
+      RegisterController registerController) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
 
