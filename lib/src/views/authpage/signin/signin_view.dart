@@ -49,12 +49,19 @@ class SignInView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    TextField(
-                      obscureText: true,
+                    TextFormField(
+                      obscureText: controller.showPassword ? false : true,
                       decoration: InputDecoration(
                         hintText: "Password",
                         prefixIcon: Icon(Icons.lock),
-                        suffixIcon: Icon(Icons.visibility_off),
+                        suffixIcon: IconButton(
+                          icon: Icon(controller.showPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
+                            controller.togglePasswordVisibility();
+                          },
+                        ),
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(

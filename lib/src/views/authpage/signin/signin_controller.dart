@@ -4,10 +4,15 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/routes/app_pages.dart';
 
 class SigninController extends GetxController {
-  
+  bool showPassword = false;
   @override
   onInit() {
     super.onInit();
+  }
+
+  togglePasswordVisibility() {
+    showPassword = !showPassword;
+    update();
   }
 
   @override
@@ -22,5 +27,4 @@ class SigninController extends GetxController {
   tapSignup() {
     Get.toNamed(AppRoutes.signup);
   }
-
 }
