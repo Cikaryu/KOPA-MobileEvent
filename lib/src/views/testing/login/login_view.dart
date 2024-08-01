@@ -1,7 +1,7 @@
+import 'package:app_kopabali/src/views/testing/login/forgotpassword_view.dart';
 import 'package:app_kopabali/src/views/testing/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class LoginView extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -13,7 +13,7 @@ class LoginView extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loginController.checkLoginStatus(context);
     });
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -43,6 +43,15 @@ class LoginView extends StatelessWidget {
               child: loginController.isLoading
                   ? CircularProgressIndicator()
                   : Text('Login'),
+            ),
+            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ForgotPasswordView()),
+                );
+              },
+              child: Text('Forgot Password?'),
             ),
           ],
         ),

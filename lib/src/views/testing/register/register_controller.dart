@@ -68,8 +68,7 @@ class RegisterController with ChangeNotifier {
 
       // Generate unique QR code
       String uniqueId = Uuid().v4();
-      await _generateQRCode(
-          uniqueId, userCredential.user!.uid); 
+      await _generateQRCode(uniqueId, userCredential.user!.uid);
 
       // Upload QR code image to Firebase Storage
       String qrCodeUrl = await _uploadImageToStorage(File(_qrCodePath!),
@@ -122,6 +121,32 @@ class RegisterController with ChangeNotifier {
           );
         },
       );
+    } on FirebaseAuthException catch (e) {
+      setLoading(false);
+      String errorMessage;
+      if (e.code == 'email-already-in-use') {
+        errorMessage = 'The email address is already in use by another account.';
+      } else {
+        errorMessage = e.message ?? 'An unknown error occurred.';
+      }
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Registration Failed'),
+            content: Text(errorMessage),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       setLoading(false);
       // Show error dialog
@@ -146,10 +171,11 @@ class RegisterController with ChangeNotifier {
       setLoading(false);
     }
   }
+
   Future<void> logout() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.clear(); // Clear preferences
-  await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear preferences
+    await FirebaseAuth.instance.signOut(); // Sign out from Firebase
   }
 
   Future<void> _generateQRCode(String uniqueId, String userId) async {

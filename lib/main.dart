@@ -22,7 +22,7 @@ void main() async {
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         defaultTransition: Transition.fadeIn,
-        home: RegisterView(), // Atau LoginView() jika halaman awal adalah login
+        home: LoginView(), // Atau LoginView() jika halaman awal adalah login
         getPages: AppPages.routes,
       ),
     ),
