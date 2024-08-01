@@ -1,4 +1,7 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
@@ -26,8 +29,7 @@ class SignupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SignupController signupController =
-      Get.put(SignupController());
+    final SignupController signupController = Get.put(SignupController());
     final List<String> ukuranOptions = ['S', 'M', 'L', 'XL', 'XXL'];
     final List<String> eWalletOptions = [
       'Dana',
@@ -40,7 +42,9 @@ class SignupView extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      backgroundColor: Color(0xFFF5F5F5),
+      appBar: AppBar(title: Text('Register'),
+      backgroundColor: Color(0xFFF5F5F5),),
       body: signupController.isLoading
           ? Center(child: CircularProgressIndicator())
           : Form(
@@ -49,9 +53,19 @@ class SignupView extends StatelessWidget {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(labelText: 'Email'),
+                      decoration: InputDecoration(
+                        hintText: 'Email',
+                        prefixIcon: Icon(Icons.email),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       validator: (value) {
                         String pattern =
                             r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
@@ -65,41 +79,101 @@ class SignupView extends StatelessWidget {
                         return null;
                       },
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: InputDecoration(labelText: 'Password'),
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        prefixIcon: Icon(Icons.lock),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       obscureText: true,
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your password' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _nameController,
-                      decoration: InputDecoration(labelText: 'Name'),
+                      decoration: InputDecoration(
+                        hintText: 'Name',
+                        prefixIcon: Icon(Icons.person),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your name' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _areaController,
-                      decoration: InputDecoration(labelText: 'Area'),
+                      decoration: InputDecoration(
+                        hintText: 'Area',
+                        prefixIcon: Icon(Icons.location_on),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your area' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _divisiController,
-                      decoration: InputDecoration(labelText: 'Divisi'),
+                      decoration: InputDecoration(
+                        hintText: 'Divisi',
+                        prefixIcon: Icon(Icons.work),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your divisi' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _departmentController,
-                      decoration: InputDecoration(labelText: 'Department'),
+                      decoration: InputDecoration(
+                        hintText: 'Department',
+                        prefixIcon: Icon(Icons.business),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       validator: (value) => value!.isEmpty
                           ? 'Please enter your department'
                           : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _alamatController,
-                      decoration: InputDecoration(labelText: 'Alamat'),
+                      decoration: InputDecoration(
+                        hintText: 'Alamat',
+                        prefixIcon: Icon(Icons.location_on),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
                             RegExp(r'[a-zA-Z0-9., ]'))
@@ -107,9 +181,19 @@ class SignupView extends StatelessWidget {
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your alamat' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _nomorWhatsappController,
-                      decoration: InputDecoration(labelText: 'Nomor Whatsapp'),
+                      decoration: InputDecoration(
+                        hintText: 'Nomor Whatsapp',
+                        prefixIcon: Icon(Icons.phone),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       keyboardType: TextInputType.number,
                       maxLength: 12,
                       inputFormatters: [
@@ -118,9 +202,19 @@ class SignupView extends StatelessWidget {
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your nomor' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _nomorKtpController,
-                      decoration: InputDecoration(labelText: 'Nomor KTP'),
+                      decoration: InputDecoration(
+                        hintText: 'Nomor KTP',
+                        prefixIcon: Icon(Icons.credit_card),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       keyboardType: TextInputType.number,
                       maxLength: 16,
                       inputFormatters: [
@@ -129,8 +223,28 @@ class SignupView extends StatelessWidget {
                       validator: (value) =>
                           value!.isEmpty ? 'Please enter your KTP' : null,
                     ),
-                    DropdownButtonFormField<String>(
-                      decoration: InputDecoration(labelText: 'Ukuran T-Shirt'),
+                    SizedBox(height: 10),
+                    DropdownButtonFormField2<String>(
+                      decoration: InputDecoration(
+                        hintText: 'Ukuran T-Shirt',
+                        prefixIcon: Icon(Icons.format_size),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      dropdownStyleData: DropdownStyleData(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[300],
+                        ),
+                        width: 100,
+                        offset: Offset(258, 55),
+                        elevation: 5,
+                        padding: EdgeInsets.all(10),
+                      ),
                       items: ukuranOptions.map((String ukuran) {
                         return DropdownMenuItem<String>(
                           value: ukuran,
@@ -143,9 +257,28 @@ class SignupView extends StatelessWidget {
                       validator: (value) =>
                           value == null ? 'Please select a size' : null,
                     ),
-                    DropdownButtonFormField<String>(
-                      decoration:
-                          InputDecoration(labelText: 'Ukuran Polo Shirt'),
+                    SizedBox(height: 10),
+                    DropdownButtonFormField2<String>(
+                      decoration: InputDecoration(
+                        hintText: 'Ukuran Polo Shirt',
+                        prefixIcon: Icon(Icons.format_size),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      dropdownStyleData: DropdownStyleData(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[300],
+                        ),
+                        width: 100,
+                        offset: Offset(258, 55),
+                        elevation: 5,
+                        padding: EdgeInsets.all(10),
+                      ),
                       items: ukuranOptions.map((String ukuran) {
                         return DropdownMenuItem<String>(
                           value: ukuran,
@@ -158,8 +291,29 @@ class SignupView extends StatelessWidget {
                       validator: (value) =>
                           value == null ? 'Please select a size' : null,
                     ),
-                    DropdownButtonFormField<String>(
-                      decoration: InputDecoration(labelText: 'Tipe E-Wallet'),
+                    SizedBox(height: 10),
+                    DropdownButtonFormField2<String>(
+                      decoration: InputDecoration(
+                        hintText: 'Tipe E-Wallet',
+                        prefixIcon: Icon(Icons.wallet_outlined),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      dropdownStyleData: DropdownStyleData(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[300],
+                        ),
+                        maxHeight: 240,
+                        width: 140,
+                        offset: Offset(224, 55),
+                        elevation: 5,
+                        padding: EdgeInsets.all(10),
+                      ),
                       items: eWalletOptions.map((String tipe) {
                         return DropdownMenuItem<String>(
                           value: tipe,
@@ -172,9 +326,19 @@ class SignupView extends StatelessWidget {
                       validator: (value) =>
                           value == null ? 'Please select a type' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _nomorEWalletController,
-                      decoration: InputDecoration(labelText: 'Nomor E-Wallet'),
+                      decoration: InputDecoration(
+                        hintText: 'Nomor E-Wallet',
+                        prefixIcon: Icon(Icons.credit_card),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                       keyboardType: TextInputType.number,
                       maxLength: 12,
                       inputFormatters: [
@@ -184,23 +348,57 @@ class SignupView extends StatelessWidget {
                           value!.isEmpty ? 'Please enter your E-Wallet' : null,
                     ),
                     SizedBox(height: 20),
-                    Text('Submit Foto Diri'),
-                    ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(
-                          context, 'selfie', signupController),
-                      child: Text('Pick Selfie or Capture'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Submit Foto Diri'),
+                              ElevatedButton(
+                                onPressed: () => _showImageSourceDialog(
+                                    context, 'selfie', signupController),
+                                child: Text("Pick Selfie or Capture",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue[300],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                              if (signupController.selfieImage != null)
+                                Image.file(signupController.selfieImage!),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 40),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Submit Foto KTP'),
+                              ElevatedButton(
+                                onPressed: () => _showImageSourceDialog(
+                                    context, 'ktp', signupController),
+                                child: Text("Capture KTP",
+                                    style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue[300],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                              if (signupController.ktpImage != null)
+                                Image.file(signupController.ktpImage!),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    if (signupController.selfieImage != null)
-                      Image.file(signupController.selfieImage!),
-                    SizedBox(height: 20),
-                    Text('Submit Foto KTP'),
-                    ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(
-                          context, 'ktp', signupController),
-                      child: Text('Pick KTP or Capture'),
-                    ),
-                    if (signupController.ktpImage != null)
-                      Image.file(signupController.ktpImage!),
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
@@ -244,7 +442,38 @@ class SignupView extends StatelessWidget {
                           }
                         }
                       },
-                      child: Text('Register'),
+                      child: Text("Sign up",
+                          style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[300],
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 154, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Already have an account? ",
+                            style:
+                                TextStyle(color: Colors.grey[800], fontSize: 12),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Text(
+                              "Sign in",
+                              style: TextStyle(
+                                  color: Colors.blue[300], fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -253,8 +482,8 @@ class SignupView extends StatelessWidget {
     );
   }
 
-  void _showImageSourceDialog(BuildContext context, String type,
-      SignupController signupController) {
+  void _showImageSourceDialog(
+      BuildContext context, String type, SignupController signupController) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

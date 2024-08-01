@@ -1,5 +1,4 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,9 +6,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SigninController extends GetxController {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  bool showPassword = false;
+
 
   siginController() {
     _checkEmailVerificationStatus();
+  }
+
+  togglePasswordVisibility() {
+    showPassword = !showPassword;
+    update();
   }
 
   void setLoading(bool value) {
@@ -132,8 +138,6 @@ class SigninController extends GetxController {
       await user.sendEmailVerification();
     }
   }
-
-
 
   Future<void> checkLoginStatus(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
