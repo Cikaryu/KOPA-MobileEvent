@@ -1,7 +1,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/participant_controller.dart';
 
-class HomePageParticipant extends StatelessWidget {
+class HomePageCommittee extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   final ParticipantController participantController = Get.put(ParticipantController());

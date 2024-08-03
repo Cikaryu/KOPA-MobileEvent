@@ -26,6 +26,7 @@ class ForgotPasswordView extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+              
               onPressed: () async {
                 if (emailController.text.isEmpty) {
                   _showErrorDialog(context, 'Please enter your email.');

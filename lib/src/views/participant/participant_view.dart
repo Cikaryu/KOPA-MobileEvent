@@ -13,11 +13,11 @@ class ParticipantView extends StatelessWidget {
       Get.put(ParticipantController());
 
   final List<Widget> _pages = [
-    HomePage(),
+    HomePageParticipant(),
     EventPage(),
     ParticipantPage(),
     ServicePage(),
-    ProfilePage(),
+    ProfileParticipantPage(),
   ];
 
   @override

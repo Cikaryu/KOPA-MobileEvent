@@ -16,138 +16,144 @@ class SigninView extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       signinController.checkLoginStatus(context);
     });
-    return GetBuilder<SigninController>(
-      init: SigninController(),
-      builder: (controller) => Scaffold(
-        backgroundColor: Color(0xFFF5F5F5),
-        body: Stack(
-          children: [
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                        prefixIcon: Icon(Icons.person),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: GetBuilder<SigninController>(
+        init: SigninController(),
+        builder: (controller) => Scaffold(
+          backgroundColor: Color(0xFFF5F5F5),
+          body: Stack(
+            children: [
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: passwordController,
-                      obscureText: controller.showPassword ? false : true,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(controller.showPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            controller.togglePasswordVisibility();
-                          },
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPasswordView()),
-                            );
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(color: Colors.blue[300]),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          prefixIcon: Icon(Icons.person),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
                           ),
                         ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        FocusScope.of(context).unfocus();
-                        await signinController.loginUser(
-                          email: emailController.text,
-                          password: passwordController.text,
-                          context: context,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor("E97717"),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 138),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: passwordController,
+                        obscureText: controller.showPassword ? false : true,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(controller.showPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onPressed: () {
+                              controller.togglePasswordVisibility();
+                            },
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(color: Colors.white),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => ForgotPasswordView()),
+                              );
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(color: Colors.blue[300]),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => SignupView()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 134),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black),
-                          borderRadius: BorderRadius.circular(10),
+                      ElevatedButton(
+                        onPressed: () async {
+                          FocusScope.of(context).unfocus();
+                          await signinController.loginUser(
+                            email: emailController.text,
+                            password: passwordController.text,
+                            context: context,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: HexColor("E97717"),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 138),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          'Sign In',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      child: Text(
-                        'Sign up',
-                        style: TextStyle(color: Colors.black),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => SignupView()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 134),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          'Sign up',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (signinController.isLoading)
-              Opacity(
-                opacity: 0.5, // Sesuaikan nilai opacity di sini
-                child: ModalBarrier(
-                  dismissible: false,
-                  color: Colors.black,
+              if (signinController.isLoading)
+                Opacity(
+                  opacity: 0.5, // Sesuaikan nilai opacity di sini
+                  child: ModalBarrier(
+                    dismissible: false,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-            if (signinController.isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-          ],
+              if (signinController.isLoading)
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
     );
