@@ -8,7 +8,6 @@ class SigninController extends GetxController {
   bool get isLoading => _isLoading;
   bool showPassword = false;
 
-
   siginController() {
     _checkEmailVerificationStatus();
   }
@@ -66,8 +65,13 @@ class SigninController extends GetxController {
           errorMessage = 'The password is invalid for the given email.';
           break;
         case 'invalid-credential':
-          errorMessage =
-              'Invalid credential. Please check your email and password.';
+          errorMessage = 'Please check your email and password.';
+          break;
+        case 'channel-rejected':
+          errorMessage = 'Please check your internet connection.';
+          break;
+        case 'channel-error':
+          errorMessage = 'Please check your email and password.';
           break;
         default:
           errorMessage =

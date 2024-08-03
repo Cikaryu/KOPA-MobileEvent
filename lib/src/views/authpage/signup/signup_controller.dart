@@ -10,23 +10,34 @@ import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class SignupController extends GetxController {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController areaController = TextEditingController();
+  TextEditingController divisiController = TextEditingController();
+  TextEditingController departmentController = TextEditingController();
+  TextEditingController alamatController = TextEditingController();
+  TextEditingController nomorWhatsappController = TextEditingController();
+  TextEditingController nomorKtpController = TextEditingController();
+  TextEditingController ukuranTShirtController = TextEditingController();
+  TextEditingController ukuranPoloShirtController = TextEditingController();
+  TextEditingController tipeEWalletController = TextEditingController();
+  TextEditingController nomorEWalletController = TextEditingController();
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  File? _selfieImage;
-  File? _ktpImage;
+  var selfieImage = ValueNotifier<File?>(null);
+  var ktpImage = ValueNotifier<File?>(null);
   String? _qrCodePath;
 
-  File? get selfieImage => _selfieImage;
-  File? get ktpImage => _ktpImage;
-
   void setSelfieImage(File? image) {
-    _selfieImage = image;
+    selfieImage.value = image;
     update();
   }
 
   void setKtpImage(File? image) {
-    _ktpImage = image;
+    ktpImage.value = image;
     update();
   }
 
@@ -50,22 +61,33 @@ class SignupController extends GetxController {
     required String tipeEWallet,
     required String nomorEWallet,
     required BuildContext context,
-    required String participant,
+    required String role,
+    required String poloShirt,
+    required String tShirt,
+    required String nameTag,
+    required String luggageTag,
+    required String jasHujan,
   }) async {
     try {
       setLoading(true);
-
-      // Register user with Firebase Auth
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+
       // Upload images to Firebase Storage
-      String selfieUrl = await _uploadImageToStorage(_selfieImage!,
+      String selfieUrl = await _uploadImageToStorage(selfieImage.value!,
           '/users/participant/${userCredential.user!.uid}/selfie/selfie.jpg');
-      String ktpUrl = await _uploadImageToStorage(_ktpImage!,
+      String ktpUrl = await _uploadImageToStorage(ktpImage.value!,
           '/users/participant/${userCredential.user!.uid}/ktp/ktp.jpg');
 
       // Generate unique QR code
@@ -96,13 +118,28 @@ class SignupController extends GetxController {
         'ktpUrl': ktpUrl,
         'qrCodeUrl': qrCodeUrl,
         'emailVerified': false,
-        'role': participant,
+        'role': role,
+      });
+
+      await FirebaseFirestore.instance
+          .collection('merchandise')
+          .doc(userCredential.user!.uid)
+          .set({
+        'participantKit': {
+          'poloShirt': poloShirt,
+          'tShirt': tShirt,
+          'nameTag': nameTag,
+          'luggageTag': luggageTag,
+          'jasHujan': jasHujan,
+        },
       });
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
 
       await logout();
+      resetForm();
+      Navigator.of(context).pop();
 
       // Show success dialog and navigate to login
       showDialog(
@@ -116,7 +153,7 @@ class SignupController extends GetxController {
                 child: Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacementNamed('/login');
+                  Navigator.of(context).pushReplacementNamed('/signin');
                 },
               ),
             ],
@@ -127,7 +164,8 @@ class SignupController extends GetxController {
       setLoading(false);
       String errorMessage;
       if (e.code == 'email-already-in-use') {
-        errorMessage = 'The email address is already in use by another account.';
+        errorMessage =
+            'The email address is already in use by another account.';
       } else {
         errorMessage = e.message ?? 'An unknown error occurred.';
       }
@@ -138,26 +176,6 @@ class SignupController extends GetxController {
           return AlertDialog(
             title: Text('Registration Failed'),
             content: Text(errorMessage),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } catch (e) {
-      setLoading(false);
-      // Show error dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Registration Failed'),
-            content: Text(e.toString()),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),
@@ -207,7 +225,7 @@ class SignupController extends GetxController {
     return await snapshot.ref.getDownloadURL();
   }
 
-   void showImageSourceDialog(
+  void showImageSourceDialog(
       BuildContext context, String type, SignupController signupController) {
     showDialog(
       context: context,
@@ -252,7 +270,7 @@ class SignupController extends GetxController {
     );
   }
 
-    void _pickImage(ImageSource source, String type,
+  void _pickImage(ImageSource source, String type,
       SignupController signupController) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
@@ -264,5 +282,23 @@ class SignupController extends GetxController {
         signupController.setKtpImage(File(pickedFile.path));
       }
     }
+  }
+
+  void resetForm() {
+    emailController.clear();
+    passwordController.clear();
+    nameController.clear();
+    areaController.clear();
+    divisiController.clear();
+    departmentController.clear();
+    alamatController.clear();
+    nomorWhatsappController.clear();
+    nomorKtpController.clear();
+    ukuranTShirtController.clear();
+    ukuranPoloShirtController.clear();
+    tipeEWalletController.clear();
+    nomorEWalletController.clear();
+    selfieImage.value = null;
+    ktpImage.value = null;
   }
 }
