@@ -351,58 +351,69 @@ class SignupView extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Submit Foto Diri'),
-                              ElevatedButton(
-                                onPressed: () {
-                                  signupController.showImageSourceDialog(
-                                    context, 'selfie', signupController);
-                                },
-                                child: Text("Pick Selfie or Capture",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white)),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[300],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              if (signupController.selfieImage != null)
-                                Image.file(signupController.selfieImage!),
-                            ],
+                        Container(
+                          width: 210,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.person,
+                              size: 100, color: Colors.grey[500]),
+                        ),
+                        SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            signupController.showImageSourceDialog(
+                                context, 'selfie', signupController);
+                          },
+                          child: Text("Pick Selfie\nor Capture",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[300],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
-                        SizedBox(width: 40),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Submit Foto KTP'),
-                              ElevatedButton(
-                                onPressed: () {
-                                  signupController.showImageSourceDialog(
-                                    context, 'ktp', signupController);
-                                },
-                                child: Text("Capture KTP",
-                                    style: TextStyle(color: Colors.white)),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[300],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              if (signupController.ktpImage != null)
-                                Image.file(signupController.ktpImage!),
-                            ],
+                        if (signupController.selfieImage != null)
+                          Image.file(signupController.selfieImage!),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 210,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.person,
+                              size: 100, color: Colors.grey[500]),
+                        ),
+                        SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            signupController.showImageSourceDialog(
+                                context, 'ktp', signupController);
+                          },
+                          child: Text("Capture KTP",
+                              style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[300],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
+                        if (signupController.ktpImage != null)
+                          Image.file(signupController.ktpImage!),
                       ],
                     ),
                     SizedBox(height: 20),
@@ -487,8 +498,4 @@ class SignupView extends StatelessWidget {
             ),
     );
   }
-
- 
-
-
 }
