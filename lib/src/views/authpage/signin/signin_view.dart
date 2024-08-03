@@ -4,6 +4,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class SigninView extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -95,7 +96,7 @@ class SigninView extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[300],
+                    backgroundColor: HexColor("E97717"),
                     padding:
                         EdgeInsets.symmetric(vertical: 15, horizontal: 138),
                     shape: RoundedRectangleBorder(

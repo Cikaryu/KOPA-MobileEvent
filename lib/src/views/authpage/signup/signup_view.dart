@@ -43,8 +43,10 @@ class SignupView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
-      appBar: AppBar(title: Text('Register'),
-      backgroundColor: Color(0xFFF5F5F5),),
+      appBar: AppBar(
+        title: Text('Register'),
+        backgroundColor: Color(0xFFF5F5F5),
+      ),
       body: signupController.isLoading
           ? Center(child: CircularProgressIndicator())
           : Form(
@@ -357,8 +359,10 @@ class SignupView extends StatelessWidget {
                             children: [
                               Text('Submit Foto Diri'),
                               ElevatedButton(
-                                onPressed: () => _showImageSourceDialog(
-                                    context, 'selfie', signupController),
+                                onPressed: () {
+                                  signupController.showImageSourceDialog(
+                                    context, 'selfie', signupController);
+                                },
                                 child: Text("Pick Selfie or Capture",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(color: Colors.white)),
@@ -381,8 +385,10 @@ class SignupView extends StatelessWidget {
                             children: [
                               Text('Submit Foto KTP'),
                               ElevatedButton(
-                                onPressed: () => _showImageSourceDialog(
-                                    context, 'ktp', signupController),
+                                onPressed: () {
+                                  signupController.showImageSourceDialog(
+                                    context, 'ktp', signupController);
+                                },
                                 child: Text("Capture KTP",
                                     style: TextStyle(color: Colors.white)),
                                 style: ElevatedButton.styleFrom(
@@ -461,8 +467,8 @@ class SignupView extends StatelessWidget {
                         children: [
                           Text(
                             "Already have an account? ",
-                            style:
-                                TextStyle(color: Colors.grey[800], fontSize: 12),
+                            style: TextStyle(
+                                color: Colors.grey[800], fontSize: 12),
                           ),
                           InkWell(
                             onTap: () {},
@@ -482,50 +488,7 @@ class SignupView extends StatelessWidget {
     );
   }
 
-  void _showImageSourceDialog(
-      BuildContext context, String type, SignupController signupController) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Choose Image Source'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: Text('Camera'),
-                  onTap: () {
-                    _pickImage(ImageSource.camera, type, signupController);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  child: Text('Gallery'),
-                  onTap: () {
-                    _pickImage(ImageSource.gallery, type, signupController);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+ 
 
-  void _pickImage(ImageSource source, String type,
-      SignupController signupController) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
 
-    if (pickedFile != null) {
-      if (type == 'selfie') {
-        signupController.setSelfieImage(File(pickedFile.path));
-      } else {
-        signupController.setKtpImage(File(pickedFile.path));
-      }
-    }
-  }
 }

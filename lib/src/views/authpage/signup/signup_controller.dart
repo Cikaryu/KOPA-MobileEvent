@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
@@ -204,5 +205,64 @@ class SignupController extends GetxController {
         FirebaseStorage.instance.ref().child(path).putFile(image);
     TaskSnapshot snapshot = await uploadTask;
     return await snapshot.ref.getDownloadURL();
+  }
+
+   void showImageSourceDialog(
+      BuildContext context, String type, SignupController signupController) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Choose Image Source'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Icon(Icons.camera_alt),
+                      SizedBox(width: 10),
+                      Text('Camera'),
+                    ],
+                  ),
+                  onTap: () {
+                    _pickImage(ImageSource.camera, type, signupController);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Icon(Icons.image),
+                      SizedBox(width: 10),
+                      Text('Gallery'),
+                    ],
+                  ),
+                  onTap: () {
+                    _pickImage(ImageSource.gallery, type, signupController);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+    void _pickImage(ImageSource source, String type,
+      SignupController signupController) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      if (type == 'selfie') {
+        signupController.setSelfieImage(File(pickedFile.path));
+      } else {
+        signupController.setKtpImage(File(pickedFile.path));
+      }
+    }
   }
 }
