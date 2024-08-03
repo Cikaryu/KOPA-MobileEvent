@@ -2,6 +2,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
+import 'package:app_kopabali/src/views/committee/committee_view.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/testing/testing_view.dart';
 
@@ -25,6 +26,11 @@ abstract class AppPages {
       name: AppRoutes.testing,
       page: () => const TestingView(),
     ),
-    GetPage(name: AppRoutes.participant, page: () => ParticipantView())
+    GetPage(
+      name: AppRoutes.participant, 
+      page: () => ParticipantView()),
+    GetPage(
+      name: AppRoutes.committee, 
+      page: () => CommitteeView()),
   ];
 }

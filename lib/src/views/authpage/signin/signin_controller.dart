@@ -102,8 +102,8 @@ class SigninController extends GetxController {
 
     if (role == 'participant') {
       Navigator.of(context).pushReplacementNamed('/participant');
-    } else if (role == 'panitia') {
-      Navigator.of(context).pushReplacementNamed('/panitia_view');
+    } else if (role == 'committee') {
+      Navigator.of(context).pushReplacementNamed('/committee');
     } else if (role == 'admin') {
       Navigator.of(context).pushReplacementNamed('/admin_view');
     }
@@ -151,8 +151,8 @@ class SigninController extends GetxController {
       String role = prefs.getString('role') ?? 'participant';
       if (role == 'participant') {
         Navigator.of(context).pushReplacementNamed('/participant');
-      } else if (role == 'panitia') {
-        Navigator.of(context).pushReplacementNamed('/panitia_view');
+      } else if (role == 'committee') {
+        Navigator.of(context).pushReplacementNamed('/committee');
       } else if (role == 'admin') {
         Navigator.of(context).pushReplacementNamed('/admin_view');
       }
