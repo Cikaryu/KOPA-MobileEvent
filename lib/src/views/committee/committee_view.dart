@@ -1,14 +1,23 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_controller.dart';
+import 'package:app_kopabali/src/views/committee/pages/committee_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/event_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/home_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/service_page.dart';
 
 class CommitteeView extends StatelessWidget {
   CommitteeView({super.key});
-  final CommitteeController participantController =
+  final CommitteeController committeeController =
       Get.put(CommitteeController());
 
-  final List<Widget> _pages = [HomePageCommittee(), ProfileCommitteePage()];
+  final List<Widget> _pages = [
+    HomePageCommittee(),
+    ProfileCommitteePage(),
+    CommitteePage(),
+    EventCommitteePage(),
+    ServiceCommitteePage()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +26,9 @@ class CommitteeView extends StatelessWidget {
         title: Text('Committee View'),
       ),
       body: PageView.builder(
-        controller: participantController.pageController,
+        controller: committeeController.pageController,
         onPageChanged: (index) {
-          participantController.selectedIndex.value = index;
+          committeeController.selectedIndex.value = index;
         },
         itemCount: _pages.length,
         itemBuilder: (context, index) {
@@ -37,12 +46,24 @@ class CommitteeView extends StatelessWidget {
                 icon: Icon(Icons.person),
                 label: 'Profile',
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.group),
+                label: 'Committee',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.event),
+                label: 'Event',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.build),
+                label: 'Service',
+              ),
             ],
-            currentIndex: participantController.selectedIndex.value,
+            currentIndex: committeeController.selectedIndex.value,
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.black,
             onTap: (index) {
-              participantController.changeTabIndex(index);
+              committeeController.changeTabIndex(index);
             },
           )),
     );
