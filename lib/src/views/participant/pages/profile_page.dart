@@ -22,6 +22,7 @@ class ProfileParticipantPage extends StatelessWidget {
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Kontainer untuk Profil
               Center(
@@ -132,7 +133,130 @@ class ProfileParticipantPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24),
-
+              // Container for Edit Profile
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'General',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 12.0),
+                      decoration: BoxDecoration(
+                        color: HexColor("#F3F3F3"),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10.0,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: Colors.orange,
+                          ),
+                          SizedBox(width: 16.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Edit Profile',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              Text(
+                                'Update your profile information',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    // Container for Change Password
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 12.0),
+                      decoration: BoxDecoration(
+                        color: HexColor("#F3F3F3"),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10.0,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.lock,
+                            color: Colors.orange,
+                          ),
+                          SizedBox(width: 16.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Change Password',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              Text(
+                                'Change your account password',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  'Participant Kit',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 12),
               // Kontainer untuk Merchandise
               Center(
                 child: Container(
@@ -424,6 +548,104 @@ class ProfileParticipantPage extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: HexColor("#F3F3F3"),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4.0,
+                            spreadRadius: 2.0,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Souvenir",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                            size: 20.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: HexColor("#F3F3F3"),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4.0,
+                            spreadRadius: 2.0,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Benefit",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                            size: 20.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Center(
+                child: Container(
+                  width: 140,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor("#C63131"),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Log Out',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
               ),
