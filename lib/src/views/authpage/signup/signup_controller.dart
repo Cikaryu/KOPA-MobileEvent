@@ -62,11 +62,7 @@ class SignupController extends GetxController {
     required String nomorEWallet,
     required BuildContext context,
     required String role,
-    required String poloShirt,
-    required String tShirt,
-    required String nameTag,
-    required String luggageTag,
-    required String jasHujan,
+    required String status,
   }) async {
     try {
       setLoading(true);
@@ -103,6 +99,7 @@ class SignupController extends GetxController {
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
+        'email': email,
         'name': name,
         'area': area,
         'divisi': divisi,
@@ -122,15 +119,11 @@ class SignupController extends GetxController {
       });
 
       await FirebaseFirestore.instance
-          .collection('merchandise')
+          .collection('participantKit')
           .doc(userCredential.user!.uid)
           .set({
         'participantKit': {
-          'poloShirt': poloShirt,
-          'tShirt': tShirt,
-          'nameTag': nameTag,
-          'luggageTag': luggageTag,
-          'jasHujan': jasHujan,
+          'status': status,
         },
       });
 

@@ -484,11 +484,7 @@ class SignupView extends StatelessWidget {
                               nomorEWallet: _nomorEWalletController.text,
                               context: context,
                               role: 'participant',
-                              poloShirt: 'pending',
-                              tShirt: 'pending',
-                              nameTag: 'pending',
-                              luggageTag: 'pending',
-                              jasHujan: 'pending',
+                              status: 'pending',
                             );
                             // Call resetForm() after successful registration
                             signupController.resetForm();

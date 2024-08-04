@@ -6,6 +6,7 @@ import 'package:app_kopabali/src/views/participant/pages/service_page.dart';
 import 'package:app_kopabali/src/views/participant/participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class ParticipantView extends StatelessWidget {
   ParticipantView({super.key});
@@ -23,10 +24,8 @@ class ParticipantView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Participant View'),
-      ),
       body: PageView.builder(
+        physics: NeverScrollableScrollPhysics(),
         controller: participantController.pageController,
         onPageChanged: (index) {
           participantController.selectedIndex.value = index;
@@ -37,9 +36,9 @@ class ParticipantView extends StatelessWidget {
         },
       ),
       bottomNavigationBar: Obx(() => BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
+            items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                backgroundColor: Colors.blue,
+                backgroundColor: HexColor('F3F3F3'),
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
@@ -61,8 +60,8 @@ class ParticipantView extends StatelessWidget {
               ),
             ],
             currentIndex: participantController.selectedIndex.value,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.black,
+            selectedItemColor: HexColor('232528'),
+            unselectedItemColor: HexColor('E97717'),
             onTap: (index) {
               participantController.changeTabIndex(index);
             },
