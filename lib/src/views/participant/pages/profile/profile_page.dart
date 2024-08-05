@@ -1,18 +1,13 @@
-import 'dart:math';
-
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/participant/participant_controller.dart';
+import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class ProfileParticipantPage extends StatelessWidget {
   const ProfileParticipantPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ParticipantController participantController =
-        Get.put(ParticipantController());
+    final ProfileController profileController = Get.put(ProfileController());
 
     return Scaffold(
       appBar: AppBar(
@@ -57,21 +52,18 @@ class ProfileParticipantPage extends StatelessWidget {
                                   width: 82,
                                   height: 82,
                                   decoration: ShapeDecoration(
-                                    image: participantController
-                                                .imageBytes.value !=
+                                    image: profileController.imageBytes.value !=
                                             null
                                         ? DecorationImage(
-                                            image: MemoryImage(
-                                                participantController
-                                                    .imageBytes.value!),
+                                            image: MemoryImage(profileController
+                                                .imageBytes.value!),
                                             fit: BoxFit.cover,
                                           )
                                         : null,
                                     shape: OvalBorder(),
                                   ),
                                   child:
-                                      participantController.imageBytes.value ==
-                                              null
+                                      profileController.imageBytes.value == null
                                           ? Icon(Icons.person,
                                               size: 82, color: Colors.grey[500])
                                           : null,
@@ -83,19 +75,19 @@ class ProfileParticipantPage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        participantController.userName.value,
+                                        profileController.userName.value,
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        participantController.userEmail.value,
+                                        profileController.userEmail.value,
                                         style: TextStyle(fontSize: 16),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        participantController.userDivisi.value,
+                                        profileController.userDivisi.value,
                                         style: TextStyle(fontSize: 16),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -114,8 +106,8 @@ class ProfileParticipantPage extends StatelessWidget {
                         height: 40,
                         child: ElevatedButton(
                           onPressed: () async {
-                            await participantController.fetchQrCodeUrl();
-                            participantController.showQrDialog(context);
+                            await profileController.fetchQrCodeUrl();
+                            profileController.showQrDialog(context);
                           },
                           style: ButtonStyle(
                             backgroundColor:
@@ -187,7 +179,7 @@ class ProfileParticipantPage extends StatelessWidget {
                           ),
                           Spacer(),
                           Icon(
-                            Icons.arrow_forward_ios,
+                            Icons.keyboard_arrow_right_rounded,
                             color: Colors.grey,
                           ),
                         ],
@@ -236,7 +228,7 @@ class ProfileParticipantPage extends StatelessWidget {
                           ),
                           Spacer(),
                           Icon(
-                            Icons.arrow_forward_ios,
+                            Icons.keyboard_arrow_right_rounded,
                             color: Colors.grey,
                           ),
                         ],
@@ -260,10 +252,10 @@ class ProfileParticipantPage extends StatelessWidget {
               // Kontainer untuk Merchandise
               Center(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     color: HexColor('F3F3F3'),
                     shadows: [
@@ -279,7 +271,7 @@ class ProfileParticipantPage extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          participantController.isExpanded.toggle();
+                          profileController.isMerchExpanded.toggle();
                         },
                         child: Container(
                           padding: EdgeInsets.all(8),
@@ -298,9 +290,10 @@ class ProfileParticipantPage extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Icon(
-                                    participantController.isExpanded.value
-                                        ? Icons.arrow_drop_up
-                                        : Icons.arrow_drop_down,
+                                    profileController.isMerchExpanded.value
+                                        ? Icons.keyboard_arrow_down_rounded
+                                        : Icons.keyboard_arrow_right_rounded,
+                                    color: Colors.grey,
                                   ),
                                 ],
                               ),
@@ -316,7 +309,7 @@ class ProfileParticipantPage extends StatelessWidget {
                                 ),
                                 width: 300,
                                 duration: Duration(milliseconds: 300),
-                                height: participantController.isExpanded.value
+                                height: profileController.isMerchExpanded.value
                                     ? 240
                                     : 0,
                                 curve: Curves.easeInOut,
@@ -345,38 +338,27 @@ class ProfileParticipantPage extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Polo Shirt (${participantController.tShirtSize.value})',
+                                            'Polo Shirt (${profileController.tShirtSize.value})',
                                             style: TextStyle(fontSize: 16),
                                           ),
-                                          FutureBuilder<String>(
-                                            future: FirebaseStorage.instance
-                                                .ref()
-                                                .child(
-                                                    'status/${participantController.status.value}.png')
-                                                .getDownloadURL(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              }
-                                              if (snapshot.hasError) {
-                                                return Icon(Icons.error);
-                                              }
-                                              return Row(
-                                                children: [
-                                                  Image.network(snapshot.data!,
-                                                      width: 24, height: 24),
-                                                  SizedBox(width: 8),
-                                                  Text(
-                                                    participantController
-                                                        .status.value,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
+                                          Obx(() {
+                                            // Gunakan Obx untuk mendengarkan perubahan nilai
+                                            if (profileController
+                                                .isLoadingStatusImage.value) {
+                                              return CircularProgressIndicator(); // Tampilkan indikator loading
+                                            }
+                                            if (profileController
+                                                .statusImageUrl.value.isEmpty) {
+                                              return Icon(Icons
+                                                  .error); // Tampilkan ikon error jika gagal
+                                            }
+                                            return Image.network(
+                                              profileController
+                                                  .statusImageUrl.value,
+                                              width: 24,
+                                              height: 24,
+                                            ); // Tampilkan gambar status
+                                          }),
                                         ],
                                       ),
                                       SizedBox(height: 8),
@@ -385,78 +367,26 @@ class ProfileParticipantPage extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'T-Shirt (${participantController.tShirtSize.value})',
+                                            'T-Shirt (${profileController.tShirtSize.value})',
                                             style: TextStyle(fontSize: 16),
                                           ),
-                                          FutureBuilder<String>(
-                                            future: FirebaseStorage.instance
-                                                .ref()
-                                                .child(
-                                                    'status/${participantController.status.value}.png')
-                                                .getDownloadURL(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              }
-                                              if (snapshot.hasError) {
-                                                return Icon(Icons.error);
-                                              }
-                                              return Row(
-                                                children: [
-                                                  Image.network(snapshot.data!,
-                                                      width: 24, height: 24),
-                                                  SizedBox(width: 8),
-                                                  Text(
-                                                    participantController
-                                                        .status.value,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Nametag',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                          FutureBuilder<String>(
-                                            future: FirebaseStorage.instance
-                                                .ref()
-                                                .child(
-                                                    'status/${participantController.status.value}.png')
-                                                .getDownloadURL(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              }
-                                              if (snapshot.hasError) {
-                                                return Icon(Icons.error);
-                                              }
-                                              return Row(
-                                                children: [
-                                                  Image.network(snapshot.data!,
-                                                      width: 24, height: 24),
-                                                  SizedBox(width: 8),
-                                                  Text(
-                                                    participantController
-                                                        .status.value,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
+                                          Obx(() {
+                                            if (profileController
+                                                .isLoadingStatusImage.value) {
+                                              return CircularProgressIndicator(); // Tampilkan indikator loading
+                                            }
+                                            if (profileController
+                                                .statusImageUrl.value.isEmpty) {
+                                              return Icon(Icons
+                                                  .error); // Tampilkan ikon error jika gagal
+                                            }
+                                            return Image.network(
+                                              profileController
+                                                  .statusImageUrl.value,
+                                              width: 24,
+                                              height: 24,
+                                            ); // Tampilkan gambar status
+                                          }),
                                         ],
                                       ),
                                       SizedBox(height: 8),
@@ -468,35 +398,23 @@ class ProfileParticipantPage extends StatelessWidget {
                                             'Luggage Tag',
                                             style: TextStyle(fontSize: 16),
                                           ),
-                                          FutureBuilder<String>(
-                                            future: FirebaseStorage.instance
-                                                .ref()
-                                                .child(
-                                                    'status/${participantController.status.value}.png')
-                                                .getDownloadURL(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              }
-                                              if (snapshot.hasError) {
-                                                return Icon(Icons.error);
-                                              }
-                                              return Row(
-                                                children: [
-                                                  Image.network(snapshot.data!,
-                                                      width: 24, height: 24),
-                                                  SizedBox(width: 8),
-                                                  Text(
-                                                    participantController
-                                                        .status.value,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
+                                          Obx(() {
+                                            if (profileController
+                                                .isLoadingStatusImage.value) {
+                                              return CircularProgressIndicator(); // Tampilkan indikator loading
+                                            }
+                                            if (profileController
+                                                .statusImageUrl.value.isEmpty) {
+                                              return Icon(Icons
+                                                  .error); // Tampilkan ikon error jika gagal
+                                            }
+                                            return Image.network(
+                                              profileController
+                                                  .statusImageUrl.value,
+                                              width: 24,
+                                              height: 24,
+                                            ); // Tampilkan gambar status
+                                          }),
                                         ],
                                       ),
                                       SizedBox(height: 8),
@@ -508,35 +426,23 @@ class ProfileParticipantPage extends StatelessWidget {
                                             'Jas Hujan',
                                             style: TextStyle(fontSize: 16),
                                           ),
-                                          FutureBuilder<String>(
-                                            future: FirebaseStorage.instance
-                                                .ref()
-                                                .child(
-                                                    'status/${participantController.status.value}.png')
-                                                .getDownloadURL(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              }
-                                              if (snapshot.hasError) {
-                                                return Icon(Icons.error);
-                                              }
-                                              return Row(
-                                                children: [
-                                                  Image.network(snapshot.data!,
-                                                      width: 24, height: 24),
-                                                  SizedBox(width: 8),
-                                                  Text(
-                                                    participantController
-                                                        .status.value,
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
+                                          Obx(() {
+                                            if (profileController
+                                                .isLoadingStatusImage.value) {
+                                              return CircularProgressIndicator(); // Tampilkan indikator loading
+                                            }
+                                            if (profileController
+                                                .statusImageUrl.value.isEmpty) {
+                                              return Icon(Icons
+                                                  .error); // Tampilkan ikon error jika gagal
+                                            }
+                                            return Image.network(
+                                              profileController
+                                                  .statusImageUrl.value,
+                                              width: 24,
+                                              height: 24,
+                                            ); // Tampilkan gambar status
+                                          }),
                                         ],
                                       ),
                                     ],
@@ -552,78 +458,101 @@ class ProfileParticipantPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        color: HexColor("#F3F3F3"),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4.0,
-                            spreadRadius: 2.0,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Souvenir",
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.grey,
-                            size: 20.0,
-                          ),
-                        ],
-                      ),
+              // Kontainer untuk Souvenir
+              Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        color: HexColor("#F3F3F3"),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4.0,
-                            spreadRadius: 2.0,
-                          ),
-                        ],
+                    color: HexColor('F3F3F3'),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 0),
+                        spreadRadius: 0,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Benefit",
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          profileController.isSouvenirExpanded.toggle();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          width: 300,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Souvenir',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Icon(
+                                    profileController.isSouvenirExpanded.value
+                                        ? Icons.keyboard_arrow_down_rounded
+                                        : Icons.keyboard_arrow_right_rounded,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              AnimatedContainer(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.grey[300]!,
+                                  ),
+                                ),
+                                width: 300,
+                                duration: Duration(milliseconds: 300),
+                                height:
+                                    profileController.isSouvenirExpanded.value
+                                        ? 240
+                                        : 0,
+                                curve: Curves.easeInOut,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Name',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Status',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.grey,
-                            size: 20.0,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -633,7 +562,10 @@ class ProfileParticipantPage extends StatelessWidget {
                 child: Container(
                   width: 140,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await profileController.logout();
+                      Navigator.of(context).pushReplacementNamed('/');
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: HexColor("#C63131"),
                       shape: RoundedRectangleBorder(

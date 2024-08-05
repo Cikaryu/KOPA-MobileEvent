@@ -63,6 +63,8 @@ class SignupController extends GetxController {
     required BuildContext context,
     required String role,
     required String status,
+    required Timestamp createdAt,
+    required Timestamp updatedAt,
   }) async {
     try {
       setLoading(true);
@@ -116,6 +118,8 @@ class SignupController extends GetxController {
         'qrCodeUrl': qrCodeUrl,
         'emailVerified': false,
         'role': role,
+        'createdAt': createdAt,
+        'updatedAt': updatedAt,
       });
 
       await FirebaseFirestore.instance
@@ -124,6 +128,8 @@ class SignupController extends GetxController {
           .set({
         'participantKit': {
           'status': status,
+          'createdAt': createdAt,
+          'updatedAt': updatedAt,
         },
       });
 

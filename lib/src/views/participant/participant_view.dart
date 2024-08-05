@@ -1,8 +1,8 @@
-import 'package:app_kopabali/src/views/participant/pages/event_page.dart';
-import 'package:app_kopabali/src/views/participant/pages/home_page.dart';
-import 'package:app_kopabali/src/views/participant/pages/participant_page.dart';
-import 'package:app_kopabali/src/views/participant/pages/profile_page.dart';
-import 'package:app_kopabali/src/views/participant/pages/service_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/event/event_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/home_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/attendance/attendance_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/profile/profile_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/service/service_page.dart';
 import 'package:app_kopabali/src/views/participant/participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +16,7 @@ class ParticipantView extends StatelessWidget {
   final List<Widget> _pages = [
     HomePageParticipant(),
     EventPage(),
-    ParticipantPage(),
+    AttendancePage(),
     ServicePage(),
     ProfileParticipantPage(),
   ];

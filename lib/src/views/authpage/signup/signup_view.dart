@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
@@ -485,6 +486,8 @@ class SignupView extends StatelessWidget {
                               context: context,
                               role: 'participant',
                               status: 'pending',
+                              createdAt: Timestamp.now(),
+                              updatedAt: Timestamp.now(),
                             );
                             // Call resetForm() after successful registration
                             signupController.resetForm();
