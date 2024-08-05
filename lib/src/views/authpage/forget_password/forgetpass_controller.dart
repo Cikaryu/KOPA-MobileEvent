@@ -19,11 +19,13 @@ class ForgetPasswordController extends GetxController {
   onGoBack() {
     Get.back();
   }
- void setLoading(bool value) {
+
+  void setLoading(bool value) {
     _isLoading = value;
     update();
   }
-    void _showErrorDialog(BuildContext context, String message) {
+
+  void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -43,7 +45,7 @@ class ForgetPasswordController extends GetxController {
     );
   }
 
-Future<void> resetPassword(String email, BuildContext context) async {
+  Future<void> resetPassword(String email, BuildContext context) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       showDialog(
@@ -57,6 +59,7 @@ Future<void> resetPassword(String email, BuildContext context) async {
                 child: Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacementNamed('/signin');
                 },
               ),
             ],

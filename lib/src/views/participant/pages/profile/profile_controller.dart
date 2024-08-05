@@ -1,11 +1,22 @@
+import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileController extends GetxController {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController areaController = TextEditingController();
+  final TextEditingController divisiController = TextEditingController();
+  final TextEditingController departmentController = TextEditingController();
+  final TextEditingController alamatController = TextEditingController();
+  final TextEditingController whatsappNumberController =
+      TextEditingController();
+  final TextEditingController numberKTPController = TextEditingController();
+
   bool canPop = true;
   var imageBytes = Rxn<Uint8List>();
   var userName = ''.obs;
@@ -14,11 +25,18 @@ class ProfileController extends GetxController {
   var qrCodeUrl = ''.obs;
   var tShirtSize = ''.obs;
   var poloSize = ''.obs;
-  var status = ''.obs; // Tambahkan field status
+  var status = ''.obs;
+  var userArea = ''.obs;
+  var userDepartment = ''.obs;
+  var userAlamat = ''.obs;
+  var userWhatsapp = ''.obs;
+  var numberKtp = ''.obs; // Tambahkan field status
   var isMerchExpanded = false.obs;
   var isSouvenirExpanded = false.obs;
   var isLoadingStatusImage = true.obs;
   var statusImageUrl = ''.obs; // Tambahkan field untuk URL gambar status
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
   @override
   void onReady() async {
@@ -69,6 +87,11 @@ class ProfileController extends GetxController {
         userName.value = doc['name'];
         userEmail.value = doc['email'];
         userDivisi.value = doc['divisi'];
+        userArea.value = doc['area'];
+        userDepartment.value = doc['department'];
+        userAlamat.value = doc['alamat'];
+        userWhatsapp.value = doc['nomorWhatsapp'];
+        numberKtp.value = doc['nomorKtp'];
         tShirtSize.value = doc['ukuranTShirt'];
         poloSize.value = doc['ukuranPoloShirt'];
       } else {
@@ -179,5 +202,88 @@ class ProfileController extends GetxController {
         );
       },
     );
+  }
+
+  void saveChanges() {
+    // Update profile controller dengan data baru
+    userName.value = nameController.text;
+    userArea.value = areaController.text;
+    userDivisi.value = divisiController.text;
+    userDepartment.value = departmentController.text;
+    userAlamat.value = alamatController.text;
+    userWhatsapp.value = whatsappNumberController.text;
+    numberKtp.value = numberKTPController.text;
+
+    // Panggil method untuk menyimpan perubahan ke Firestore
+    updateUserProfile();
+    Get.back(); // Kembali ke halaman sebelumnya setelah menyimpan
+  }
+
+  Future<void> updateUserProfile() async {
+    // Implementasikan logika untuk memperbarui data pengguna di Firestore
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'name': userName.value,
+        });
+        Get.snackbar('Success', 'Profile updated successfully');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to update profile: $e');
+    }
+  }
+    void setLoading(bool value) {
+    _isLoading = value;
+    update();
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> resetPassword(String email, BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Password Reset'),
+            content: Text('A password reset link has been sent to $email.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacementNamed('/signin');
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      _showErrorDialog(context, e.toString());
+    }
   }
 }

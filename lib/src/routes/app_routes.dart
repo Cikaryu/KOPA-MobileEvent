@@ -8,4 +8,6 @@ abstract class AppRoutes {
   static const testing = '/testing';
   static const participant = '/participant';
   static const committee = '/committee';
+  static const editProfile = '/editprofile';
+  static const changePassword = '/changepassword';
 }
