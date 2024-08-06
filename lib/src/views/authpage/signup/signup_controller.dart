@@ -127,9 +127,31 @@ class SignupController extends GetxController {
           .doc(userCredential.user!.uid)
           .set({
         'participantKit': {
-          'status': status,
-          'createdAt': createdAt,
-          'updatedAt': updatedAt,
+          'merchandise':{
+            'poloShirt':{
+              'status': status,
+              'createdAt': createdAt,
+              'updatedAt': updatedAt,
+            },
+            'tShirt':{
+              'status': status,
+              'createdAt': createdAt,
+              'updatedAt': updatedAt,
+          },
+          'lugageTag':{
+            'status': status,
+            'createdAt': createdAt,
+            'updatedAt': updatedAt,
+          },
+          'jasHujan': {
+            'status': status,
+            'createdAt': createdAt,
+            'updatedAt': updatedAt,
+          },
+        },
+        'Souvenir' : {
+          
+        }
         },
       });
 

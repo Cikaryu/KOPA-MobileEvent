@@ -1,4 +1,3 @@
-import 'package:app_kopabali/src/views/participant/pages/event/event_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/home_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attendance_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_page.dart';
@@ -15,7 +14,6 @@ class ParticipantView extends StatelessWidget {
 
   final List<Widget> _pages = [
     HomePageParticipant(),
-    EventPage(),
     AttendancePage(),
     ServicePage(),
     ProfileParticipantPage(),
@@ -41,10 +39,6 @@ class ParticipantView extends StatelessWidget {
                 backgroundColor: HexColor('F3F3F3'),
                 icon: Icon(Icons.home),
                 label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.event),
-                label: 'Event',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),

@@ -1,6 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileParticipantPage extends StatelessWidget {
   const ProfileParticipantPage({super.key});
@@ -74,23 +73,23 @@ class ProfileParticipantPage extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        profileController.userName.value,
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        profileController.userEmail.value,
-                                        style: TextStyle(fontSize: 16),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        profileController.userDivisi.value,
-                                        style: TextStyle(fontSize: 16),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      Obx(() => Text(
+                                            profileController.userName.value,
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                      Obx(() => Text(
+                                            profileController.userEmail.value,
+                                            style: TextStyle(fontSize: 16),
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                      Obx(() => Text(
+                                            profileController.userDivisi.value,
+                                            style: TextStyle(fontSize: 16),
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
                                     ],
                                   ),
                                 ),
@@ -141,6 +140,7 @@ class ProfileParticipantPage extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Get.toNamed('/editprofile');
+                        profileController.resetForm();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(

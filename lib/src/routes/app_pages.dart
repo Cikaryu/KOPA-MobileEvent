@@ -5,6 +5,7 @@ import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/change_password_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/profile/profile_page.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/testing/testing_view.dart';
 
@@ -40,5 +41,8 @@ abstract class AppPages {
                 GetPage(
       name: AppRoutes.changePassword, 
       page: () => ChangePasswordPage()),
+                      GetPage(
+      name: AppRoutes.profile, 
+      page: () => ProfileParticipantPage()),
   ];
 }

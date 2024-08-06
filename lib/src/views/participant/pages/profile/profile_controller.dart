@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -18,7 +19,6 @@ class ProfileController extends GetxController {
   final TextEditingController numberKTPController = TextEditingController();
 
   bool canPop = true;
-  var imageBytes = Rxn<Uint8List>();
   var userName = ''.obs;
   var userEmail = ''.obs;
   var userDivisi = ''.obs;
@@ -35,8 +35,52 @@ class ProfileController extends GetxController {
   var isSouvenirExpanded = false.obs;
   var isLoadingStatusImage = true.obs;
   var statusImageUrl = ''.obs; // Tambahkan field untuk URL gambar status
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  var selfieImage = Rxn<File>();
+  var imageUrl = ''.obs;
+  var imageBytes = Rxn<Uint8List>();
+  var isLoading = false.obs;
+
+  // Call this to load data initially
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUserData();
+  }
+
+  void fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      if (userDoc.exists) {
+        var data = userDoc.data() as Map<String, dynamic>;
+        userName.value = data['name'] ?? '';
+        userEmail.value = data['email'] ?? '';
+        userDivisi.value = data['divisi'] ?? '';
+        // Get the profile image URL from Firestore
+        String imageUrl = data['profileImageUrl'] ?? '';
+        if (imageUrl.isNotEmpty) {
+          var response = await FirebaseStorage.instance.ref(imageUrl).getData();
+          if (response != null) {
+            imageBytes.value = response;
+          }
+        }
+      }
+    }
+  }
+
+  void setLoading(bool value) {
+    isLoading.value = value;
+  }
+
+  void setSelfieImage(File image) {
+    selfieImage.value = image;
+    image.readAsBytes().then((bytes) {
+      imageBytes.value = bytes;
+    });
+  }
 
   @override
   void onReady() async {
@@ -204,41 +248,139 @@ class ProfileController extends GetxController {
     );
   }
 
-  void saveChanges() {
-    // Update profile controller dengan data baru
-    userName.value = nameController.text;
-    userArea.value = areaController.text;
-    userDivisi.value = divisiController.text;
-    userDepartment.value = departmentController.text;
-    userAlamat.value = alamatController.text;
-    userWhatsapp.value = whatsappNumberController.text;
-    numberKtp.value = numberKTPController.text;
+  Future<String> uploadImageToStorage(File image) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
 
-    // Panggil method untuk menyimpan perubahan ke Firestore
-    updateUserProfile();
-    Get.back(); // Kembali ke halaman sebelumnya setelah menyimpan
+    try {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('users/participant/${user.uid}/selfie/selfie.jpg');
+      final uploadTask = ref.putFile(image);
+      final snapshot = await uploadTask;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      throw Exception('Error uploading image: $e');
+    }
   }
 
-  Future<void> updateUserProfile() async {
-    // Implementasikan logika untuk memperbarui data pengguna di Firestore
+  Future<void> updateProfileImageUrl(String imageUrl) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
+
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({'selfieUrl': imageUrl});
+    } catch (e) {
+      throw Exception('Error updating profile image URL: $e');
+    }
+  }
+
+  Future<void> saveChanges() async {
+    try {
+      setLoading(true);
+      await Future.delayed(Duration(milliseconds: 500));
+
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) return; // Pastikan pengguna terautentikasi
+
+      // Mengambil data baru dari kontroler
+      String name = nameController.text.trim();
+      String area = areaController.text.trim();
+      String divisi = divisiController.text.trim();
+      String department = departmentController.text.trim();
+      String alamat = alamatController.text.trim();
+      String whatsappNumber = whatsappNumberController.text.trim();
+      String noKTP = numberKTPController.text.trim();
+
+      // Buat map untuk data yang akan diupdate
+      Map<String, dynamic> updateData = {};
+
+      // Tambahkan field hanya jika tidak kosong
+      if (name.isNotEmpty) updateData['name'] = name;
+      if (area.isNotEmpty) updateData['area'] = area;
+      if (divisi.isNotEmpty) updateData['divisi'] = divisi;
+      if (department.isNotEmpty) updateData['department'] = department;
+      if (alamat.isNotEmpty) updateData['alamat'] = alamat;
+      if (whatsappNumber.isNotEmpty) {
+        updateData['nomorWhatsapp'] = whatsappNumber;
+      }
+      if (noKTP.isNotEmpty) updateData['noKTP'] = noKTP;
+
+      // Update gambar jika ada
+      if (imageBytes.value != null) {
+        // Gantilah path sesuai kebutuhan
+        String imagePath = '/users/participant/${user.uid}/selfie/selfie.jpg';
+        UploadTask uploadTask =
+            FirebaseStorage.instance.ref(imagePath).putData(imageBytes.value!);
+        TaskSnapshot snapshot = await uploadTask;
+        String imageUrl = await snapshot.ref.getDownloadURL();
+
+        // Tambahkan URL gambar ke data yang akan diupdate
+        updateData['imageUrl'] =
+            imageUrl; // Pastikan field ini ada di Firestore
+      }
+
+      // Pastikan setidaknya ada satu field yang akan diupdate
+      if (updateData.isNotEmpty) {
+        // Update data pengguna di Firestore
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
-            .update({
-          'name': userName.value,
-        });
-        Get.snackbar('Success', 'Profile updated successfully');
+            .update(updateData);
+      } else {
+        debugPrint('Tidak ada data yang diperbarui');
       }
+
+      // Reset form setelah berhasil menyimpan
+      fetchUserData();
+      resetForm();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update profile: $e');
+      debugPrint('Error saving changes: $e');
+      // Anda bisa menampilkan dialog kesalahan kepada pengguna jika perlu
+    } finally {
+      setLoading(false);
+      Get.back();
     }
   }
-    void setLoading(bool value) {
-    _isLoading = value;
-    update();
+
+  void resetForm() {
+    nameController.text = userName.value;
+    areaController.text = userArea.value;
+    divisiController.text = userDivisi.value;
+    departmentController.text = userDepartment.value;
+    alamatController.text = userAlamat.value;
+    whatsappNumberController.text = userWhatsapp.value;
+    numberKTPController.text = numberKtp.value;
+  }
+
+  Future<void> fetchData() async {
+    try {
+      // Mendapatkan pengguna yang sedang terautentikasi
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        // Ambil data dari Firestore berdasarkan user ID
+        DocumentSnapshot snapshot = await FirebaseFirestore.instance
+            .collection('users') // Ganti dengan nama koleksi Anda
+            .doc(currentUser.uid) // ID pengguna saat ini
+            .get();
+
+        // Update nilai di controller
+        userName.value = snapshot['name'];
+        userEmail.value = snapshot['email'];
+        userDivisi.value = snapshot['divisi'];
+        // Update nilai lainnya sesuai kebutuhan
+      } else {
+        print("No user is currently signed in.");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
   }
 
   void _showErrorDialog(BuildContext context, String message) {
@@ -285,5 +427,60 @@ class ProfileController extends GetxController {
     } catch (e) {
       _showErrorDialog(context, e.toString());
     }
+  }
+
+  void pickImage(
+      ImageSource source, ProfileController profileController) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      profileController.setSelfieImage(File(pickedFile.path));
+    }
+  }
+
+  void showImageSourceDialog(
+      BuildContext context, ProfileController profileController) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Choose Image Source'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Icon(Icons.camera_alt),
+                      SizedBox(width: 10),
+                      Text('Camera'),
+                    ],
+                  ),
+                  onTap: () {
+                    pickImage(ImageSource.camera, profileController);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Icon(Icons.image),
+                      SizedBox(width: 10),
+                      Text('Gallery'),
+                    ],
+                  ),
+                  onTap: () {
+                    pickImage(ImageSource.gallery, profileController);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
