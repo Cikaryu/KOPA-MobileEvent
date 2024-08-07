@@ -279,7 +279,7 @@ class ProfileParticipantPage extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           profileController.isMerchExpanded.toggle();
                         },
