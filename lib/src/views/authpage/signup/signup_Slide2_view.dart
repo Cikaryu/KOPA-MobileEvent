@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';
+import 'dart:io'; // Add this line to import the 'dart:io' package
+
+import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_slide3_view.dart';
 
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -16,7 +20,7 @@ class SignupSlide2View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Uncomment the following line if you need to use the SignupController.
-    // final SignupController signupController = Get.put(SignupController());
+    final SignupController signupController = Get.put(SignupController());
 
     return GestureDetector(
       onTap: () {
@@ -25,10 +29,8 @@ class SignupSlide2View extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('Your Profile'),
           backgroundColor: Colors.white,
           elevation: 0,
-          centerTitle: true,
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -37,12 +39,18 @@ class SignupSlide2View extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Text(
+                  "Your Profile",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                ),
                 SizedBox(height: 20),
                 Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
+                    prefixIcon:
+                        Icon(Icons.person_2_rounded, color: Colors.grey),
                     hintText: 'Your name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -58,6 +66,8 @@ class SignupSlide2View extends StatelessWidget {
                 TextFormField(
                   controller: _areaController,
                   decoration: InputDecoration(
+                    prefixIcon:
+                        Icon(Icons.location_on_sharp, color: Colors.grey),
                     hintText: 'Your Area',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -135,7 +145,7 @@ class SignupSlide2View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _nomorWhatsappController,
+                  controller: _nomorKtpController,
                   decoration: InputDecoration(
                     hintText: 'Your KTP number',
                     border: OutlineInputBorder(
@@ -146,80 +156,210 @@ class SignupSlide2View extends StatelessWidget {
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your KTP number' : null,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 16),
                 Text('Profile Picture',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 5),
-                _buildImageUploadWidget(context, 'Upload your Profile Picture'),
-                SizedBox(height: 10),
-                Text('KTP Number',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 5),
-                _buildImageUploadWidget(context, 'Upload your KTP Number'),
-                SizedBox(height: 20),
+                    style: TextStyle(
+                        color: Colors.grey[800],
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
+                SizedBox(height: 12),
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        // Implement the submit functionality
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
                     ),
-                    child:
-                        Text('Submit', style: TextStyle(color: Colors.white)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Upload your profile picture',
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 14,
+                            )),
+                        SizedBox(height: 16),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: ValueListenableBuilder<File?>(
+                            valueListenable: signupController.selfieImage,
+                            builder: (context, value, child) {
+                              return Container(
+                                width: Get.width,
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: value != null
+                                      ? DecorationImage(
+                                          image: FileImage(value),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : null,
+                                ),
+                                child: value == null
+                                    ? Icon(Icons.person,
+                                        size: 100, color: Colors.grey[500])
+                                    : null,
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 106),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              signupController.showImageSourceDialog(
+                                context,
+                                'selfie',
+                                signupController,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.camera_alt, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                  "Retake",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+                SizedBox(height: 16),
+                Text('KTP Picture',
+                    style: TextStyle(
+                        color: Colors.grey[800],
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
+                SizedBox(height: 12),
+                //assaddasasdasddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Upload your profile picture',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          )),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey[300]!),
+                        ),
+                        child: ValueListenableBuilder<File?>(
+                          valueListenable: signupController.ktpImage,
+                          builder: (context, value, child) {
+                            return Container(
+                              width: Get.width,
+                              height: 160,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(12),
+                                image: value != null
+                                    ? DecorationImage(
+                                        image: FileImage(value),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : null,
+                              ),
+                              child: value == null
+                                  ? Icon(Icons.person,
+                                      size: 100, color: Colors.grey[500])
+                                  : null,
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 106),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            signupController.showImageSourceDialog(
+                              context,
+                              'ktp',
+                              signupController,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.camera_alt, color: Colors.white),
+                              SizedBox(width: 5),
+                              Text(
+                                "Retake",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: Container(
+                    width: 130,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => SignupSlide3View()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        "Submit",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 26),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildImageUploadWidget(BuildContext context, String labelText) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Container(
-            height: 120,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Icon(Icons.image, size: 80, color: Colors.grey),
-            ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton.icon(
-            onPressed: () {
-              // Implement the functionality to pick image
-            },
-            icon: Icon(Icons.camera_alt, color: Colors.white),
-            label: Text('Retake', style: TextStyle(color: Colors.white)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
