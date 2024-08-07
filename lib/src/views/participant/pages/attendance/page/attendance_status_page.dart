@@ -1,7 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
-import 'package:app_kopabali/src/views/participant/pages/attendance/attendance_page.dart';
-import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AttendanceStatusPage extends StatelessWidget {
