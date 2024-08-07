@@ -2,8 +2,10 @@ part of 'app_pages.dart';
 
 abstract class AppRoutes {
   static const initialRoute = '/';
+  static const authpage = '/authpage';
   static const signin = '/signin';
-  static const signup = '/signup'; 
+  static const signup = '/signup';
+  static const signup2 = '/signup2'; 
   static const forgetpassword = '/forgetauth';
   static const testing = '/testing';
   static const participant = '/participant';
