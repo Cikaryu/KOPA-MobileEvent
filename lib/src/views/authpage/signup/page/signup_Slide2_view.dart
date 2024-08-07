@@ -2,7 +2,6 @@ import 'dart:io'; // Add this line to import the 'dart:io' package
 
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_slide3_view.dart';
 
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -336,10 +335,7 @@ class SignupSlide2View extends StatelessWidget {
                     width: 130,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => SignupSlide3View()),
-                        );
+
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,

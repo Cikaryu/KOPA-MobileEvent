@@ -1,10 +1,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/authpage_view.dart';
+import 'package:app_kopabali/src/views/landingpage/authpage_view.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_slide2_view.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_slide3_view.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_slide4_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/change_password_page.dart';
@@ -28,18 +25,6 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.signup,
       page: () => SignupView(),
-    ),
-    GetPage(
-      name: AppRoutes.signup2,
-      page: () => SignupSlide2View(),
-    ),
-    GetPage(
-      name: AppRoutes.signup3,
-      page: () => SignupSlide3View(),
-    ),
-    GetPage(
-      name: AppRoutes.signup4,
-      page: () => SignupSlide4View(),
     ),
     GetPage(
       name: AppRoutes.forgetpassword,

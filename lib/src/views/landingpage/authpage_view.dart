@@ -1,5 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/authpage_controller.dart';
+import 'package:app_kopabali/src/views/landingpage/authpage_controller.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';

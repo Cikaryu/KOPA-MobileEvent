@@ -2,7 +2,6 @@ import 'dart:io'; // Add this line to import the 'dart:io' package
 
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_slide4_view.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SignupSlide3View extends StatelessWidget {
@@ -125,10 +124,7 @@ class SignupSlide3View extends StatelessWidget {
                     width: 130,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => SignupSlide4View()),
-                        );
+
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
