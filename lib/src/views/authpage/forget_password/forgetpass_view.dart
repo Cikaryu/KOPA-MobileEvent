@@ -9,8 +9,8 @@ class ForgotPasswordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final ForgetPasswordController forgetpasswordController =
-      Get.put(ForgetPasswordController());
+    final ForgetPasswordController forgetpasswordController =
+        Get.put(ForgetPasswordController());
 
     return Scaffold(
       appBar: AppBar(
@@ -19,25 +19,67 @@ class ForgotPasswordView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
+            Center(
+              child: Text(
+                'Please enter your email address to\n receive a verification',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Text('Email'),
+            TextFormField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                hintText: 'Please enter your email address',
+                prefixIcon: Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
+              validator: (value) {
+                String pattern =
+                    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                RegExp regex = RegExp(pattern);
+                if (value!.isEmpty) {
+                  return 'Please enter your email';
+                } else if (!regex.hasMatch(value) || !value.endsWith('.com')) {
+                  return 'Please enter a valid email.';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              
-              onPressed: () async {
-                if (emailController.text.isEmpty) {
-                  _showErrorDialog(context, 'Please enter your email.');
-                } else {
-                  await forgetpasswordController.resetPassword(
-                      emailController.text, context);
-                }
-              },
-              child: forgetpasswordController.isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Reset Password'),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: HexColor("E97717"),
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 120),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () async {
+                  if (emailController.text.isEmpty) {
+                    _showErrorDialog(context, 'Please enter your email.');
+                  } else {
+                    await forgetpasswordController.resetPassword(
+                        emailController.text, context);
+                  }
+                },
+                child: forgetpasswordController.isLoading
+                    ? CircularProgressIndicator()
+                    : Text(
+                        'Reset Password',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+              ),
             ),
           ],
         ),

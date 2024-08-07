@@ -8,8 +8,8 @@ class ChangePasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final ProfileController changePasswordController =
-      Get.put(ProfileController());
+    final ProfileController changePasswordController =
+        Get.put(ProfileController());
 
     return Scaffold(
       appBar: AppBar(
@@ -17,29 +17,34 @@ class ChangePasswordPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              
-              onPressed: () async {
-                if (emailController.text.isEmpty) {
-                  _showErrorDialog(context, 'Please enter your email.');
-                } else {
-                  await changePasswordController.resetPassword(
-                      emailController.text, context);
-                }
-              },
-              child: changePasswordController.isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Reset Password'),
-            ),
-          ],
-        ),
+        child: Obx(() {
+          return Column(
+            children: [
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  if (emailController.text.isEmpty) {
+                    _showErrorDialog(context, 'Please enter your email.');
+                  } else {
+                    await changePasswordController.resetPassword(
+                      emailController.text,
+                      context,
+                    );
+                  }
+                },
+                child: changePasswordController.isLoading.value
+                    ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                    : Text('Reset Password'),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }

@@ -26,6 +26,7 @@ class SignupController extends GetxController {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  bool showPassword = false;
 
   var selfieImage = ValueNotifier<File?>(null);
   var ktpImage = ValueNotifier<File?>(null);
@@ -33,6 +34,11 @@ class SignupController extends GetxController {
 
   void setSelfieImage(File? image) {
     selfieImage.value = image;
+    update();
+  }
+
+  togglePasswordVisibility() {
+    showPassword = !showPassword;
     update();
   }
 
@@ -49,17 +55,6 @@ class SignupController extends GetxController {
   Future<void> registerUser({
     required String email,
     required String password,
-    required String name,
-    required String area,
-    required String divisi,
-    required String department,
-    required String alamat,
-    required String nomorWhatsapp,
-    required String nomorKtp,
-    required String ukuranTShirt,
-    required String ukuranPoloShirt,
-    required String tipeEWallet,
-    required String nomorEWallet,
     required BuildContext context,
     required String role,
     required String status,
@@ -102,17 +97,6 @@ class SignupController extends GetxController {
           .doc(userCredential.user!.uid)
           .set({
         'email': email,
-        'name': name,
-        'area': area,
-        'divisi': divisi,
-        'department': department,
-        'alamat': alamat,
-        'nomorWhatsapp': nomorWhatsapp,
-        'nomorKtp': nomorKtp,
-        'ukuranTShirt': ukuranTShirt,
-        'ukuranPoloShirt': ukuranPoloShirt,
-        'tipeEWallet': tipeEWallet,
-        'nomorEWallet': nomorEWallet,
         'selfieUrl': selfieUrl,
         'ktpUrl': ktpUrl,
         'qrCodeUrl': qrCodeUrl,
@@ -127,9 +111,29 @@ class SignupController extends GetxController {
           .doc(userCredential.user!.uid)
           .set({
         'participantKit': {
-          'status': status,
-          'createdAt': createdAt,
-          'updatedAt': updatedAt,
+          'merchandise': {
+            'poloShirt': {
+              'status': status,
+              'createdAt': createdAt,
+              'updatedAt': updatedAt,
+            },
+            'tShirt': {
+              'status': status,
+              'createdAt': createdAt,
+              'updatedAt': updatedAt,
+            },
+            'lugageTag': {
+              'status': status,
+              'createdAt': createdAt,
+              'updatedAt': updatedAt,
+            },
+            'jasHujan': {
+              'status': status,
+              'createdAt': createdAt,
+              'updatedAt': updatedAt,
+            },
+          },
+          'Souvenir': {}
         },
       });
 

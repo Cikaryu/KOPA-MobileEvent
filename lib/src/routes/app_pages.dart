@@ -1,10 +1,13 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/authpage_view.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_Slide2_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/change_password_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/profile/profile_page.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/testing/testing_view.dart';
 
@@ -12,6 +15,10 @@ part 'app_routes.dart';
 
 abstract class AppPages {
   static final routes = [
+    GetPage(
+      name: AppRoutes.authpage,
+      page: () => AuthpageView(),
+    ),
     GetPage(
       name: AppRoutes.signin,
       page: () => SigninView(),
@@ -21,6 +28,10 @@ abstract class AppPages {
       page: () => SignupView(),
     ),
     GetPage(
+      name: AppRoutes.signup2,
+      page: () => SignupSlide2View(),
+    ),
+    GetPage(
       name: AppRoutes.forgetpassword,
       page: () => ForgotPasswordView(),
     ),
@@ -28,17 +39,10 @@ abstract class AppPages {
       name: AppRoutes.testing,
       page: () => const TestingView(),
     ),
-    GetPage(
-      name: AppRoutes.participant, 
-      page: () => ParticipantView()),
-    GetPage(
-      name: AppRoutes.committee, 
-      page: () => CommitteeView()),
-          GetPage(
-      name: AppRoutes.editProfile, 
-      page: () => EditProfileView()),
-                GetPage(
-      name: AppRoutes.changePassword, 
-      page: () => ChangePasswordPage()),
+    GetPage(name: AppRoutes.participant, page: () => ParticipantView()),
+    GetPage(name: AppRoutes.committee, page: () => CommitteeView()),
+    GetPage(name: AppRoutes.editProfile, page: () => EditProfileView()),
+    GetPage(name: AppRoutes.changePassword, page: () => ChangePasswordPage()),
+    GetPage(name: AppRoutes.profile, page: () => ProfileParticipantPage()),
   ];
 }
