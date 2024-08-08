@@ -48,7 +48,7 @@ class ParticipantView extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.people),
-                  label: 'Participant',
+                  label: 'Attendance',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.settings),
