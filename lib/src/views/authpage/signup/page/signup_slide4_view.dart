@@ -1,14 +1,15 @@
-import 'dart:io'; // Add this line to import the 'dart:io' package
-
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 
 class SignupSlide4View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _tipeEWalletController = TextEditingController();
-  final TextEditingController _nomorEWalletController = TextEditingController();
+  final TextEditingController _eWalletTypeController = TextEditingController();
+  final TextEditingController _eWalletNumberController =
+      TextEditingController();
 
   SignupSlide4View({super.key});
 
@@ -72,7 +73,7 @@ class SignupSlide4View extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _tipeEWalletController.text = newValue!;
+                    _eWalletTypeController.text = newValue!;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a type' : null,
@@ -82,7 +83,7 @@ class SignupSlide4View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _nomorEWalletController,
+                  controller: _eWalletNumberController,
                   decoration: InputDecoration(
                     hintText: 'Your E-Wallet Number',
                     border: OutlineInputBorder(
@@ -101,7 +102,39 @@ class SignupSlide4View extends StatelessWidget {
                   child: Container(
                     width: 130,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          // Collect all the data from controllers
+                          signupController.setLoading(true);
+                          try {
+                            await signupController.registerUser(
+                              email: signupController.emailController.text,
+                              password: signupController.passwordController.text,
+                              name: signupController.nameController.text,
+                              area: signupController.areaController.text,
+                              division: signupController.divisiController.text,
+                              department: signupController.departmentController.text,
+                              alamat: signupController.alamatController.text,
+                              whatsappNumber: signupController.nomorWhatsappController.text,
+                              ktpNumber: signupController.nomorKtpController.text,
+                              tShirtSize: signupController.ukuranTShirtController.text,
+                              poloShirtSize: signupController.ukuranPoloShirtController.text,
+                              eWalletType: signupController.tipeEWalletController.text,
+                              eWalletNumber:signupController.nomorEWalletController.text,
+                              context: context,
+                              role: 'participant',
+                              status: 'pending',
+                              createdAt: Timestamp.now(),
+                              updatedAt: Timestamp.now(),
+                            );
+                            signupController.resetForm();
+                          } catch (e) {
+                            // Handle registration error
+                          } finally {
+                            signupController.setLoading(false);
+                          }
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                         shape: RoundedRectangleBorder(

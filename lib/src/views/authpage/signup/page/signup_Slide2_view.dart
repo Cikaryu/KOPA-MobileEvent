@@ -1,7 +1,9 @@
 import 'dart:io'; // Add this line to import the 'dart:io' package
 
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide3_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -10,8 +12,7 @@ class SignupSlide2View extends StatelessWidget {
   final TextEditingController _divisiController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _nomorWhatsappController =
-      TextEditingController();
+  final TextEditingController _nomorWhatsappController = TextEditingController();
   final TextEditingController _nomorKtpController = TextEditingController();
 
   SignupSlide2View({super.key});
@@ -28,6 +29,7 @@ class SignupSlide2View extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           elevation: 0,
         ),
@@ -250,7 +252,6 @@ class SignupSlide2View extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
                 SizedBox(height: 12),
-                //assaddasasdasddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -335,7 +336,27 @@ class SignupSlide2View extends StatelessWidget {
                     width: 130,
                     child: ElevatedButton(
                       onPressed: () {
-
+                        FocusScope.of(context).unfocus();
+                        if (_formKey.currentState!.validate()) {
+                          signupController.nameController.text =
+                              _nameController.text;
+                          signupController.areaController.text =
+                              _areaController.text;
+                          signupController.divisiController.text =
+                               _divisiController.text;
+                          signupController.departmentController.text =
+                              _departmentController.text;
+                          signupController.alamatController.text =
+                               _alamatController.text;
+                          signupController.nomorWhatsappController.text =
+                               _nomorWhatsappController.text;
+                          signupController.nomorKtpController.text =
+                               _nomorKtpController.text;
+                          signupController.pageController.nextPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,

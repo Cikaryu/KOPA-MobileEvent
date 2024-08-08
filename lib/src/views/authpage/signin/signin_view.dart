@@ -22,7 +22,7 @@ class SigninView extends StatelessWidget {
       child: GetBuilder<SigninController>(
         init: SigninController(),
         builder: (controller) => Scaffold(
-          backgroundColor: Color(0xFFF5F5F5),
+          backgroundColor: Colors.white,
           body: Stack(
             children: [
               Container(
@@ -44,11 +44,9 @@ class SigninView extends StatelessWidget {
                         decoration: InputDecoration(
                           hintText: 'Email',
                           prefixIcon: Icon(Icons.person),
-                          filled: true,
-                          fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
+                            borderSide: BorderSide(color: Colors.grey),
                           ),
                         ),
                       ),
@@ -67,11 +65,9 @@ class SigninView extends StatelessWidget {
                               controller.togglePasswordVisibility();
                             },
                           ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
+                            borderSide: BorderSide(color: Colors.grey),
                           ),
                         ),
                       ),

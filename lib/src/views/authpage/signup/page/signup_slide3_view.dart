@@ -1,14 +1,14 @@
-import 'dart:io'; // Add this line to import the 'dart:io' package
 
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SignupSlide3View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _ukuranTShirtController = TextEditingController();
-  final TextEditingController _ukuranPoloShirtController =
-      TextEditingController();
+  final TextEditingController _ukuranPoloShirtController = TextEditingController();
 
   SignupSlide3View({super.key});
 
@@ -124,7 +124,15 @@ class SignupSlide3View extends StatelessWidget {
                     width: 130,
                     child: ElevatedButton(
                       onPressed: () {
-
+                        FocusScope.of(context).unfocus();
+                        if (_formKey.currentState!.validate()) {
+                          signupController.ukuranTShirtController.text =
+                              _ukuranTShirtController.text;
+                          signupController.ukuranPoloShirtController.text =
+                              _ukuranPoloShirtController.text;
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SignupSlide4View()));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,

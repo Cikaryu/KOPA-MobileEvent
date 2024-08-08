@@ -58,7 +58,7 @@ class ProfileController extends GetxController {
         var data = userDoc.data() as Map<String, dynamic>;
         userName.value = data['name'] ?? '';
         userEmail.value = data['email'] ?? '';
-        userDivisi.value = data['divisi'] ?? '';
+        userDivisi.value = data['division'] ?? '';
         // Get the profile image URL from Firestore
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {

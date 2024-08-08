@@ -1,5 +1,8 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:flutter/material.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide1_view.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide2_view.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide3_view.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +13,7 @@ import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class SignupController extends GetxController {
+  PageController pageController = PageController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -51,10 +55,34 @@ class SignupController extends GetxController {
     _isLoading = value;
     update();
   }
-
-  Future<void> registerUser({
+Widget pageItemBuilder(context, position) {
+    switch (position) {
+      case 0:
+        return SignupSlide1View();
+      case 1:
+        return SignupSlide2View();
+      case 2:
+        return SignupSlide3View();
+      case 3:
+        return SignupSlide4View();
+      default:
+        return Container();
+    }
+  }
+Future<void> registerUser({
     required String email,
     required String password,
+    required String name,
+    required String area,
+    required String division,
+    required String department,
+    required String alamat,
+    required String whatsappNumber,
+    required String ktpNumber,
+    required String tShirtSize,
+    required String poloShirtSize,
+    required String eWalletType,
+    required String eWalletNumber,
     required BuildContext context,
     required String role,
     required String status,
@@ -97,8 +125,19 @@ class SignupController extends GetxController {
           .doc(userCredential.user!.uid)
           .set({
         'email': email,
+        'name': name,
+        'area': area,
+        'division': division,
+        'department': department,
+        'alamat': alamat,
+        'whatsappNumber': whatsappNumber,
+        'ktpNumber': ktpNumber,
         'selfieUrl': selfieUrl,
         'ktpUrl': ktpUrl,
+        'tShirtSize': tShirtSize,
+        'poloShirtSize': poloShirtSize,
+        'eWalletType': eWalletType,
+        'eWalletNumber': eWalletNumber,
         'qrCodeUrl': qrCodeUrl,
         'emailVerified': false,
         'role': role,
@@ -114,29 +153,113 @@ class SignupController extends GetxController {
           'merchandise': {
             'poloShirt': {
               'status': status,
-              'createdAt': createdAt,
               'updatedAt': updatedAt,
             },
             'tShirt': {
               'status': status,
-              'createdAt': createdAt,
               'updatedAt': updatedAt,
             },
             'lugageTag': {
               'status': status,
-              'createdAt': createdAt,
               'updatedAt': updatedAt,
             },
             'jasHujan': {
               'status': status,
-              'createdAt': createdAt,
               'updatedAt': updatedAt,
             },
           },
-          'Souvenir': {}
-        },
+          'souvenir': {
+            'gelangTridatu': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'selendangUdeng': {
+              'status': status,
+              'updatedAt': updatedAt,
+            }
+          },
+          'benefit': {
+            'voucherBelanja': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'voucherEwallet': {
+              'status': status,
+              'updatedAt': updatedAt,
+            }
+          }
+        }
       });
 
+      await FirebaseFirestore.instance
+          .collection('attendance')
+          .doc(userCredential.user!.uid)
+          .set({
+        'attendance': {
+          'day1': {
+            'departure': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'arrival': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'csr': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'lunch': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'checkInHotel': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'welcomeDinner': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'arrivedHotel': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+          },
+          'day2': {
+            'teamBuilding': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'lunch': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'galaDinner': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+          },
+          'day3': {
+            'roomCheckOut': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'luggageDrop': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'departure': {
+              'status': status,
+              'updatedAt': updatedAt,
+            },
+            'arrivalJakarta': {
+              'status': status,
+              'updatedAt': updatedAt,
+            }
+          }
+        },
+      });
       // Send email verification
       await userCredential.user!.sendEmailVerification();
 
@@ -194,7 +317,9 @@ class SignupController extends GetxController {
       setLoading(false);
     }
   }
+  
 
+  
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear(); // Clear preferences
