@@ -49,6 +49,7 @@ class ForgetPasswordController extends GetxController {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(

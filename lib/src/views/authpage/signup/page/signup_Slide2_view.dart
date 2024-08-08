@@ -1,19 +1,18 @@
 import 'dart:io'; // Add this line to import the 'dart:io' package
-
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide3_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _areaController = TextEditingController();
-  final TextEditingController _divisiController = TextEditingController();
+  final TextEditingController _divisionController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
-  final TextEditingController _alamatController = TextEditingController();
-  final TextEditingController _nomorWhatsappController = TextEditingController();
-  final TextEditingController _nomorKtpController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _whatsappNumberController =
+      TextEditingController();
+  final TextEditingController _ktpNumberController = TextEditingController();
 
   SignupSlide2View({super.key});
 
@@ -29,7 +28,6 @@ class SignupSlide2View extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           elevation: 0,
         ),
@@ -50,8 +48,6 @@ class SignupSlide2View extends StatelessWidget {
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.person_2_rounded, color: Colors.grey),
                     hintText: 'Your name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -60,6 +56,10 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your name' : null,
+                      inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(
+                        r'[a-zA-Z0-9,. ]')),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Text('Area', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -67,8 +67,6 @@ class SignupSlide2View extends StatelessWidget {
                 TextFormField(
                   controller: _areaController,
                   decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.location_on_sharp, color: Colors.grey),
                     hintText: 'Your Area',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -77,12 +75,16 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your area' : null,
+                      inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(
+                        r'[a-zA-Z0-9,. ]')),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Text('Division', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _divisiController,
+                  controller: _divisionController,
                   decoration: InputDecoration(
                     hintText: 'Your Division',
                     border: OutlineInputBorder(
@@ -92,6 +94,10 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your division' : null,
+                      inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(
+                        r'[a-zA-Z0-9,. ]')),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Text('Department',
@@ -108,12 +114,16 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your department' : null,
+                      inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(
+                        r'[a-zA-Z0-9,. ]')),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _alamatController,
+                  controller: _addressController,
                   decoration: InputDecoration(
                     hintText: 'Your Address',
                     border: OutlineInputBorder(
@@ -123,13 +133,19 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your address' : null,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(
+                        r'[a-zA-Z0-9,. ]')),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Text('Whatsapp Number',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _nomorWhatsappController,
+                  controller: _whatsappNumberController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 13,
                   decoration: InputDecoration(
                     hintText: 'Your Whatsapp number',
                     border: OutlineInputBorder(
@@ -137,111 +153,160 @@ class SignupSlide2View extends StatelessWidget {
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                   ),
-                  validator: (value) => value!.isEmpty
-                      ? 'Please enter your Whatsapp number'
-                      : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your Whatsapp number';
+                    } else if (value.length < 10) {
+                      return 'Whatsapp number must be at least 10 digits';
+                    } else if (value.length > 13) {
+                      return 'Whatsapp number must not exceed 13 digits';
+                    }
+                    return null; // Valid
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                  ],
                 ),
                 SizedBox(height: 10),
-                Text('KTP Number',
+                Text('NIK',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _nomorKtpController,
+                  controller: _ktpNumberController,
+                  maxLength: 16,
                   decoration: InputDecoration(
-                    hintText: 'Your KTP number',
+                    hintText: 'Your NIK',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter your KTP number' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your NIK';
+                    } else if (value.length != 16) {
+                      return 'KTP number must be exactly 16 digits';
+                    }
+                    return null; // Valid
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[0-9]')), // Allow only numbers
+                  ],
                 ),
                 SizedBox(height: 16),
-                Text('Profile Picture',
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                Text(
+                  'Profile Picture',
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: 12),
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Upload your profile picture',
+                SingleChildScrollView(
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[300]!),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Upload your profile picture',
                             style: TextStyle(
                               color: Colors.grey[400],
                               fontSize: 14,
-                            )),
-                        SizedBox(height: 16),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey[300]!),
-                          ),
-                          child: ValueListenableBuilder<File?>(
-                            valueListenable: signupController.selfieImage,
-                            builder: (context, value, child) {
-                              return Container(
-                                width: Get.width,
-                                height: 160,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(12),
-                                  image: value != null
-                                      ? DecorationImage(
-                                          image: FileImage(value),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : null,
-                                ),
-                                child: value == null
-                                    ? Icon(Icons.person,
-                                        size: 100, color: Colors.grey[500])
-                                    : null,
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 106),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              signupController.showImageSourceDialog(
-                                context,
-                                'selfie',
-                                signupController,
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.camera_alt, color: Colors.white),
-                                SizedBox(width: 5),
-                                Text(
-                                  "Retake",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: ValueListenableBuilder<File?>(
+                              valueListenable: signupController.selfieImage,
+                              builder: (context, value, child) {
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (value != null) {
+                                          signupController.showImagePreview(
+                                              context,
+                                              value); // Memanggil fungsi di controller
+                                        }
+                                      },
+                                      child: Container(
+                                        width: Get.width,
+                                        height: 160,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          image: value != null
+                                              ? DecorationImage(
+                                                  image: FileImage(value),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : null,
+                                        ),
+                                        child: value == null
+                                            ? Icon(Icons.person,
+                                                size: 100,
+                                                color: Colors.grey[500])
+                                            : null,
+                                      ),
+                                    ),
+                                    SizedBox(height: 16),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        signupController.showImageSourceDialog(
+                                          context,
+                                          'selfie',
+                                          signupController,
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: HexColor('E97717'),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.camera_alt,
+                                              color: Colors.white),
+                                          SizedBox(width: 5),
+                                          Flexible(
+                                            child: Text(
+                                              value == null
+                                                  ? "Attach"
+                                                  : "Retake",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -252,123 +317,150 @@ class SignupSlide2View extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
                 SizedBox(height: 12),
-                Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[300]!),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Upload your profile picture',
-                          style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 14,
-                          )),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey[300]!),
-                        ),
-                        child: ValueListenableBuilder<File?>(
-                          valueListenable: signupController.ktpImage,
-                          builder: (context, value, child) {
-                            return Container(
-                              width: Get.width,
-                              height: 160,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(12),
-                                image: value != null
-                                    ? DecorationImage(
-                                        image: FileImage(value),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: value == null
-                                  ? Icon(Icons.person,
-                                      size: 100, color: Colors.grey[500])
-                                  : null,
-                            );
-                          },
-                        ),
+                SingleChildScrollView(
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[300]!),
                       ),
-                      SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 106),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            signupController.showImageSourceDialog(
-                              context,
-                              'ktp',
-                              signupController,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Upload your KTP picture',
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 14,
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.camera_alt, color: Colors.white),
-                              SizedBox(width: 5),
-                              Text(
-                                "Retake",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: ValueListenableBuilder<File?>(
+                              valueListenable: signupController.ktpImage,
+                              builder: (context, value, child) {
+                                return Column(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (value != null) {
+                                          signupController.showImagePreview(
+                                              context,
+                                              value); // Memanggil fungsi di controller
+                                        }
+                                      },
+                                      child: Container(
+                                        width: Get.width,
+                                        height: 160,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          image: value != null
+                                              ? DecorationImage(
+                                                  image: FileImage(value),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : null,
+                                        ),
+                                        child: value == null
+                                            ? Icon(Icons.person,
+                                                size: 100,
+                                                color: Colors.grey[500])
+                                            : null,
+                                      ),
+                                    ),
+                                    SizedBox(height: 16),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        signupController.showImageSourceDialog(
+                                          context,
+                                          'ktp',
+                                          signupController,
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: HexColor('E97717'),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.camera_alt,
+                                              color: Colors.white),
+                                          SizedBox(width: 5),
+                                          Flexible(
+                                            child: Text(
+                                              value == null
+                                                  ? "Attach"
+                                                  : "Retake",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
                 Center(
-                  child: Container(
-                    width: 130,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        if (_formKey.currentState!.validate()) {
-                          signupController.nameController.text =
-                              _nameController.text;
-                          signupController.areaController.text =
-                              _areaController.text;
-                          signupController.divisiController.text =
-                               _divisiController.text;
-                          signupController.departmentController.text =
-                              _departmentController.text;
-                          signupController.alamatController.text =
-                               _alamatController.text;
-                          signupController.nomorWhatsappController.text =
-                               _nomorWhatsappController.text;
-                          signupController.nomorKtpController.text =
-                               _nomorKtpController.text;
-                          signupController.pageController.nextPage(
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState!.validate()) {
+                        signupController.nameController.text =
+                            _nameController.text;
+                        signupController.areaController.text =
+                            _areaController.text;
+                        signupController.divisionController.text =
+                            _divisionController.text;
+                        signupController.departmentController.text =
+                            _departmentController.text;
+                        signupController.addressController.text =
+                            _addressController.text;
+                        signupController.whatsappNumberController.text =
+                            _whatsappNumberController.text;
+                        signupController.ktpNumberController.text =
+                            _ktpNumberController.text;
+                        signupController.pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 140, vertical: 16),
+                      backgroundColor: HexColor('E97717'),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        "Submit",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    ),
+                    child: Text(
+                      "Submit",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),

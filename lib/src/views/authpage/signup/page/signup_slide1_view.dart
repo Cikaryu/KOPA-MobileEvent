@@ -1,8 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide2_view.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupSlide1View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -80,54 +79,61 @@ class SignupSlide1View extends StatelessWidget {
                             fontSize: 14,
                           )),
                       SizedBox(height: 4),
-                      TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: Icon(signupController.showPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                            onPressed: () {
-                              signupController.togglePasswordVisibility();
+                      Obx(() => TextFormField(
+                            controller: _passwordController,
+                            obscureText: signupController.showPassword.value
+                                ? false
+                                : true,
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              suffixIcon: IconButton(
+                                icon: Icon(signupController.showPassword.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  signupController.togglePasswordVisibility();
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              } else if (value.length < 6) {
+                                return 'Password must be at least 6 characters long';
+                              }
+                              return null; // Valid
                             },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        obscureText: true,
-                        validator: (value) => value!.isEmpty
-                            ? 'Please enter your password'
-                            : null,
-                      ),
-                      SizedBox(height: 10),
+                          )),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                           if (_formKey.currentState!.validate()) {
-                            signupController.emailController.text =
-                                _emailController.text;
-                            signupController.passwordController.text =
-                                _passwordController.text;
-                            signupController.pageController.nextPage(
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                        }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue[300],
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 154, vertical: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (_formKey.currentState!.validate()) {
+                              signupController.emailController.text =
+                                  _emailController.text;
+                              signupController.passwordController.text =
+                                  _passwordController.text;
+                              signupController.nextPage();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: HexColor('E97717'),
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.35,
+                                vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
+                          child: Text("Submit",
+                              style: TextStyle(color: Colors.white)),
                         ),
-                        child: Text("Submit",
-                            style: TextStyle(color: Colors.white)),
                       ),
                       SizedBox(height: 10),
                       Padding(
@@ -148,7 +154,7 @@ class SignupSlide1View extends StatelessWidget {
                                 );
                               },
                               child: Text(
-                                "Log in",
+                                "Sign in",
                                 style: TextStyle(
                                     decoration: TextDecoration.underline,
                                     color: Colors.blue[300],

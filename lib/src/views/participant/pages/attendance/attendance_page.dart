@@ -13,24 +13,29 @@ class AttendancePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Attendance'),
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
         centerTitle: true,
-        automaticallyImplyLeading:
-            false, 
+        automaticallyImplyLeading: false,
       ),
       body: Obx(() {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(children: [
-              buildDayContainer(attendanceController, 1),
-              buildDayContainer(attendanceController, 2),
-              buildDayContainer(attendanceController, 3),
-            ]),
+        return Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Column(children: [
+                buildDayContainer(attendanceController, 1),
+                buildDayContainer(attendanceController, 2),
+                buildDayContainer(attendanceController, 3),
+              ]),
+            ),
           ),
         );
       }),
     );
   }
+
   //contai
   Widget buildDayContainer(AttendanceController controller, int day) {
     return Container(

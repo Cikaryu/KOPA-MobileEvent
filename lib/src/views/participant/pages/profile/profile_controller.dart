@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,8 +23,8 @@ class ProfileController extends GetxController {
   var userDivisi = ''.obs;
   var qrCodeUrl = ''.obs;
   var tShirtSize = ''.obs;
-  var poloSize = ''.obs;
-  var status = ''.obs;
+  var poloShirtSize = ''.obs;
+  RxMap<String, String> status = <String, String>{}.obs;
   var userArea = ''.obs;
   var userDepartment = ''.obs;
   var userAlamat = ''.obs;
@@ -33,6 +32,7 @@ class ProfileController extends GetxController {
   var numberKtp = ''.obs; // Tambahkan field status
   var isMerchExpanded = false.obs;
   var isSouvenirExpanded = false.obs;
+  var isBenefitExpanded = false.obs;
   var isLoadingStatusImage = true.obs;
   var statusImageUrl = ''.obs; // Tambahkan field untuk URL gambar status
   var selfieImage = Rxn<File>();
@@ -45,6 +45,7 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     fetchUserData();
+    getUserData;
   }
 
   void fetchUserData() async {
@@ -59,7 +60,6 @@ class ProfileController extends GetxController {
         userName.value = data['name'] ?? '';
         userEmail.value = data['email'] ?? '';
         userDivisi.value = data['division'] ?? '';
-        // Get the profile image URL from Firestore
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {
           var response = await FirebaseStorage.instance.ref(imageUrl).getData();
@@ -130,14 +130,14 @@ class ProfileController extends GetxController {
       if (doc.exists) {
         userName.value = doc['name'];
         userEmail.value = doc['email'];
-        userDivisi.value = doc['divisi'];
+        userDivisi.value = doc['division'];
         userArea.value = doc['area'];
         userDepartment.value = doc['department'];
-        userAlamat.value = doc['alamat'];
-        userWhatsapp.value = doc['nomorWhatsapp'];
-        numberKtp.value = doc['nomorKtp'];
-        tShirtSize.value = doc['ukuranTShirt'];
-        poloSize.value = doc['ukuranPoloShirt'];
+        userAlamat.value = doc['address'];
+        userWhatsapp.value = doc['whatsappNumber'];
+        numberKtp.value = doc['NIK'];
+        tShirtSize.value = doc['tShirtSize'];
+        poloShirtSize.value = doc['poloShirtSize'];
       } else {
         debugPrint('No user data found');
       }
@@ -146,57 +146,89 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> getParticipantKitStatus(User user) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(user.uid)
-          .get();
+Future<void> getParticipantKitStatus(User user) async {
+  try {
+    final doc = await FirebaseFirestore.instance
+        .collection('participantKit')
+        .doc(user.uid)
+        .get();
 
-      if (doc.exists) {
-        final kitStatus = doc['status'];
-        status.value = kitStatus; // Set status
+    if (doc.exists) {
+      final participantKit = doc['participantKit'];
+      final merchandise = participantKit['merchandise'];
+      final souvenirs = participantKit['souvenirs']; // Add this line
+      final benefits = participantKit['benefits']; // Add this line
 
-        // Ambil URL gambar status berdasarkan status merchandise
-        await fetchStatusImage(kitStatus);
-      } else {
-        debugPrint('No participantKit data found');
+      // Clear previous status
+      status.clear();
+
+      // Iterate through each merchandise item to get their status
+      merchandise.forEach((key, value) {
+        status[key] = value['status']; // Store each status
+      });
+
+      // Iterate through each souvenir item to get their status
+      souvenirs.forEach((key, value) {
+        status[key] = value['status']; // Store each status
+      });
+
+      // Iterate through each benefit item to get their status
+      benefits.forEach((key, value) {
+        status[key] = value['status']; // Store each status
+      });
+
+      // Optionally, fetch status images for each merchandise item
+      for (var item in merchandise.keys) {
+        await fetchStatusImage(status[item]!);
       }
-    } catch (e) {
-      debugPrint('Error fetching participantKit data: $e');
+
+      // Fetch status images for each souvenir item
+      for (var item in souvenirs.keys) {
+        await fetchStatusImage(status[item]!);
+      }
+
+      // Fetch status images for each benefit item
+      for (var item in benefits.keys) {
+        await fetchStatusImage(status[item]!);
+      }
+    } else {
+      debugPrint('No participantKit data found');
     }
+  } catch (e) {
+    debugPrint('Error fetching participantKit data: $e');
+  }
+}
+
+Future<void> fetchStatusImage(String status) async {
+  isLoadingStatusImage.value = true; // Set loading menjadi true
+  String imageName;
+
+  switch (status) {
+    case 'pending':
+      imageName = 'pending.png';
+      break;
+    case 'received':
+      imageName = 'received.png';
+      break;
+    case 'not received':
+      imageName = 'not_received.png';
+      break;
+    default:
+      imageName = 'default.png'; // Gambar default jika status tidak dikenali
   }
 
-  Future<void> fetchStatusImage(String status) async {
-    isLoadingStatusImage.value = true; // Set loading menjadi true
-    String imageName;
-
-    switch (status) {
-      case 'pending':
-        imageName = 'pending.png';
-        break;
-      case 'received':
-        imageName = 'received.png';
-        break;
-      case 'not received':
-        imageName = 'not_received.png';
-        break;
-      default:
-        imageName = 'default.png'; // Gambar default jika status tidak dikenali
-    }
-
-    try {
-      statusImageUrl.value = await FirebaseStorage.instance
-          .ref()
-          .child('status/$imageName')
-          .getDownloadURL();
-    } catch (e) {
-      debugPrint('Error fetching status image: $e');
-      statusImageUrl.value = ''; // Set ke kosong jika gagal
-    } finally {
-      isLoadingStatusImage.value = false; // Set loading menjadi false
-    }
+  try {
+    statusImageUrl.value = await FirebaseStorage.instance
+        .ref()
+        .child('status/$imageName')
+        .getDownloadURL();
+  } catch (e) {
+    debugPrint('Error fetching status image: $e');
+    statusImageUrl.value = ''; // Set ke kosong jika gagal
+  } finally {
+    isLoadingStatusImage.value = false; // Set loading menjadi false
   }
+}
 
   Future<void> fetchQrCodeUrl() async {
     try {
@@ -291,9 +323,9 @@ class ProfileController extends GetxController {
       // Mengambil data baru dari kontroler
       String name = nameController.text.trim();
       String area = areaController.text.trim();
-      String divisi = divisiController.text.trim();
+      String division = divisiController.text.trim();
       String department = departmentController.text.trim();
-      String alamat = alamatController.text.trim();
+      String address = alamatController.text.trim();
       String whatsappNumber = whatsappNumberController.text.trim();
       String noKTP = numberKTPController.text.trim();
 
@@ -303,13 +335,13 @@ class ProfileController extends GetxController {
       // Tambahkan field hanya jika tidak kosong
       if (name.isNotEmpty) updateData['name'] = name;
       if (area.isNotEmpty) updateData['area'] = area;
-      if (divisi.isNotEmpty) updateData['divisi'] = divisi;
+      if (division.isNotEmpty) updateData['division'] = division;
       if (department.isNotEmpty) updateData['department'] = department;
-      if (alamat.isNotEmpty) updateData['alamat'] = alamat;
+      if (address.isNotEmpty) updateData['address'] = address;
       if (whatsappNumber.isNotEmpty) {
-        updateData['nomorWhatsapp'] = whatsappNumber;
+        updateData['whatsappNumber'] = whatsappNumber;
       }
-      if (noKTP.isNotEmpty) updateData['noKTP'] = noKTP;
+      if (noKTP.isNotEmpty) updateData['NIK'] = noKTP;
 
       // Update gambar jika ada
       if (imageBytes.value != null) {
@@ -358,31 +390,6 @@ class ProfileController extends GetxController {
     numberKTPController.text = numberKtp.value;
   }
 
-  Future<void> fetchData() async {
-    try {
-      // Mendapatkan pengguna yang sedang terautentikasi
-      User? currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser != null) {
-        // Ambil data dari Firestore berdasarkan user ID
-        DocumentSnapshot snapshot = await FirebaseFirestore.instance
-            .collection('users') // Ganti dengan nama koleksi Anda
-            .doc(currentUser.uid) // ID pengguna saat ini
-            .get();
-
-        // Update nilai di controller
-        userName.value = snapshot['name'];
-        userEmail.value = snapshot['email'];
-        userDivisi.value = snapshot['divisi'];
-        // Update nilai lainnya sesuai kebutuhan
-      } else {
-        print("No user is currently signed in.");
-      }
-    } catch (e) {
-      print("Error fetching data: $e");
-    }
-  }
-
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -401,32 +408,6 @@ class ProfileController extends GetxController {
         );
       },
     );
-  }
-
-  Future<void> resetPassword(String email, BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Password Reset'),
-            content: Text('A password reset link has been sent to $email.'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacementNamed('/signin');
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } catch (e) {
-      _showErrorDialog(context, e.toString());
-    }
   }
 
   void pickImage(
@@ -482,5 +463,32 @@ class ProfileController extends GetxController {
         );
       },
     );
+  }
+
+  Future<void> resetPassword(String email, BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Password Reset'),
+            content: Text('A password reset link has been sent to $email.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Get.back();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      _showErrorDialog(context, e.toString());
+    }
   }
 }

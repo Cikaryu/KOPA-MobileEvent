@@ -1,14 +1,13 @@
-
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SignupSlide3View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _ukuranTShirtController = TextEditingController();
-  final TextEditingController _ukuranPoloShirtController = TextEditingController();
+  final TextEditingController _tShirtSizeController = TextEditingController();
+  final TextEditingController _poloShirtSizeController =
+      TextEditingController();
 
   SignupSlide3View({super.key});
 
@@ -78,7 +77,7 @@ class SignupSlide3View extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _ukuranTShirtController.text = newValue!;
+                    _tShirtSizeController.text = newValue!;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a size' : null,
@@ -113,38 +112,37 @@ class SignupSlide3View extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _ukuranPoloShirtController.text = newValue!;
+                    _poloShirtSizeController.text = newValue!;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a size' : null,
                 ),
                 SizedBox(height: 310),
                 Center(
-                  child: Container(
-                    width: 130,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        if (_formKey.currentState!.validate()) {
-                          signupController.ukuranTShirtController.text =
-                              _ukuranTShirtController.text;
-                          signupController.ukuranPoloShirtController.text =
-                              _ukuranPoloShirtController.text;
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SignupSlide4View()));
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState!.validate()) {
+                        signupController.tshirtSizeController.text =
+                            _tShirtSizeController.text;
+                        signupController.poloShirtSizeController.text =
+                            _poloShirtSizeController.text;
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SignupSlide4View()));
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 140, vertical: 16),
+                      backgroundColor: HexColor('E97717'),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        "Submit",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    ),
+                    child: Text(
+                      "Submit",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),

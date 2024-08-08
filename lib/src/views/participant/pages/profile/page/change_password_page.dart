@@ -1,4 +1,5 @@
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 
 class ChangePasswordPage extends StatelessWidget {
@@ -8,43 +9,78 @@ class ChangePasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProfileController changePasswordController =
-        Get.put(ProfileController());
+    final ProfileController profileController = Get.put(ProfileController());
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password'),
+        title: Text('Change Password'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Obx(() {
-          return Column(
-            children: [
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                'Please enter your email address to\n receive a verification',
+                textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Text('Email'),
+            TextFormField(
+              controller: emailController,
+              decoration: InputDecoration(
+                hintText: 'Please enter your email address',
+                prefixIcon: Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
+              validator: (value) {
+                String pattern =
+                    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                RegExp regex = RegExp(pattern);
+                if (value!.isEmpty) {
+                  return 'Please enter your email';
+                } else if (!regex.hasMatch(value) || !value.endsWith('.com')) {
+                  return 'Please enter a valid email.';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: HexColor("E97717"),
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 120),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onPressed: () async {
                   if (emailController.text.isEmpty) {
                     _showErrorDialog(context, 'Please enter your email.');
                   } else {
-                    await changePasswordController.resetPassword(
-                      emailController.text,
-                      context,
-                    );
+                    await profileController.resetPassword(
+                        emailController.text, context);
                   }
                 },
-                child: changePasswordController.isLoading.value
-                    ? CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                    : Text('Reset Password'),
+                child: 
+                    Text(
+                        'Reset Password',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
               ),
-            ],
-          );
-        }),
+            ),
+          ],
+        ),
       ),
     );
   }

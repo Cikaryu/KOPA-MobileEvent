@@ -18,19 +18,19 @@ class SignupController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController areaController = TextEditingController();
-  TextEditingController divisiController = TextEditingController();
+  TextEditingController divisionController = TextEditingController();
   TextEditingController departmentController = TextEditingController();
-  TextEditingController alamatController = TextEditingController();
-  TextEditingController nomorWhatsappController = TextEditingController();
-  TextEditingController nomorKtpController = TextEditingController();
-  TextEditingController ukuranTShirtController = TextEditingController();
-  TextEditingController ukuranPoloShirtController = TextEditingController();
-  TextEditingController tipeEWalletController = TextEditingController();
-  TextEditingController nomorEWalletController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController whatsappNumberController = TextEditingController();
+  TextEditingController ktpNumberController = TextEditingController();
+  TextEditingController tshirtSizeController = TextEditingController();
+  TextEditingController poloShirtSizeController = TextEditingController();
+  TextEditingController eWalletTypeController = TextEditingController();
+  TextEditingController eWalletNumberController = TextEditingController();
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  bool showPassword = false;
+  var showPassword = false.obs;
 
   var selfieImage = ValueNotifier<File?>(null);
   var ktpImage = ValueNotifier<File?>(null);
@@ -41,9 +41,15 @@ class SignupController extends GetxController {
     update();
   }
 
-  togglePasswordVisibility() {
-    showPassword = !showPassword;
-    update();
+  void nextPage() {
+    pageController.nextPage(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void togglePasswordVisibility() {
+    showPassword.value = !showPassword.value;
   }
 
   void setKtpImage(File? image) {
@@ -55,7 +61,8 @@ class SignupController extends GetxController {
     _isLoading = value;
     update();
   }
-Widget pageItemBuilder(context, position) {
+
+  Widget pageItemBuilder(context, position) {
     switch (position) {
       case 0:
         return SignupSlide1View();
@@ -69,14 +76,15 @@ Widget pageItemBuilder(context, position) {
         return Container();
     }
   }
-Future<void> registerUser({
+
+  Future<void> registerUser({
     required String email,
     required String password,
     required String name,
     required String area,
     required String division,
     required String department,
-    required String alamat,
+    required String address,
     required String whatsappNumber,
     required String ktpNumber,
     required String tShirtSize,
@@ -129,9 +137,9 @@ Future<void> registerUser({
         'area': area,
         'division': division,
         'department': department,
-        'alamat': alamat,
+        'address': address,
         'whatsappNumber': whatsappNumber,
-        'ktpNumber': ktpNumber,
+        'NIK': ktpNumber,
         'selfieUrl': selfieUrl,
         'ktpUrl': ktpUrl,
         'tShirtSize': tShirtSize,
@@ -317,9 +325,7 @@ Future<void> registerUser({
       setLoading(false);
     }
   }
-  
 
-  
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear(); // Clear preferences
@@ -417,16 +423,46 @@ Future<void> registerUser({
     passwordController.clear();
     nameController.clear();
     areaController.clear();
-    divisiController.clear();
+    divisionController.clear();
     departmentController.clear();
-    alamatController.clear();
-    nomorWhatsappController.clear();
-    nomorKtpController.clear();
-    ukuranTShirtController.clear();
-    ukuranPoloShirtController.clear();
-    tipeEWalletController.clear();
-    nomorEWalletController.clear();
+    addressController.clear();
+    whatsappNumberController.clear();
+    ktpNumberController.clear();
+    tshirtSizeController.clear();
+    poloShirtSizeController.clear();
+    eWalletTypeController.clear();
+    eWalletNumberController.clear();
     selfieImage.value = null;
     ktpImage.value = null;
+  }
+
+  void showImagePreview(BuildContext context, File imageFile) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            Navigator.of(context).pop();
+          },
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            content: GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: double.maxFinite,
+                height: 400,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(imageFile),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

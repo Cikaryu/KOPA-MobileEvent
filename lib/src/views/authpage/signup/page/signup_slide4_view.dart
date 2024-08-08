@@ -1,5 +1,4 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -84,6 +83,7 @@ class SignupSlide4View extends StatelessWidget {
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _eWalletNumberController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: 'Your E-Wallet Number',
                     border: OutlineInputBorder(
@@ -94,58 +94,71 @@ class SignupSlide4View extends StatelessWidget {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter your E-Wallet' : null,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your E-Wallet number';
+                    } else if (value.length < 10 || value.length > 16) {
+                      return 'E-Wallet number must be between 10 to 16 digits';
+                    }
+                    return null; // Valid
+                  },
                 ),
                 SizedBox(height: 310),
                 Center(
-                  child: Container(
-                    width: 130,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          // Collect all the data from controllers
-                          signupController.setLoading(true);
-                          try {
-                            await signupController.registerUser(
-                              email: signupController.emailController.text,
-                              password: signupController.passwordController.text,
-                              name: signupController.nameController.text,
-                              area: signupController.areaController.text,
-                              division: signupController.divisiController.text,
-                              department: signupController.departmentController.text,
-                              alamat: signupController.alamatController.text,
-                              whatsappNumber: signupController.nomorWhatsappController.text,
-                              ktpNumber: signupController.nomorKtpController.text,
-                              tShirtSize: signupController.ukuranTShirtController.text,
-                              poloShirtSize: signupController.ukuranPoloShirtController.text,
-                              eWalletType: signupController.tipeEWalletController.text,
-                              eWalletNumber:signupController.nomorEWalletController.text,
-                              context: context,
-                              role: 'participant',
-                              status: 'pending',
-                              createdAt: Timestamp.now(),
-                              updatedAt: Timestamp.now(),
-                            );
-                            signupController.resetForm();
-                          } catch (e) {
-                            // Handle registration error
-                          } finally {
-                            signupController.setLoading(false);
-                          }
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        // Collect all the data from controllers
+                        signupController.setLoading(true);
+                        try {
+                          await signupController.registerUser(
+                            email: signupController.emailController.text,
+                            password: signupController.passwordController.text,
+                            name: signupController.nameController.text,
+                            area: signupController.areaController.text,
+                            division: signupController.divisionController.text,
+                            department:
+                                signupController.departmentController.text,
+                            address: signupController.addressController.text,
+                            whatsappNumber:
+                                signupController.whatsappNumberController.text,
+                            ktpNumber:
+                                signupController.ktpNumberController.text,
+                            tShirtSize:
+                                signupController.tshirtSizeController.text,
+                            poloShirtSize:
+                                signupController.poloShirtSizeController.text,
+                            eWalletType: signupController.eWalletTypeController
+                                .text = _eWalletTypeController.text,
+                            eWalletNumber: signupController
+                                .eWalletNumberController
+                                .text = _eWalletNumberController.text,
+                            context: context,
+                            role: 'participant',
+                            status: 'pending',
+                            createdAt: Timestamp.now(),
+                            updatedAt: Timestamp.now(),
+                          );
+                          signupController.resetForm();
+                        } catch (e) {
+                          // Handle registration error
+                        } finally {
+                          signupController.setLoading(false);
                         }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 140, vertical: 16),
+                      backgroundColor: HexColor('E97717'),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        "Submit",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    ),
+                    child: Text(
+                      "Submit",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
