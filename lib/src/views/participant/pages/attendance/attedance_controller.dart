@@ -6,22 +6,36 @@ class AttendanceController extends GetxController {
   var isDay1Expanded = false.obs;
   var isDay2Expanded = false.obs;
   var isDay3Expanded = false.obs;
+  var isLoading = false.obs;
 
-
-  tapBack(){
-    Get.back();
-    update();
+  void setLoading(bool value) {
+    isLoading.value = value;
   }
 
-
   var attendanceStatus = {
-    1: {'Departure': 'Pending', 'Arrival': 'Pending', 'CSR': 'Pending', 'Lunch': 'Pending', 'Check In Hotel': 'Pending', 'Welcome Dinner': 'Pending', 'Arrived Hotel': 'Pending'},
+    1: {
+      'Departure': 'Pending',
+      'Arrival': 'Pending',
+      'CSR': 'Pending',
+      'Lunch': 'Pending',
+      'Check In Hotel': 'Pending',
+      'Welcome Dinner': 'Pending',
+      'Arrived Hotel': 'Pending'
+    },
     2: {'Event1': 'Pending', 'Event2': 'Pending'},
     3: {'Event1': 'Pending', 'Event2': 'Pending'},
   }.obs;
 
   var events = {
-    1: ['Departure', 'Arrival', 'CSR', 'Lunch', 'Check In Hotel', 'Welcome Dinner', 'Arrived Hotel'],
+    1: [
+      'Departure',
+      'Arrival',
+      'CSR',
+      'Lunch',
+      'Check In Hotel',
+      'Welcome Dinner',
+      'Arrived Hotel'
+    ],
     2: ['Event1', 'Event2'],
     3: ['Event1', 'Event2'],
   };
@@ -54,10 +68,16 @@ class AttendanceController extends GetxController {
     if (eventIndex == 0) return true;
 
     var previousEvent = events[day]![eventIndex - 1];
+    update();
     return attendanceStatus[day]![previousEvent] == 'Attended';
   }
 
-  void markEventAsAttended(int day, String event) {
+  Future<void> markEventAsAttended(int day, String event) async {
+    setLoading(true);
+    await Future.delayed(Duration(milliseconds: 500));
     attendanceStatus[day]![event] = 'Attended';
+    update();
+    setLoading(false);
+    Get.back();
   }
 }
