@@ -18,9 +18,9 @@ class AttendancePage extends StatelessWidget {
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
+      backgroundColor: Colors.white,
       body: Obx(() {
         return Container(
-          color: Colors.white,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -83,26 +83,36 @@ class AttendancePage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 8),
-                  if (controller.isDayExpanded(day))
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Your Attendance"),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey[300]!),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    height: controller.isDayExpanded(day)
+                        ? (day == 1
+                            ? 390
+                            : (day == 2 ? 300 : (day == 3 ? 250 : 0)))
+                        : 0,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Your Attendance"),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: Column(
+                              children: controller.events[day]!.map((event) {
+                                return buildEventRow(controller, day, event);
+                              }).toList(),
+                            ),
                           ),
-                          child: Column(
-                            children: controller.events[day]!.map((event) {
-                              return buildEventRow(controller, day, event);
-                            }).toList(),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                  ),
                 ],
               ),
             ),
