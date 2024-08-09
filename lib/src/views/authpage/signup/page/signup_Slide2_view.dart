@@ -443,10 +443,7 @@ class SignupSlide2View extends StatelessWidget {
                             _whatsappNumberController.text;
                         signupController.ktpNumberController.text =
                             _ktpNumberController.text;
-                        signupController.pageController.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
+                        signupController.nextPage();
                       }
                     },
                     style: ElevatedButton.styleFrom(

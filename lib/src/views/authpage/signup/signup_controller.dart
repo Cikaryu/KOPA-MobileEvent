@@ -277,6 +277,7 @@ class SignupController extends GetxController {
 
       // Show success dialog and navigate to login
       showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(

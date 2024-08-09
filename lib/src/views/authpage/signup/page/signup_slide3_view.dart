@@ -127,8 +127,7 @@ class SignupSlide3View extends StatelessWidget {
                             _tShirtSizeController.text;
                         signupController.poloShirtSizeController.text =
                             _poloShirtSizeController.text;
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SignupSlide4View()));
+                            signupController.nextPage();
                       }
                     },
                     style: ElevatedButton.styleFrom(
