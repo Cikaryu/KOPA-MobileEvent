@@ -15,6 +15,7 @@ class ServicePage extends StatelessWidget {
         title: Text('Service'),
         backgroundColor: Colors.white,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         color: Colors.white,

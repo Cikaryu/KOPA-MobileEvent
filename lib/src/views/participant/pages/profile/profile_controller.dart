@@ -25,6 +25,7 @@ class ProfileController extends GetxController {
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
   RxMap<String, String> status = <String, String>{}.obs;
+  final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
   var userArea = ''.obs;
   var userDepartment = ''.obs;
   var userAlamat = ''.obs;
@@ -126,6 +127,7 @@ class ProfileController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await FirebaseAuth.instance.signOut();
+    return Get.offAllNamed('/signin');
   }
 
   Future<void> getImageBytes(User user) async {
@@ -181,31 +183,30 @@ class ProfileController extends GetxController {
       if (doc.exists) {
         final participantKit = doc.data()!; // Pastikan data diambil
         final merchandise = participantKit['merchandise'] ?? {};
-        final souvenirs = participantKit['souvenirs'] ?? {};
-        final benefits = participantKit['benefits'] ?? {};
+        final souvenirs = participantKit['souvenir'] ?? {};
+        final benefits = participantKit['benefit'] ?? {};
 
         // Clear previous status
         status.clear();
+        statusImageUrls.clear();
 
-        // Add merchandise status
+        // Add merchandise status and fetch images
         merchandise.forEach((key, value) {
           status[key] = value['status'];
+          fetchStatusImage(key, value['status']);
         });
 
-        // Add souvenirs status
+        // Add souvenirs status and fetch images
         souvenirs.forEach((key, value) {
           status[key] = value['status'];
+          fetchStatusImage(key, value['status']);
         });
 
-        // Add benefits status
+        // Add benefits status and fetch images
         benefits.forEach((key, value) {
           status[key] = value['status'];
+          fetchStatusImage(key, value['status']);
         });
-
-        // Optionally, fetch status images for each item
-        for (var key in status.keys) {
-          await fetchStatusImage(status[key]!);
-        }
       } else {
         debugPrint('No participantKit data found');
       }
@@ -214,8 +215,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> fetchStatusImage(String status) async {
-    isLoadingStatusImage.value = true;
+  Future<void> fetchStatusImage(String key, String status) async {
     String imageName;
 
     switch (status) {
@@ -236,12 +236,10 @@ class ProfileController extends GetxController {
       final downloadUrl = await FirebaseStorage.instance
           .ref('status/$imageName')
           .getDownloadURL();
-      statusImageUrl.value = downloadUrl;
+      statusImageUrls[key] = downloadUrl;
     } catch (e) {
       debugPrint('Error fetching status image: $e');
-      statusImageUrl.value = ''; // Set to empty string if failed
-    } finally {
-      isLoadingStatusImage.value = false;
+      statusImageUrls[key] = ''; // Set to empty string if failed
     }
   }
 

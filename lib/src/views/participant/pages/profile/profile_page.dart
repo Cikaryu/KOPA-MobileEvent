@@ -14,6 +14,7 @@ class ProfileParticipantPage extends StatelessWidget {
         scrolledUnderElevation: 0,
         title: Center(child: Text('My Profile')),
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
       ),
       body: Obx(() {
         return Container(
@@ -364,23 +365,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator();
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
-                                                  return Icon(Icons.error);
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'poloShirt'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
+                                                  return Icon(Icons
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                );
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -394,24 +393,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'tShirt'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -425,24 +421,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'luggageTag'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -456,24 +449,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'jasHujan'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -593,25 +583,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                // Gunakan Obx untuk mendengarkan perubahan nilai
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'gelangTridatu'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -625,25 +611,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                // Gunakan Obx untuk mendengarkan perubahan nilai
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'selendangUdeng'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -763,25 +745,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                // Gunakan Obx untuk mendengarkan perubahan nilai
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'voucherEwallet'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -795,25 +773,21 @@ class ProfileParticipantPage extends StatelessWidget {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Obx(() {
-                                                // Gunakan Obx untuk mendengarkan perubahan nilai
-                                                if (profileController
-                                                    .isLoadingStatusImage
-                                                    .value) {
-                                                  return CircularProgressIndicator(); // Tampilkan indikator loading
-                                                }
-                                                if (profileController
-                                                    .statusImageUrl
-                                                    .value
-                                                    .isEmpty) {
+                                                final imageUrl =
+                                                    profileController
+                                                                .statusImageUrls[
+                                                            'voucherBelanja'] ??
+                                                        '';
+
+                                                if (imageUrl.isEmpty) {
                                                   return Icon(Icons
-                                                      .error); // Tampilkan ikon error jika gagal
+                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
                                                 }
                                                 return Image.network(
-                                                  profileController
-                                                      .statusImageUrl.value,
+                                                  imageUrl,
                                                   width: 24,
                                                   height: 24,
-                                                ); // Tampilkan gambar status
+                                                ); // Menampilkan gambar status jika berhasil diambil
                                               }),
                                             ],
                                           ),
@@ -839,7 +813,6 @@ class ProfileParticipantPage extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () async {
                           await profileController.logout();
-                          Navigator.of(context).pushReplacementNamed('/');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HexColor("C63131"),
