@@ -1,5 +1,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/service/page/faq/faq_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/service/page/feedback/feedback_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/reportlist_page.dart';
 
 class ServicePage extends StatelessWidget {
@@ -111,19 +113,16 @@ class ServicePage extends StatelessWidget {
                     SizedBox(height: 16),
                     InkWell(
                       onTap: () {
-                        Get.to(() => ReportPage());
+                        Get.to(() => ReportListPage());
                       },
                       child: Container(
                         decoration: BoxDecoration(
                           color: HexColor("#F3F3F3"),
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -237,7 +236,9 @@ class ServicePage extends StatelessWidget {
                       child: Container(
                         width: 140,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(() => ReportPage());
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: HexColor("#72BB65"),
                             shape: RoundedRectangleBorder(
@@ -294,7 +295,9 @@ class ServicePage extends StatelessWidget {
                       child: Container(
                         width: 140,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(() => FeedbackPage());
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: HexColor("#72BB65"),
                             shape: RoundedRectangleBorder(

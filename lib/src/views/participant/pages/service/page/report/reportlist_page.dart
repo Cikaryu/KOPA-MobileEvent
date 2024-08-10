@@ -1,8 +1,9 @@
+//TODO: reportlist belum selesai
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 
-class ReportPage extends StatelessWidget {
-  const ReportPage({super.key});
+class ReportListPage extends StatelessWidget {
+  const ReportListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

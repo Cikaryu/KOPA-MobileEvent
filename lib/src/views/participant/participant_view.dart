@@ -42,29 +42,29 @@ class ParticipantView extends StatelessWidget {
             child: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  backgroundColor: HexColor('E97717'),
+                  backgroundColor: HexColor('01613B'),
                   icon: Icon(Icons.home),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.people),
-                  backgroundColor: HexColor('E97717'),
+                  backgroundColor: HexColor('01613B'),
                   label: 'Attendance',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.settings),
-                  backgroundColor: HexColor('E97717'),
+                  backgroundColor: HexColor('01613B'),
                   label: 'Service',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
-                  backgroundColor: HexColor('E97717'),
+                  backgroundColor: HexColor('01613B'),
                   label: 'Profile',
                 ),
               ],
               currentIndex: participantController.selectedIndex.value,
-              selectedItemColor: HexColor('232528'),
-              unselectedItemColor: HexColor('F3F3F3'),
+              selectedItemColor: HexColor('F3F3F3'),
+              unselectedItemColor: HexColor('D4D4D4'),
               onTap: (index) {
                 participantController.changeTabIndex(index);
               },

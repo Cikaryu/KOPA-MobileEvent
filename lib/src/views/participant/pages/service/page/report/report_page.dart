@@ -1,0 +1,179 @@
+//Todo: Report Page Controller
+import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_controller.dart';
+import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+
+class ReportPage extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController textCategoryController = TextEditingController();
+  ReportPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ReportController reportController = Get.put(ReportController());
+    final List<String> categoryOptions = [
+      'Participant Merchandise',
+      'Participant Souvenir',
+      'Participant Benefit',
+    ];
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('Report', style: TextStyle(color: Colors.black)),
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          width: Get.width,
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Added this line
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 24),
+                Row(
+                  children: [
+                    Text('Title',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w600)),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'Write your report title',
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 16),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Text('Category',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField2<String>(
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          filled: true,
+                          hintText: 'Select Category Report',
+                          fillColor: Colors.grey[200],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey[300],
+                            ),
+                            width: 280,
+                            elevation: 5,
+                            padding: EdgeInsets.all(10),
+                            maxHeight: 240),
+                        items: categoryOptions.map((String category) {
+                          return DropdownMenuItem<String>(
+                            value: category,
+                            child: Text(category),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          textCategoryController.text = newValue!;
+                        },
+                        validator: (value) =>
+                            value == null ? 'Please select a size' : null,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 28),
+                Text('Description',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                SizedBox(height: 8),
+                TextFormField(
+                  maxLines: 10,
+                  decoration: InputDecoration(
+                    hintText: 'Write your report title',
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 28),
+                Text('Attachment',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                SizedBox(height: 12),
+                Container(
+                  height: 50,
+                  width: Get.width,
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Upload Attachment',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w300)),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 28),
+                Center(
+                  child: Container(
+                    width: Get.width * 0.5,
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: HexColor("#72BB65"),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                      ),
+                      child: Text('Submit',
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
