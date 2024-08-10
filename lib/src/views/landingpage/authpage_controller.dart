@@ -20,4 +20,12 @@ class AuthpageController extends GetxController {
   void setLoading(bool value) {
     update();
   }
+
+  tapSignin() async {
+    await Get.toNamed(AppRoutes.signin);
+  }
+
+  tapSignup() async {
+    await Get.toNamed(AppRoutes.signup);
+  }
 }

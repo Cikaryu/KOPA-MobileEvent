@@ -41,10 +41,7 @@ class AuthpageView extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => SigninView()),
-                          );
+                          controller.tapSignin();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
@@ -63,10 +60,7 @@ class AuthpageView extends StatelessWidget {
                       SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => SignupView()),
-                          );
+                          controller.tapSignup();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
