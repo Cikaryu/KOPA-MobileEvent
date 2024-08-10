@@ -48,14 +48,17 @@ class ParticipantView extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.people),
+                  backgroundColor: HexColor('E97717'),
                   label: 'Attendance',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.settings),
+                  backgroundColor: HexColor('E97717'),
                   label: 'Service',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
+                  backgroundColor: HexColor('E97717'),
                   label: 'Profile',
                 ),
               ],

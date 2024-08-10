@@ -157,44 +157,42 @@ class SignupController extends GetxController {
           .collection('participantKit')
           .doc(userCredential.user!.uid)
           .set({
-        'participantKit': {
-          'merchandise': {
-            'poloShirt': {
-              'status': status,
-              'updatedAt': updatedAt,
-            },
-            'tShirt': {
-              'status': status,
-              'updatedAt': updatedAt,
-            },
-            'lugageTag': {
-              'status': status,
-              'updatedAt': updatedAt,
-            },
-            'jasHujan': {
-              'status': status,
-              'updatedAt': updatedAt,
-            },
+        'merchandise': {
+          'poloShirt': {
+            'status': status,
+            'updatedAt': updatedAt,
           },
-          'souvenir': {
-            'gelangTridatu': {
-              'status': status,
-              'updatedAt': updatedAt,
-            },
-            'selendangUdeng': {
-              'status': status,
-              'updatedAt': updatedAt,
-            }
+          'tShirt': {
+            'status': status,
+            'updatedAt': updatedAt,
           },
-          'benefit': {
-            'voucherBelanja': {
-              'status': status,
-              'updatedAt': updatedAt,
-            },
-            'voucherEwallet': {
-              'status': status,
-              'updatedAt': updatedAt,
-            }
+          'luggageTag': {
+            'status': status,
+            'updatedAt': updatedAt,
+          },
+          'jasHujan': {
+            'status': status,
+            'updatedAt': updatedAt,
+          },
+        },
+        'souvenir': {
+          'gelangTridatu': {
+            'status': status,
+            'updatedAt': updatedAt,
+          },
+          'selendangUdeng': {
+            'status': status,
+            'updatedAt': updatedAt,
+          }
+        },
+        'benefit': {
+          'voucherBelanja': {
+            'status': status,
+            'updatedAt': updatedAt,
+          },
+          'voucherEwallet': {
+            'status': status,
+            'updatedAt': updatedAt,
           }
         }
       });
@@ -277,6 +275,7 @@ class SignupController extends GetxController {
 
       // Show success dialog and navigate to login
       showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -287,7 +286,7 @@ class SignupController extends GetxController {
                 child: Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacementNamed('/signin');
+                  Get.offAllNamed('/signin');
                 },
               ),
             ],

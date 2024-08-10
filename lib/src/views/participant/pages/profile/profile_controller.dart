@@ -25,6 +25,7 @@ class ProfileController extends GetxController {
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
   RxMap<String, String> status = <String, String>{}.obs;
+  final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
   var userArea = ''.obs;
   var userDepartment = ''.obs;
   var userAlamat = ''.obs;
@@ -60,6 +61,11 @@ class ProfileController extends GetxController {
         userName.value = data['name'] ?? '';
         userEmail.value = data['email'] ?? '';
         userDivisi.value = data['division'] ?? '';
+        userArea.value = data['area'] ?? '';
+        userDepartment.value = data['department'] ?? '';
+        userAlamat.value = data['address'] ?? '';
+        userWhatsapp.value = data['whatsappNumber'] ?? '';
+        numberKtp.value = data['NIK'] ?? '';
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {
           var response = await FirebaseStorage.instance.ref(imageUrl).getData();
@@ -97,10 +103,31 @@ class ProfileController extends GetxController {
     update();
   }
 
+  void refreshData() async {
+    setLoading(true);
+    await Future.delayed(Duration(milliseconds: 500));
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await getUserData(user); // Refresh user data
+        await getImageBytes(user); // Refresh profile image
+        await fetchQrCodeUrl(); // Refresh QR code
+        await getParticipantKitStatus(user); // Refresh participant kit status
+      } else {
+        debugPrint("User not logged in");
+      }
+    } catch (e) {
+      debugPrint('Error refreshing data: $e');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await FirebaseAuth.instance.signOut();
+    return Get.offAllNamed('/signin');
   }
 
   Future<void> getImageBytes(User user) async {
@@ -146,89 +173,75 @@ class ProfileController extends GetxController {
     }
   }
 
-Future<void> getParticipantKitStatus(User user) async {
-  try {
-    final doc = await FirebaseFirestore.instance
-        .collection('participantKit')
-        .doc(user.uid)
-        .get();
+  Future<void> getParticipantKitStatus(User user) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('participantKit')
+          .doc(user.uid)
+          .get();
 
-    if (doc.exists) {
-      final participantKit = doc['participantKit'];
-      final merchandise = participantKit['merchandise'];
-      final souvenirs = participantKit['souvenirs']; // Add this line
-      final benefits = participantKit['benefits']; // Add this line
+      if (doc.exists) {
+        final participantKit = doc.data()!; // Pastikan data diambil
+        final merchandise = participantKit['merchandise'] ?? {};
+        final souvenirs = participantKit['souvenir'] ?? {};
+        final benefits = participantKit['benefit'] ?? {};
 
-      // Clear previous status
-      status.clear();
+        // Clear previous status
+        status.clear();
+        statusImageUrls.clear();
 
-      // Iterate through each merchandise item to get their status
-      merchandise.forEach((key, value) {
-        status[key] = value['status']; // Store each status
-      });
+        // Add merchandise status and fetch images
+        merchandise.forEach((key, value) {
+          status[key] = value['status'];
+          fetchStatusImage(key, value['status']);
+        });
 
-      // Iterate through each souvenir item to get their status
-      souvenirs.forEach((key, value) {
-        status[key] = value['status']; // Store each status
-      });
+        // Add souvenirs status and fetch images
+        souvenirs.forEach((key, value) {
+          status[key] = value['status'];
+          fetchStatusImage(key, value['status']);
+        });
 
-      // Iterate through each benefit item to get their status
-      benefits.forEach((key, value) {
-        status[key] = value['status']; // Store each status
-      });
-
-      // Optionally, fetch status images for each merchandise item
-      for (var item in merchandise.keys) {
-        await fetchStatusImage(status[item]!);
+        // Add benefits status and fetch images
+        benefits.forEach((key, value) {
+          status[key] = value['status'];
+          fetchStatusImage(key, value['status']);
+        });
+      } else {
+        debugPrint('No participantKit data found');
       }
-
-      // Fetch status images for each souvenir item
-      for (var item in souvenirs.keys) {
-        await fetchStatusImage(status[item]!);
-      }
-
-      // Fetch status images for each benefit item
-      for (var item in benefits.keys) {
-        await fetchStatusImage(status[item]!);
-      }
-    } else {
-      debugPrint('No participantKit data found');
+    } catch (e) {
+      debugPrint('Error fetching participantKit data: $e');
     }
-  } catch (e) {
-    debugPrint('Error fetching participantKit data: $e');
-  }
-}
-
-Future<void> fetchStatusImage(String status) async {
-  isLoadingStatusImage.value = true; // Set loading menjadi true
-  String imageName;
-
-  switch (status) {
-    case 'pending':
-      imageName = 'pending.png';
-      break;
-    case 'received':
-      imageName = 'received.png';
-      break;
-    case 'not received':
-      imageName = 'not_received.png';
-      break;
-    default:
-      imageName = 'default.png'; // Gambar default jika status tidak dikenali
   }
 
-  try {
-    statusImageUrl.value = await FirebaseStorage.instance
-        .ref()
-        .child('status/$imageName')
-        .getDownloadURL();
-  } catch (e) {
-    debugPrint('Error fetching status image: $e');
-    statusImageUrl.value = ''; // Set ke kosong jika gagal
-  } finally {
-    isLoadingStatusImage.value = false; // Set loading menjadi false
+  Future<void> fetchStatusImage(String key, String status) async {
+    String imageName;
+
+    switch (status) {
+      case 'pending':
+        imageName = 'pending.png';
+        break;
+      case 'received':
+        imageName = 'received.png';
+        break;
+      case 'close':
+        imageName = 'close.png';
+        break;
+      default:
+        imageName = 'default.png';
+    }
+
+    try {
+      final downloadUrl = await FirebaseStorage.instance
+          .ref('status/$imageName')
+          .getDownloadURL();
+      statusImageUrls[key] = downloadUrl;
+    } catch (e) {
+      debugPrint('Error fetching status image: $e');
+      statusImageUrls[key] = ''; // Set to empty string if failed
+    }
   }
-}
 
   Future<void> fetchQrCodeUrl() async {
     try {

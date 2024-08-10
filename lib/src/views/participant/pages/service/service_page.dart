@@ -1,4 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/participant/pages/service/page/faq_page.dart';
 
 class ServicePage extends StatelessWidget {
   const ServicePage({super.key});
@@ -14,6 +15,7 @@ class ServicePage extends StatelessWidget {
         title: Text('Service'),
         backgroundColor: Colors.white,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         color: Colors.white,
@@ -21,50 +23,58 @@ class ServicePage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                decoration: BoxDecoration(
-                  color: HexColor("#F3F3F3"),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10.0,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info,
-                      color: Colors.orange,
-                    ),
-                    SizedBox(width: 16.0),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'FAQ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => FaqPage()),
+                  );
+                },
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    color: HexColor("#F3F3F3"),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10.0,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info,
+                        color: Colors.orange,
+                      ),
+                      SizedBox(width: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'FAQ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
                           ),
-                        ),
-                        Text(
-                          'Frequently Asked Questions',
-                          style: TextStyle(
-                            color: Colors.grey,
+                          Text(
+                            'Frequently Asked Questions',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Spacer(),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                    ),
-                  ],
+                        ],
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 16),
