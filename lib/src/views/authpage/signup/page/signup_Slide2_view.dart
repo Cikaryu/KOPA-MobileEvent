@@ -1,3 +1,4 @@
+//TODO compress image
 import 'dart:io'; // Add this line to import the 'dart:io' package
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
