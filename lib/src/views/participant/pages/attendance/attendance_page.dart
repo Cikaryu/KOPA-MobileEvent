@@ -1,3 +1,9 @@
+// attendance_page.dart
+
+//TODO: Button berubah warna sesuai dropdownlist di page attendance_status_page.dart
+//TODO: Function untuk validasi jika memilih tidak hadir atau early leave
+
+
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/page/attendance_status_page.dart';
@@ -20,7 +26,8 @@ class AttendancePage extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: Obx(() {
-        return Container(
+        return SizedBox(
+          width: Get.width,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -36,7 +43,7 @@ class AttendancePage extends StatelessWidget {
     );
   }
 
-  //contai
+  // Membuat container untuk setiap hari
   Widget buildDayContainer(AttendanceController controller, int day) {
     return Container(
       margin: EdgeInsets.only(bottom: 20),
@@ -61,7 +68,7 @@ class AttendancePage extends StatelessWidget {
             onTap: () {
               controller.toggleDayExpanded(day);
             },
-            child: Container(
+            child: SizedBox(
               width: 300,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +96,7 @@ class AttendancePage extends StatelessWidget {
                     height: controller.isDayExpanded(day)
                         ? (day == 1
                             ? 390
-                            : (day == 2 ? 300 : (day == 3 ? 250 : 0)))
+                            : (day == 2 ? 220 : (day == 3 ? 250 : 0)))
                         : 0,
                     child: SingleChildScrollView(
                       child: Column(
@@ -104,6 +111,7 @@ class AttendancePage extends StatelessWidget {
                               border: Border.all(color: Colors.grey[300]!),
                             ),
                             child: Column(
+                              // Menggunakan map untuk membuat event row
                               children: controller.events[day]!.map((event) {
                                 return buildEventRow(controller, day, event);
                               }).toList(),
@@ -122,9 +130,16 @@ class AttendancePage extends StatelessWidget {
     );
   }
 
-  //isi dalam container
+  // Membuat row untuk setiap event dalam container
   Widget buildEventRow(AttendanceController controller, int day, String event) {
+    // Cek apakah semua event di hari sebelumnya sudah attended
+    bool isPreviousDayAttended = day == 1 || controller.areAllEventsAttended(day - 1);
+
+    // Cek apakah event sebelumnya di hari yang sama sudah attended
     bool isPreviousAttended = controller.isPreviousEventAttended(day, event);
+
+    // Button Attend hanya bisa ditekan jika event sebelumnya dan hari sebelumnya sudah attended
+    bool canAttend = isPreviousDayAttended && isPreviousAttended;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,21 +169,22 @@ class AttendancePage extends StatelessWidget {
           )
         else
           ElevatedButton(
-            onPressed: isPreviousAttended
+            // Tombol Attend hanya aktif jika canAttend bernilai true
+            onPressed: canAttend
                 ? () {
                     controller.currentEvent = event;
                     Get.to(() => AttendanceStatusPage(day: day, event: event));
                   }
-                : null,
-            child: Text(
-              'Attend',
-              style: TextStyle(color: Colors.white),
-            ),
+                : null, // Tombol dinonaktifkan jika canAttend bernilai false
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green, // Background color
+              backgroundColor: canAttend ? Colors.green : Colors.grey, // Ubah warna tombol saat tidak aktif
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
+            ),
+            child: Text(
+              'Attend',
+              style: TextStyle(color: Colors.white),
             ),
           ),
       ],
