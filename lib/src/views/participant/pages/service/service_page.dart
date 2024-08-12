@@ -26,6 +26,7 @@ class ServicePage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(children: [
+              SizedBox(height: 20),
               InkWell(
                 onTap: () {
                   Get.to(() => FaqPage());
@@ -38,10 +39,11 @@ class ServicePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10.0,
-                        offset: Offset(0, 5),
-                      ),
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 0),
+                        spreadRadius: 0,
+                      )
                     ],
                   ),
                   child: Row(
@@ -78,7 +80,7 @@ class ServicePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
@@ -86,10 +88,11 @@ class ServicePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10.0,
-                      offset: Offset(0, 5),
-                    ),
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 0),
+                      spreadRadius: 0,
+                    )
                   ],
                 ),
                 child: Column(
@@ -258,18 +261,19 @@ class ServicePage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 44),
+              SizedBox(height: 20),
               Container(
-                padding: EdgeInsets.only(left: 14, top: 24, bottom: 24),
+                padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   color: HexColor("#F3F3F3"),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 0),
+                      spreadRadius: 0,
+                    )
                   ],
                 ),
                 child: Column(

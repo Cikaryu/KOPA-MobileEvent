@@ -10,6 +10,7 @@ class ReportListPage extends StatelessWidget {
     final ReportController reportController = Get.put(ReportController());
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Report List', style: TextStyle(color: Colors.black)),

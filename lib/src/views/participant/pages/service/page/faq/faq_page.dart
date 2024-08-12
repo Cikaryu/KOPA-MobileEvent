@@ -1,4 +1,3 @@
-//TODO: Update FAQ Page
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
@@ -12,6 +11,7 @@ class FaqPage extends StatelessWidget {
     final FaqController faqController = Get.put(FaqController(), tag: 'faq');
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Frequently Asked Questions',
@@ -46,17 +46,12 @@ class FaqPage extends StatelessWidget {
                   itemCount: faqController.filteredFaqs.length,
                   itemBuilder: (context, index) {
                     final faq = faqController.filteredFaqs[index];
-                    final isExpanded =
-                        faqController.expandedFaqIndexes.contains(index);
-
-                    return InkWell(
-                      onTap: () {
-                        faqController.toggleFaqExpansion(index);
-                      },
-                      child: Container(
+                    return Obx(() {
+                      final isExpanded =
+                          faqController.expandedFaqIndexes.contains(index);
+                      return AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
                         margin: EdgeInsets.only(bottom: 20),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -71,38 +66,53 @@ class FaqPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  faq['question'] ?? 'No Question Available',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Icon(
-                                  isExpanded
-                                      ? Icons.keyboard_arrow_down_rounded
-                                      : Icons.keyboard_arrow_right_rounded,
-                                  color: Colors.grey,
-                                ),
-                              ],
-                            ),
-                            if (isExpanded) ...[
-                              SizedBox(height: 8),
-                              Text(
-                                faq['answer'] ?? 'No Answer Available',
-                                style: TextStyle(fontSize: 16),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () =>
+                                faqController.toggleFaqExpansion(index),
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          faq['question'] ??
+                                              'No Question Available',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        isExpanded
+                                            ? Icons.keyboard_arrow_up_rounded
+                                            : Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                  if (isExpanded) ...[
+                                    SizedBox(height: 12),
+                                    Text(
+                                      faq['answer'] ?? 'No Answer Available',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ],
                               ),
-                              SizedBox(height: 10),
-                            ],
-                          ],
+                            ),
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    });
                   },
                 );
               }),

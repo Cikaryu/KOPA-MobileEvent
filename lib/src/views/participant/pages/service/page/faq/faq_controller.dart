@@ -30,14 +30,11 @@ class FaqController extends GetxController {
 
   void filterFaq(String query) {
     if (query.isEmpty) {
-      filteredFaqs.value = faqs;
+      filteredFaqs.value = faqs; // Show all FAQs if query is empty
     } else {
       filteredFaqs.value = faqs
           .where((faq) =>
-              faq['question']!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-      filteredFaqs.value = faqs
-          .where((faq) =>
+              faq['question']!.toLowerCase().contains(query.toLowerCase()) ||
               faq['answer']!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     }

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/participant/pages/service/service_page.dart';
 import 'package:app_kopabali/src/widgets/custom_snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,66 +38,30 @@ class FeedbackController extends GetxController {
     try {
       final User? user = _auth.currentUser;
       if (user != null) {
-        // Log the current user ID
-        print('Current User ID: ${user.uid}');
-
-        // Fetch the user's document
-        DocumentSnapshot userDoc =
+        final DocumentSnapshot userDoc =
             await _firestore.collection('users').doc(user.uid).get();
-        print('User Document Data: ${userDoc.data()}'); // Debugging line
 
-        if (userDoc.exists) {
-          final String userName =
-              userDoc['name'] ?? 'No Name'; // Use a default value
-          print('User Name: $userName'); // Debugging line
+        final String name = userDoc['name'] ?? '';
 
-          // Create a reference to the feedback document
-          DocumentReference feedbackDoc =
-              _firestore.collection('feedback').doc('general_feedback');
+        final String feedbackId = _firestore.collection('feedback').doc().id;
 
-          // Fetch the current feedback document
-          DocumentSnapshot feedbackSnapshot = await feedbackDoc.get();
+        await _firestore.collection('feedback').doc(feedbackId).set({
+          'userId': user.uid,
+          'name': name,
+          'critique': critique,
+          'advice': advice,
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
 
-          if (feedbackSnapshot.exists) {
-            // If the document exists, update the user's feedback
-            await feedbackDoc.update({
-              'userFeedback.${user.uid}': {
-                'name': userName,
-                'critique': critique,
-                'advice': advice,
-                'updatedAt': FieldValue.serverTimestamp(),
-              },
-            });
-          } else {
-            // If the document does not exist, create it with the user's feedback
-            await feedbackDoc.set({
-              'userFeedback.${user.uid}': {
-                'name': userName,
-                'critique': critique,
-                'advice': advice,
-                'createdAt': FieldValue.serverTimestamp(),
-                'updatedAt': FieldValue.serverTimestamp(),
-              },
-            });
-          }
-          showSuccessDialog(Get.context!);
-          // CustomSnackbar.show(
-          //   Get.context!,
-          //   title: 'Success',
-          //   message: 'Feedback submitted successfully',
-          //   position: SnackPosition.TOP,
-          // );
-        } else {
-          CustomSnackbar.show(Get.context!,
-              title: 'Failed', message: 'User document does not exist');
-        }
+        showSuccessDialog(Get.context!);
       } else {
-        CustomSnackbar.show(Get.context!,
-            title: 'Failed', message: 'User not logged in');
+        Get.snackbar('Error', 'User not logged in',
+            snackPosition: SnackPosition.TOP);
       }
     } catch (e) {
-      CustomSnackbar.show(Get.context!,
-          title: 'Failed', message: 'User not logged in');
+      Get.snackbar('Error', 'Failed to submit feedback: $e',
+          snackPosition: SnackPosition.TOP);
     }
   }
 
@@ -111,6 +78,8 @@ class FeedbackController extends GetxController {
               onPressed: () {
                 critiqueController.clear();
                 adviceController.clear();
+                Navigator.of(context).pop();
+                Get.back();
               },
               child: Text('OK'),
             ),
