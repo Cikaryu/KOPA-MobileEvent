@@ -96,7 +96,7 @@ class ProfileController extends GetxController {
       await getUserData(user);
       await getImageBytes(user);
       await fetchQrCodeUrl(); // Ambil QR code saat controller siap
-      await getParticipantKitStatus(user); // Ambil status merchandise
+      listenToParticipantKitStatus(user); // Ambil status merchandise
     } else {
       debugPrint("User not logged in");
     }
@@ -112,7 +112,7 @@ class ProfileController extends GetxController {
         await getUserData(user); // Refresh user data
         await getImageBytes(user); // Refresh profile image
         await fetchQrCodeUrl(); // Refresh QR code
-        await getParticipantKitStatus(user); // Refresh participant kit status
+        listenToParticipantKitStatus(user); // Refresh participant kit status
       } else {
         debugPrint("User not logged in");
       }
@@ -173,15 +173,14 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> getParticipantKitStatus(User user) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(user.uid)
-          .get();
-
+  void listenToParticipantKitStatus(User user) {
+    FirebaseFirestore.instance
+        .collection('participantKit')
+        .doc(user.uid)
+        .snapshots()
+        .listen((doc) {
       if (doc.exists) {
-        final participantKit = doc.data()!; // Pastikan data diambil
+        final participantKit = doc.data()!;
         final merchandise = participantKit['merchandise'] ?? {};
         final souvenirs = participantKit['souvenir'] ?? {};
         final benefits = participantKit['benefit'] ?? {};
@@ -207,12 +206,12 @@ class ProfileController extends GetxController {
           status[key] = value['status'];
           fetchStatusImage(key, value['status']);
         });
+
+        // Call update() on the controller to refresh the UI if needed
       } else {
         debugPrint('No participantKit data found');
       }
-    } catch (e) {
-      debugPrint('Error fetching participantKit data: $e');
-    }
+    });
   }
 
   Future<void> fetchStatusImage(String key, String status) async {

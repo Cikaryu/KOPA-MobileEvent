@@ -1,19 +1,23 @@
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 
 class ChangePasswordPage extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-
-  ChangePasswordPage({super.key});
+  const ChangePasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ProfileController profileController = Get.put(ProfileController());
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userEmail = user?.email ?? 'No Email';
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('Change Password'),
+        scrolledUnderElevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,35 +27,9 @@ class ChangePasswordPage extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Please enter your email address to\n receive a verification',
+                'A password reset verification will be sent to:\n$userEmail',
                 textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Text('Email'),
-            TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(
-                hintText: 'Please enter your email address',
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-              ),
-              validator: (value) {
-                String pattern =
-                    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                RegExp regex = RegExp(pattern);
-                if (value!.isEmpty) {
-                  return 'Please enter your email';
-                } else if (!regex.hasMatch(value) || !value.endsWith('.com')) {
-                  return 'Please enter a valid email.';
-                }
-                return null;
-              },
             ),
             SizedBox(height: 20),
             Center(
@@ -64,19 +42,17 @@ class ChangePasswordPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
-                  if (emailController.text.isEmpty) {
-                    _showErrorDialog(context, 'Please enter your email.');
+                  if (userEmail != 'No Email') {
+                    await profileController.resetPassword(userEmail, context);
                   } else {
-                    await profileController.resetPassword(
-                        emailController.text, context);
+                    _showErrorDialog(context, 'User not logged in.');
                   }
                 },
-                child: 
-                    Text(
-                        'Reset Password',
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
+                child: Text(
+                  'Reset Password',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ],

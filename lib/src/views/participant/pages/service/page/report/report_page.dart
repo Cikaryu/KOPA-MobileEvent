@@ -1,11 +1,15 @@
 //Todo: Report Page Controller
+import 'dart:io';
+
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReportPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController textCategoryController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
   ReportPage({super.key});
 
   @override
@@ -45,6 +49,7 @@ class ReportPage extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: TextFormField(
+                          controller: titleController,
                           decoration: InputDecoration(
                             hintText: 'Write your report title',
                             contentPadding: EdgeInsets.symmetric(
@@ -56,6 +61,12 @@ class ReportPage extends StatelessWidget {
                               borderSide: BorderSide.none,
                             ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a title';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
@@ -97,10 +108,10 @@ class ReportPage extends StatelessWidget {
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
-                          textCategoryController.text = newValue!;
+                          categoryController.text = newValue!;
                         },
                         validator: (value) =>
-                            value == null ? 'Please select a size' : null,
+                            value == null ? 'Please select a category' : null,
                       ),
                     ),
                   ],
@@ -111,9 +122,10 @@ class ReportPage extends StatelessWidget {
                         TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
                 SizedBox(height: 8),
                 TextFormField(
+                  controller: descriptionController,
                   maxLines: 10,
                   decoration: InputDecoration(
-                    hintText: 'Write your report title',
+                    hintText: 'Write your report description',
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                     filled: true,
@@ -123,33 +135,55 @@ class ReportPage extends StatelessWidget {
                       borderSide: BorderSide.none,
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 28),
                 Text('Attachment',
                     style:
                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 SizedBox(height: 12),
+                InkWell(
+                  onTap: () async {
+                    await reportController.pickImage();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: Get.width,
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Attach your photo',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w300)),
+                        Spacer(),
+                        Icon(Icons.add),
+                      ],
+                    ),
+                  ),
+                ),
                 Container(
-                  height: 50,
-                  width: Get.width,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Upload Attachment',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w300)),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
+                  child: Obx(() {
+                    if (reportController.selectedImage.value != null) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Image.file(
+                          File(reportController.selectedImage.value!.path),
+                        ),
+                      );
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  }),
                 ),
                 SizedBox(height: 28),
                 Center(
@@ -157,7 +191,15 @@ class ReportPage extends StatelessWidget {
                     width: Get.width * 0.5,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          reportController.submitReport(
+                            title: titleController.text,
+                            category: categoryController.text,
+                            description: descriptionController.text,
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: HexColor("#72BB65"),
                         shape: RoundedRectangleBorder(
@@ -169,6 +211,7 @@ class ReportPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 24),
               ],
             ),
           ),
