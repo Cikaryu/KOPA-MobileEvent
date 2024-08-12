@@ -136,8 +136,6 @@ class SignupSlide4View extends StatelessWidget {
                             context: context,
                             role: 'participant',
                             status: 'pending',
-                            createdAt: Timestamp.now(),
-                            updatedAt: Timestamp.now(),
                           );
                           signupController.resetForm();
                         } catch (e) {

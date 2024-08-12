@@ -94,8 +94,6 @@ class SignupController extends GetxController {
     required BuildContext context,
     required String role,
     required String status,
-    required Timestamp createdAt,
-    required Timestamp updatedAt,
   }) async {
     try {
       setLoading(true);
@@ -149,8 +147,8 @@ class SignupController extends GetxController {
         'qrCodeUrl': qrCodeUrl,
         'emailVerified': false,
         'role': role,
-        'createdAt': createdAt,
-        'updatedAt': updatedAt,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
       });
 
       await FirebaseFirestore.instance
@@ -160,39 +158,39 @@ class SignupController extends GetxController {
         'merchandise': {
           'poloShirt': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           },
           'tShirt': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           },
           'luggageTag': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           },
           'jasHujan': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           },
         },
         'souvenir': {
           'gelangTridatu': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt':FieldValue.serverTimestamp(),
           },
           'selendangUdeng': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           }
         },
         'benefit': {
           'voucherBelanja': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           },
           'voucherEwallet': {
             'status': status,
-            'updatedAt': updatedAt,
+            'updatedAt': FieldValue.serverTimestamp(),
           }
         }
       });
@@ -205,63 +203,63 @@ class SignupController extends GetxController {
           'day1': {
             'departure': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'arrival': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'csr': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'lunch': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'checkInHotel': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'welcomeDinner': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'arrivedHotel': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
           },
           'day2': {
             'teamBuilding': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'lunch': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'galaDinner': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
           },
           'day3': {
             'roomCheckOut': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'luggageDrop': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'departure': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             },
             'arrivalJakarta': {
               'status': status,
-              'updatedAt': updatedAt,
+              'updatedAt': FieldValue.serverTimestamp(),
             }
           }
         },
