@@ -1,10 +1,10 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_controller.dart';
-import 'package:app_kopabali/src/views/committee/pages/committee_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/event_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/home_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/service_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/committee_page/committee_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/event_page/event_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/home_page/home_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/service_page/service_page.dart';
 
 class CommitteeView extends StatelessWidget {
   CommitteeView({super.key});
