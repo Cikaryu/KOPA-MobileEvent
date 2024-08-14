@@ -1,5 +1,3 @@
-//TODO: Folder foto 
-
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,11 +27,7 @@ class AttendanceController extends GetxController {
       'welcomeDinner': 'Pending',
       'arrivedHotel': 'Pending'
     },
-    2: {
-      'teamBuilding': 'Pending',
-      'lunch': 'Pending',
-      'galaDinner': 'Pending'
-    },
+    2: {'teamBuilding': 'Pending', 'lunch': 'Pending', 'galaDinner': 'Pending'},
     3: {
       'roomCheckOut': 'Pending',
       'luggageDrop': 'Pending',
@@ -52,20 +46,13 @@ class AttendanceController extends GetxController {
       'welcomeDinner',
       'arrivedHotel'
     ],
-    2: [
-      'teamBuilding',
-      'lunch',
-      'galaDinner'
-    ],
-    3: [
-      'roomCheckOut',
-      'luggageDrop',
-      'departure',
-      'arrivalJakarta'
-    ]
+    2: ['teamBuilding', 'lunch', 'galaDinner'],
+    3: ['roomCheckOut', 'luggageDrop', 'departure', 'arrivalJakarta']
   };
 
   var currentEvent = '';
+  var notParticipating = false.obs;
+  var leftEarly = false.obs;
 
   @override
   void onInit() {
@@ -76,8 +63,6 @@ class AttendanceController extends GetxController {
   void setLoading(bool value) {
     isLoading.value = value;
   }
-
-  
 
   void toggleDayExpanded(int day) {
     if (day == 1) {
@@ -105,11 +90,20 @@ class AttendanceController extends GetxController {
     if (eventIndex == 0) return true;
 
     var previousEvent = events[day]![eventIndex - 1];
-    return attendanceStatus[day]![previousEvent] == 'Attended';
+    return attendanceStatus[day]![previousEvent] == 'Attended' ||
+           attendanceStatus[day]![previousEvent] == 'Sick' ||
+           attendanceStatus[day]![previousEvent] == 'Permit';
   }
 
   bool areAllEventsAttended(int day) {
-    return attendanceStatus[day]!.values.every((status) => status == 'Attended');
+    return attendanceStatus[day]!.values.every((status) =>
+        status == 'Attended' || status == 'Sick' || status == 'Permit');
+  }
+
+  bool canAttendEvent(int day, String event) {
+    if (notParticipating.value || leftEarly.value) return false;
+    if (day == 1 && event == 'departure') return true;
+    return isPreviousEventAttended(day, event) && (day == 1 || areAllEventsAttended(day - 1));
   }
 
   Future<void> loadAttendanceData() async {
@@ -123,6 +117,11 @@ class AttendanceController extends GetxController {
           if (data.containsKey(dayKey)) {
             data[dayKey].forEach((event, eventData) {
               attendanceStatus[day]![event] = eventData['status'];
+              if (eventData['status'] == 'Not Participating') {
+                notParticipating.value = true;
+              } else if (eventData['status'] == 'Left Early') {
+                leftEarly.value = true;
+              }
             });
           }
         }
@@ -140,11 +139,13 @@ class AttendanceController extends GetxController {
     }
   }
 
-  Future<String?> uploadImage(File imageFile) async {
+  Future<String?> uploadImage(File imageFile, String event) async {
     try {
       String userId = _auth.currentUser!.uid;
-      String fileName = '${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      Reference ref = _storage.ref().child('attendance_images/$fileName');
+      String fileName =
+          '${userId}_${DateTime.now().millisecondsSinceEpoch}_$event.jpg';
+      Reference ref = _storage.ref().child(
+          '/users/participant/${FirebaseAuth.instance.currentUser!.uid}/attendance_images/$fileName');
       UploadTask uploadTask = ref.putFile(imageFile);
       TaskSnapshot snapshot = await uploadTask;
       String downloadUrl = await snapshot.ref.getDownloadURL();
@@ -156,7 +157,7 @@ class AttendanceController extends GetxController {
   }
 
   Future<void> submitAttendance(int day, String event, String status) async {
-    if (imageFile.value == null && status != 'Pending') {
+    if (imageFile.value == null && status != 'Pending' && status != 'Not Participating' && status != 'Left Early') {
       Get.snackbar('Error', 'Please take a photo before submitting');
       return;
     }
@@ -166,7 +167,7 @@ class AttendanceController extends GetxController {
       String userId = _auth.currentUser!.uid;
       String? imageUrl;
       if (imageFile.value != null) {
-        imageUrl = await uploadImage(imageFile.value!);
+        imageUrl = await uploadImage(imageFile.value!, event);
       }
 
       await _firestore.collection('attendance').doc(userId).set({
@@ -185,6 +186,12 @@ class AttendanceController extends GetxController {
       imageFile.value = null;
       description.value = '';
 
+      if (status == 'Not Participating') {
+        notParticipating.value = true;
+      } else if (status == 'Left Early') {
+        leftEarly.value = true;
+      }
+
       Get.back();
       Get.snackbar('Success', 'Attendance submitted successfully');
     } catch (e) {
@@ -194,4 +201,6 @@ class AttendanceController extends GetxController {
       setLoading(false);
     }
   }
+
+  
 }

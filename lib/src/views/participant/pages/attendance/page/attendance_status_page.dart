@@ -1,6 +1,3 @@
-//TODO: item dropdown status belum semua
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
@@ -10,7 +7,8 @@ class AttendanceStatusPage extends StatefulWidget {
   final int day;
   final String event;
 
-  const AttendanceStatusPage({Key? key, required this.day, required this.event}) : super(key: key);
+  const AttendanceStatusPage({Key? key, required this.day, required this.event})
+      : super(key: key);
 
   @override
   _AttendanceStatusPageState createState() => _AttendanceStatusPageState();
@@ -31,41 +29,49 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
         centerTitle: true,
       ),
       body: Obx(() => Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20),
-                  buildStatusDropdown(),
-                  SizedBox(height: 20),
-                  if (selectedStatus == 'Sick / Izin') ...[
-                    buildDescriptionField(),
-                    SizedBox(height: 20),
-                  ],
-                  buildAttachmentButton(),
-                  SizedBox(height: 20),
-                  if (controller.imageFile.value != null)
-                    buildImagePreview(),
-                ],
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 20),
+                      buildStatusDropdown(),
+                      SizedBox(height: 20),
+                      if (selectedStatus == 'Sick' || selectedStatus == 'Permit') ...[
+                        buildDescriptionField(),
+                        SizedBox(height: 20),
+                      ],
+                      if (selectedStatus != 'Not Participating' && selectedStatus != 'Left Early')
+                        buildAttachmentButton(),
+                      SizedBox(height: 20),
+                      if (controller.imageFile.value != null)
+                        buildImagePreview(),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: buildSubmitButton(),
-            ),
-          ),
-        ],
-      )),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: buildSubmitButton(),
+                ),
+              ),
+            ],
+          )),
     );
   }
 
   Widget buildStatusDropdown() {
+    List<String> statusOptions;
+    if (widget.day == 1 && widget.event == 'departure') {
+      statusOptions = ['Attending', 'Not Participating'];
+    } else {
+      statusOptions = ['Attending', 'Sick', 'Permit', 'Left Early'];
+    }
+
     return Row(
       children: [
         Text(
@@ -86,10 +92,12 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
                 borderSide: BorderSide.none,
               ),
             ),
-            items: ['Attending', 'Sick / Izin']
+            items: statusOptions
                 .map((status) => DropdownMenuItem(
                       value: status,
-                      child: Center(child: Text(status, style: TextStyle(color: Colors.grey[700]))),
+                      child: Center(
+                          child: Text(status,
+                              style: TextStyle(color: Colors.grey[700]))),
                     ))
                 .toList(),
             onChanged: (value) {
@@ -195,12 +203,15 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
         onPressed: () {
           if (selectedStatus == null) {
             Get.snackbar('Error', 'Please select a status');
-          } else if (selectedStatus == 'Sick / Izin' && controller.description.value.isEmpty) {
+          } else if ((selectedStatus == 'Sick' || selectedStatus == 'Permit') &&
+              controller.description.value.isEmpty) {
             Get.snackbar('Error', 'Please provide a description');
-          } else if (controller.imageFile.value == null) {
+          } else if (selectedStatus != 'Not Participating' && 
+                     selectedStatus != 'Left Early' && 
+                     controller.imageFile.value == null) {
             Get.snackbar('Error', 'Please take a photo');
           } else {
-            controller.submitAttendance(widget.day, widget.event, selectedStatus == 'Attending' ? 'Attended' : 'Sick');
+            controller.submitAttendance(widget.day, widget.event, selectedStatus!);
           }
         },
         style: ElevatedButton.styleFrom(
@@ -209,7 +220,8 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        child: Text('Submit Attendance', style: TextStyle(color: Colors.white, fontSize: 14)),
+        child: Text('Submit Attendance',
+            style: TextStyle(color: Colors.white, fontSize: 14)),
       ),
     );
   }
