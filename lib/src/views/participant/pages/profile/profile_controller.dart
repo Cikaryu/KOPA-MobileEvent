@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,8 @@ class ProfileController extends GetxController {
   final TextEditingController whatsappNumberController =
       TextEditingController();
   final TextEditingController numberKTPController = TextEditingController();
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+      participantKitSubscription;
 
   bool canPop = true;
   var userName = ''.obs;
@@ -124,6 +127,8 @@ class ProfileController extends GetxController {
   }
 
   Future<void> logout() async {
+    participantKitSubscription?.cancel();
+    participantKitSubscription = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await FirebaseAuth.instance.signOut();
@@ -174,7 +179,7 @@ class ProfileController extends GetxController {
   }
 
   void listenToParticipantKitStatus(User user) {
-    FirebaseFirestore.instance
+    participantKitSubscription = FirebaseFirestore.instance
         .collection('participantKit')
         .doc(user.uid)
         .snapshots()

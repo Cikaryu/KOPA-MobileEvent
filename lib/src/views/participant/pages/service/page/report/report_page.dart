@@ -123,7 +123,7 @@ class ReportPage extends StatelessWidget {
                 SizedBox(height: 8),
                 TextFormField(
                   controller: descriptionController,
-                  maxLines: 10,
+                  maxLines: 8,
                   decoration: InputDecoration(
                     hintText: 'Write your report description',
                     contentPadding:
@@ -197,6 +197,7 @@ class ReportPage extends StatelessWidget {
                             title: titleController.text,
                             category: categoryController.text,
                             description: descriptionController.text,
+                            status: 'unresolved',
                           );
                         }
                       },

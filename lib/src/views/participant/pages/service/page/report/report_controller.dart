@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ReportController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,6 +9,9 @@ class ReportController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
   final Rx<XFile?> selectedImage = Rx<XFile?>(null);
+  var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
+  var statusImageUrls =
+      <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
 
   late Rx<User?> _user;
 
@@ -81,6 +82,7 @@ class ReportController extends GetxController {
     required String title,
     required String category,
     required String description,
+    required String status,
   }) async {
     try {
       if (_user.value == null) {
@@ -103,6 +105,7 @@ class ReportController extends GetxController {
         'category': category,
         'description': description,
         'image': imageUrl,
+        'status': status,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -149,5 +152,44 @@ class ReportController extends GetxController {
   void onGoBack() {
     resetForm();
     Get.back();
+  }
+
+  Future<void> fetchStatusImage(String reportId, String status) async {
+    String imageName;
+
+    switch (status) {
+      case 'unresolved':
+        imageName = 'pending.png';
+        break;
+      case 'resolved':
+        imageName = 'resolved.png';
+        break;
+      default:
+        imageName = 'default.png';
+    }
+
+    debugPrint('Image name determined: $imageName'); // Debug statement
+
+    try {
+      final downloadUrl = await FirebaseStorage.instance
+          .ref('status/$imageName')
+          .getDownloadURL();
+      debugPrint('Fetched image URL: $downloadUrl'); // Debug statement
+      statusImageUrls[reportId] = downloadUrl; // Menyimpan URL gambar
+    } catch (e) {
+      debugPrint('Error fetching status image: $e'); // Debug statement
+      statusImageUrls[reportId] = ''; // Set to empty string if failed
+    }
+  }
+
+  Stream<QuerySnapshot> getReports() {
+    final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId
+    if (userId != null) {
+      return FirebaseFirestore.instance
+          .collection('report')
+          .where('userId', isEqualTo: userId) // Filter berdasarkan userId
+          .snapshots();
+    }
+    return Stream.empty();
   }
 }
