@@ -48,7 +48,7 @@ class AttendanceController extends GetxController {
     ],
     2: ['teamBuilding', 'lunch', 'galaDinner'],
     3: ['roomCheckOut', 'luggageDrop', 'departure', 'arrivalJakarta']
-  };
+  };  
 
   var currentEvent = '';
   var notParticipating = false.obs;

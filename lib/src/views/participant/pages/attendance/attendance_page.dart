@@ -132,7 +132,7 @@ class AttendancePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(event),
-        if (status == 'Attended')
+        if (status == 'Attending')
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Container(
