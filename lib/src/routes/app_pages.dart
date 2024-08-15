@@ -1,4 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/committee/scan/scan_view.dart';
 import 'package:app_kopabali/src/views/landingpage/authpage_view.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
@@ -36,6 +37,7 @@ abstract class AppPages {
     ),
     GetPage(name: AppRoutes.participant, page: () => ParticipantView()),
     GetPage(name: AppRoutes.committee, page: () => CommitteeView()),
+    GetPage(name: AppRoutes.participant, page: () => ScanView()),
     GetPage(name: AppRoutes.editProfile, page: () => EditProfileView()),
     GetPage(name: AppRoutes.changePassword, page: () => ChangePasswordPage()),
     GetPage(name: AppRoutes.profile, page: () => ProfileParticipantPage()),
