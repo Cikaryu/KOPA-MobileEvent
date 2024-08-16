@@ -276,7 +276,13 @@ class ProfileController extends GetxController {
                   )
                 : CircularProgressIndicator(),
             SizedBox(height: 12),
-            Text(userName.value),
+            Text(
+              userName.value,
+              style: TextStyle(
+                fontSize: 24,
+              ),
+            ),
+            Text('Show this QR Code to the commitee')
           ]),
           actions: [
             Center(
@@ -430,7 +436,7 @@ class ProfileController extends GetxController {
   void pickImage(
       ImageSource source, ProfileController profileController) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 50);
 
     if (pickedFile != null) {
       profileController.setSelfieImage(File(pickedFile.path));

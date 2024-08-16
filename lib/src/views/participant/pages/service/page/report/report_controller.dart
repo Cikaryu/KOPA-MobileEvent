@@ -57,7 +57,7 @@ class ReportController extends GetxController {
     );
 
     if (source != null) {
-      final XFile? image = await _picker.pickImage(source: source);
+      final XFile? image = await _picker.pickImage(source: source, imageQuality: 50);
       if (image != null) {
         selectedImage.value = image;
       }

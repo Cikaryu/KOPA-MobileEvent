@@ -2,7 +2,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/routes/app_pages.dart';
 
-class AuthpageController extends GetxController {
+class LandingPageController extends GetxController {
   @override
   onInit() {
     super.onInit();

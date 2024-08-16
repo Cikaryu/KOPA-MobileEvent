@@ -1,8 +1,8 @@
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/reportlist_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class ReportListPage extends StatelessWidget {
   const ReportListPage({super.key});
@@ -26,6 +26,24 @@ class ReportListPage extends StatelessWidget {
     }
 
     return Scaffold(
+      bottomNavigationBar: SizedBox(
+        height: 96,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Get.to(() => ReportPage());
+              },
+              child: Text('Add Report',
+                  style: TextStyle(fontSize: 16, color: Colors.white))),
+        ),
+      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,

@@ -1,4 +1,3 @@
-//Todo: Report Page Controller
 import 'dart:io';
 
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_controller.dart';
@@ -24,6 +23,7 @@ class ReportPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         title: Text('Report', style: TextStyle(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
@@ -171,20 +171,21 @@ class ReportPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  child: Obx(() {
-                    if (reportController.selectedImage.value != null) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Image.file(
-                          File(reportController.selectedImage.value!.path),
-                        ),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  }),
-                ),
+                Obx(() {
+                  if (reportController.selectedImage.value != null) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: Image.file(
+                        File(reportController.selectedImage.value!.path),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 200,
+                      ),
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                }),
                 SizedBox(height: 28),
                 Center(
                   child: Container(
