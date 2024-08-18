@@ -14,7 +14,7 @@ class ScanController extends GetxController {
   var isSouvenirExpanded = false.obs;
   var isBenefitExpanded = false.obs;
   var isLoadingStatusImage = true.obs;
-  var statusImageUrl = ''.obs; // Tambahkan field untuk URL gambar status
+  var statusImageUrl = ''.obs;
   var selfieImage = Rxn<File>();
   var imageUrl = ''.obs;
   var imageBytes = Rxn<Uint8List>();
@@ -22,8 +22,11 @@ class ScanController extends GetxController {
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
 
+  //item dropdown
+  final List<String> statusOptions = ['pending', 'received'];
+
   @override
-  onInit() {
+  void onInit() {
     super.onInit();
     fetchUserData();
     getUserData;
@@ -31,6 +34,14 @@ class ScanController extends GetxController {
 
   tapMerch() {
     isMerchExpanded.value = !isMerchExpanded.value;
+  }
+
+  tapSouvenir() {
+    isSouvenirExpanded.value = !isSouvenirExpanded.value;
+  }
+
+  tapBenefit() {
+    isBenefitExpanded.value = !isBenefitExpanded.value;
   }
 
   Future<void> getImageBytes(User user) async {
@@ -60,6 +71,8 @@ class ScanController extends GetxController {
       if (doc.exists) {
         userName.value = doc['name'];
         userDivisi.value = doc['division'];
+        tShirtSize.value = doc['tShirtSize'];
+        poloShirtSize.value = doc['poloShirtSize'];
       } else {
         debugPrint('No user data found');
       }
@@ -69,22 +82,25 @@ class ScanController extends GetxController {
   }
 
   @override
-  onReady() async {
+  void onReady() async {
     update();
     super.onReady();
   }
 
-  void fetchUserData() async {
+  fetchUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
+
       if (userDoc.exists) {
         var data = userDoc.data() as Map<String, dynamic>;
         userName.value = data['name'] ?? '';
         userDivisi.value = data['division'] ?? '';
+        tShirtSize.value = data['tShirtSize'] ?? '';
+        poloShirtSize.value = data['poloShirtSize'] ?? '';
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {
           var response = await FirebaseStorage.instance.ref(imageUrl).getData();
@@ -92,7 +108,57 @@ class ScanController extends GetxController {
             imageBytes.value = response;
           }
         }
+
+        // Fetch status for each field
+        final fields = [
+          'merchandise.tShirt',
+          'merchandise.poloShirt',
+          'merchandise.luggageTag',
+          'merchandise.jasHujan',
+          'souvenir.gelangTridatu',
+          'souvenir.selendangUdeng',
+          'benefit.voucherEwallet',
+          'benefit.voucherBelanja'
+        ];
+
+        for (var field in fields) {
+          final fieldParts = field.split('.');
+          final categoryData = data[fieldParts[0]] as Map<String, dynamic>?;
+
+          if (categoryData != null && categoryData[fieldParts[1]] != null) {
+            final itemData =
+                categoryData[fieldParts[1]] as Map<String, dynamic>?;
+            final fieldStatus = itemData?['status'] ?? 'pending';
+            status[field] = fieldStatus;
+          } else {
+            status[field] = 'pending';
+          }
+        }
       }
+    }
+    update(); 
+  }
+
+  // Add new method to update status in Firebase
+  Future<void> updateStatus(String field, String newStatus) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final fieldParts = field.split('.');
+        await FirebaseFirestore.instance
+            .collection('participantKit')
+            .doc(user.uid)
+            .update({
+          '${fieldParts[0]}.${fieldParts[1]}.status': newStatus,
+          '${fieldParts[0]}.${fieldParts[1]}.updatedAt':
+              FieldValue.serverTimestamp(),
+        });
+        // Update local status
+        status[field] = newStatus;
+        update(); 
+      }
+    } catch (e) {
+      debugPrint('Error updating status: $e');
     }
   }
 
@@ -101,7 +167,7 @@ class ScanController extends GetxController {
   }
 
   @override
-  onClose() async {
+  void onClose() async {
     super.onClose();
   }
 
