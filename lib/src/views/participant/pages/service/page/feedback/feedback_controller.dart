@@ -1,10 +1,5 @@
-import 'dart:developer';
-
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/participant/pages/service/service_page.dart';
-import 'package:app_kopabali/src/widgets/custom_snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class FeedbackController extends GetxController {
   bool canPop = true;

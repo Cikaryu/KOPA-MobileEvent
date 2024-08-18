@@ -176,7 +176,7 @@ class SignupController extends GetxController {
         'souvenir': {
           'gelangTridatu': {
             'status': status,
-            'updatedAt':FieldValue.serverTimestamp(),
+            'updatedAt': FieldValue.serverTimestamp(),
           },
           'selendangUdeng': {
             'status': status,
@@ -404,7 +404,7 @@ class SignupController extends GetxController {
   void _pickImage(ImageSource source, String type,
       SignupController signupController) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 50);
 
     if (pickedFile != null) {
       if (type == 'selfie') {

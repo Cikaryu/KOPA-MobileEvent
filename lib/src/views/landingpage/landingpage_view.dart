@@ -1,22 +1,20 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/landingpage/authpage_controller.dart';
-import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
-import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
-import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
+import 'package:app_kopabali/src/views/landingpage/landingpage_controller.dart';
 
-class AuthpageView extends StatelessWidget {
-  AuthpageView({super.key});
+
+class LandingPageView extends StatelessWidget {
+  LandingPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthpageController authpageController = Get.put(AuthpageController());
+    final LandingPageController landingPageController = Get.put(LandingPageController());
     WidgetsBinding.instance.addPostFrameCallback((_) {});
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: GetBuilder<AuthpageController>(
-        init: AuthpageController(),
+      child: GetBuilder<LandingPageController>(
+        init: LandingPageController(),
         builder: (controller) => Scaffold(
             backgroundColor: Color(0xFFF5F5F5),
             appBar: AppBar(
