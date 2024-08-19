@@ -1,6 +1,8 @@
-import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ReportCommitteeController extends GetxController {
@@ -10,6 +12,8 @@ class ReportCommitteeController extends GetxController {
   var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
   var statusImageUrls =
       <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
+
+  var isLoading = false.obs; // Untuk mengatur status loading
 
   late Rx<User?> _user;
 
@@ -37,11 +41,14 @@ class ReportCommitteeController extends GetxController {
     String imageName;
 
     switch (status) {
-      case 'unresolved':
-        imageName = 'pending.png';
+      case 'Unresolved':
+        imageName = 'close.png';
         break;
-      case 'resolved':
-        imageName = 'resolved.png';
+      case 'Resolved':
+        imageName = 'received.png';
+        break;
+      case 'Pending':
+        imageName = 'pending.png';
         break;
       default:
         imageName = 'default.png';
@@ -59,6 +66,48 @@ class ReportCommitteeController extends GetxController {
       debugPrint('Error fetching status image: $e'); // Debug statement
       statusImageUrls[reportId] = ''; // Set to empty string if failed
     }
+  }
+
+  Future<bool> updateReport({
+    required String reportId,
+    required String reply,
+    required String status,
+  }) async {
+    isLoading.value = true; // Memulai loading
+    try {
+      await _firestore.collection('report').doc(reportId).update({
+        'reply': reply,
+        'status': status,
+        'updatedAt': Timestamp.now(),
+      });
+      _showDialog('Success', 'Report updated successfully.');
+      return true;
+    } catch (e) {
+      debugPrint('Error updating report: $e');
+      _showDialog('Error', 'Failed to update report.');
+      return false;
+    } finally {
+      isLoading.value = false; // Menghentikan loading
+    }
+  }
+
+  void _showDialog(String title, String message) {
+    Get.dialog(
+      AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Get.back();
+            }, // Close the dialog
+            child: Text('OK'),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
   }
 
   Stream<QuerySnapshot> getReports() {

@@ -157,12 +157,15 @@ class ReportController extends GetxController {
   Future<void> fetchStatusImage(String reportId, String status) async {
     String imageName;
 
-    switch (status) {
-      case 'unresolved':
-        imageName = 'pending.png';
+     switch (status) {
+      case 'Unresolved':
+        imageName = 'close.png';
         break;
-      case 'resolved':
-        imageName = 'resolved.png';
+      case 'Resolved':
+        imageName = 'received.png';
+        break;
+        case 'Pending':
+        imageName = 'pending.png';
         break;
       default:
         imageName = 'default.png';
