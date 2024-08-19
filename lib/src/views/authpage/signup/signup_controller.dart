@@ -47,6 +47,12 @@ class SignupController extends GetxController {
       curve: Curves.easeInOut,
     );
   }
+    void backPage() {
+    pageController.previousPage(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   void togglePasswordVisibility() {
     showPassword.value = !showPassword.value;

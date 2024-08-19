@@ -2,7 +2,7 @@ import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 
 class SignupView extends StatelessWidget {
-  SignupView({super.key});
+  const SignupView({super.key});
 
   @override
   Widget build(BuildContext context) {

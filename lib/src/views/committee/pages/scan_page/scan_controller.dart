@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ScanController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController divisiController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool canPop = true;
   var userName = ''.obs;
   var userDivisi = ''.obs;
@@ -136,7 +137,7 @@ class ScanController extends GetxController {
         }
       }
     }
-    update(); 
+    update();
   }
 
   // Add new method to update status in Firebase
@@ -155,7 +156,7 @@ class ScanController extends GetxController {
         });
         // Update local status
         status[field] = newStatus;
-        update(); 
+        update();
       }
     } catch (e) {
       debugPrint('Error updating status: $e');
@@ -173,5 +174,22 @@ class ScanController extends GetxController {
 
   onGoBack() {
     Get.back();
+  }
+
+  void processQRCode(String qrCode) async {
+    try {
+      // Query ke Firestore berdasarkan userId dari QR code
+      DocumentSnapshot participantDoc =
+          await _firestore.collection('users').doc(qrCode).get();
+
+      if (participantDoc.exists) {
+        // Jika peserta ditemukan, navigasi ke halaman profil dengan userId
+        Get.toNamed('/scan', arguments: {'userId': qrCode});
+      } else {
+        Get.snackbar("Error", "Participant not found.");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Failed to process QR code: $e");
+    }
   }
 }

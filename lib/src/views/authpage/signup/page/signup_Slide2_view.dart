@@ -1,4 +1,3 @@
-//TODO compress image
 import 'dart:io'; // Add this line to import the 'dart:io' package
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
@@ -29,8 +28,15 @@ class SignupSlide2View extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              signupController.backPage();
+            },
+          ),
           backgroundColor: Colors.white,
-          elevation: 0,
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -57,9 +63,9 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your name' : null,
-                      inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(
-                        r'[a-zA-Z0-9,. ]')),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9,. ]')),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -76,9 +82,9 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your area' : null,
-                      inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(
-                        r'[a-zA-Z0-9,. ]')),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9,. ]')),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -95,9 +101,9 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your division' : null,
-                      inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(
-                        r'[a-zA-Z0-9,. ]')),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9,. ]')),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -115,9 +121,9 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your department' : null,
-                      inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(
-                        r'[a-zA-Z0-9,. ]')),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9,. ]')),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -135,8 +141,8 @@ class SignupSlide2View extends StatelessWidget {
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter your address' : null,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(
-                        r'[a-zA-Z0-9,. ]')),
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'[a-zA-Z0-9,. ]')),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -169,8 +175,7 @@ class SignupSlide2View extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 10),
-                Text('NIK',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('NIK', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _ktpNumberController,

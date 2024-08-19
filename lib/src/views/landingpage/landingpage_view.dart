@@ -1,13 +1,15 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
+import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
 import 'package:app_kopabali/src/views/landingpage/landingpage_controller.dart';
-
 
 class LandingPageView extends StatelessWidget {
   LandingPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final LandingPageController landingPageController = Get.put(LandingPageController());
+    final LandingPageController landingPageController =
+        Get.put(LandingPageController());
     WidgetsBinding.instance.addPostFrameCallback((_) {});
     return GestureDetector(
       onTap: () {
@@ -39,7 +41,10 @@ class LandingPageView extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          controller.tapSignin();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => SigninView()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
@@ -58,7 +63,10 @@ class LandingPageView extends StatelessWidget {
                       SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
-                          controller.tapSignup();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => SignupView()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

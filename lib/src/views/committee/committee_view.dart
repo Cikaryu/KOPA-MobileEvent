@@ -1,9 +1,8 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_controller.dart';
-import 'package:app_kopabali/src/views/committee/pages/committee_page/committee_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/event_page/event_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/home_page/home_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/scan_page/scan_view.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/service_page.dart';
 
 class CommitteeView extends StatelessWidget {
@@ -13,16 +12,16 @@ class CommitteeView extends StatelessWidget {
 
   final List<Widget> _pages = [
     HomePageCommittee(),
+    ScannerView(),
+    ServiceCommitteePage(),
     ProfileCommitteePage(),
-    CommitteePage(),
-    EventCommitteePage(),
-    ServiceCommitteePage()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
+        physics: NeverScrollableScrollPhysics(),
         controller: committeeController.pageController,
         onPageChanged: (index) {
           committeeController.selectedIndex.value = index;
@@ -33,32 +32,31 @@ class CommitteeView extends StatelessWidget {
         },
       ),
       bottomNavigationBar: Obx(() => BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
+            items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                backgroundColor: Colors.blue,
+                backgroundColor: HexColor('01613B'),
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
+                backgroundColor: HexColor('01613B'),
+                icon: Icon(Icons.qr_code),
+                label: 'Scan QR',
               ),
               BottomNavigationBarItem(
+                backgroundColor: HexColor('01613B'),
                 icon: Icon(Icons.group),
                 label: 'Committee',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.event),
-                label: 'Event',
-              ),
-              BottomNavigationBarItem(
+                backgroundColor: HexColor('01613B'),
                 icon: Icon(Icons.build),
-                label: 'Service',
+                label: 'Profile',
               ),
             ],
             currentIndex: committeeController.selectedIndex.value,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.black,
+            selectedItemColor: HexColor('F3F3F3'),
+            unselectedItemColor: HexColor('D4D4D4'),
             onTap: (index) {
               committeeController.changeTabIndex(index);
             },

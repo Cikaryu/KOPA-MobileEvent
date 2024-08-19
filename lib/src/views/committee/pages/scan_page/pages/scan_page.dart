@@ -1,5 +1,5 @@
 
-import 'package:app_kopabali/src/views/committee/scan/scan_eo/scan_controller.dart';
+import 'package:app_kopabali/src/views/committee/pages/scan_page/scan_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 

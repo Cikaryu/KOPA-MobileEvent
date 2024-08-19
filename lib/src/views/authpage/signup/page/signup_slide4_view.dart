@@ -1,6 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 
@@ -28,8 +27,9 @@ class SignupSlide4View extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          elevation: 0,
-          automaticallyImplyLeading: false,
+          scrolledUnderElevation: 0,
+                    automaticallyImplyLeading: false,
+
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -84,6 +84,7 @@ class SignupSlide4View extends StatelessWidget {
                 TextFormField(
                   controller: _eWalletNumberController,
                   keyboardType: TextInputType.number,
+                  maxLength: 16,
                   decoration: InputDecoration(
                     hintText: 'Your E-Wallet Number',
                     border: OutlineInputBorder(
