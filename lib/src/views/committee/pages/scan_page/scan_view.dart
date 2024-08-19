@@ -13,17 +13,71 @@ class ScannerView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Scan QR Code'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
-      body: MobileScanner(
-        onDetect: (barcodeCapture) {
-          final Barcode? barcode = barcodeCapture.barcodes.first;
-          if (barcode?.rawValue != null) {
-            final String qrCode = barcode!.rawValue!;
-            qrCodeController.processQRCode(qrCode);
-          } else {
-            Get.snackbar("Error", "Failed to scan QR code.");
-          }
-        },
+      body: Center(
+        child: Stack(
+          children: [
+            // Background container with opacity
+            Positioned.fill(
+              child: MobileScanner(
+                fit: BoxFit.cover,
+                onDetect: (barcodeCapture) {
+                  final Barcode? barcode = barcodeCapture.barcodes.first;
+                  if (barcode?.rawValue != null) {
+                    final String qrCode = barcode!.rawValue!;
+                    qrCodeController.processQRCode(qrCode);
+                  } else {
+                    Get.snackbar("Error", "Failed to scan QR code.");
+                  }
+                },
+              ),
+            ),
+            // Overlay with gradient
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment.center,
+                      radius:
+                          0.6, // Adjust to change the size of the clear area
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(
+                            0.5), // Gradient color and opacity for the edges
+                      ],
+                      stops: [
+                        0.5,
+                        1.0
+                      ], // Adjust to control where the gradient transitions
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Center(
+              child: SizedBox(
+                width: Get.width / 1.2,
+                height: 360,
+                child: MobileScanner(
+                  fit: BoxFit.cover,
+                  onDetect: (barcodeCapture) {
+                    final Barcode? barcode = barcodeCapture.barcodes.first;
+                    if (barcode?.rawValue != null) {
+                      final String qrCode = barcode!.rawValue!;
+                      qrCodeController.processQRCode(qrCode);
+                    } else {
+                      Get.snackbar("Error", "Failed to scan QR code.");
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

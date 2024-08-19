@@ -1,4 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/reply_report/reportlist_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_controller.dart';
 
 class ProfileCommitteePage extends StatelessWidget {
@@ -123,7 +125,13 @@ class ProfileCommitteePage extends StatelessWidget {
                           ),
                           SizedBox(height: 6),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SearchParticipantPage()),
+                              );
+                            },
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 16.0, vertical: 12.0),
@@ -177,7 +185,13 @@ class ProfileCommitteePage extends StatelessWidget {
                           ),
                           SizedBox(height: 20),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ReportListCommitteePage()),
+                              );
+                            },
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 16.0, vertical: 12.0),
