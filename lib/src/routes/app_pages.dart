@@ -1,6 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/scan_page/pages/scan_fix.dart';
-import 'package:app_kopabali/src/views/committee/pages/scan_page/pages/scan_page.dart';
 import 'package:app_kopabali/src/views/landingpage/landingpage_view.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
