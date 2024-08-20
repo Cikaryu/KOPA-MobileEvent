@@ -21,7 +21,7 @@ class SearchParticipantController extends GetxController {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('role', isEqualTo: 'participant')
+          .where('role', isEqualTo: 'Participant')
           .get();
 
       final participants = querySnapshot.docs

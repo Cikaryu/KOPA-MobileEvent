@@ -31,11 +31,14 @@ class ServiceController extends GetxController {
     String imageName;
 
     switch (status) {
-      case 'unresolved':
+      case 'Pending':
         imageName = 'pending.png';
         break;
-      case 'resolved':
+      case 'Resolved':
         imageName = 'received.png';
+        break;
+      case 'Unresolved':
+        imageName = 'close.png';
         break;
       default:
         imageName = 'default.png';
