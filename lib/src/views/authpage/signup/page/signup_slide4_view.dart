@@ -28,7 +28,7 @@ class SignupSlide4View extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
-                    automaticallyImplyLeading: false,
+          automaticallyImplyLeading: false,
 
         ),
         body: SingleChildScrollView(
@@ -118,25 +118,17 @@ class SignupSlide4View extends StatelessWidget {
                             name: signupController.nameController.text,
                             area: signupController.areaController.text,
                             division: signupController.divisionController.text,
-                            department:
-                                signupController.departmentController.text,
+                            department: signupController.departmentController.text,
                             address: signupController.addressController.text,
-                            whatsappNumber:
-                                signupController.whatsappNumberController.text,
-                            ktpNumber:
-                                signupController.ktpNumberController.text,
-                            tShirtSize:
-                                signupController.tshirtSizeController.text,
-                            poloShirtSize:
-                                signupController.poloShirtSizeController.text,
-                            eWalletType: signupController.eWalletTypeController
-                                .text = _eWalletTypeController.text,
-                            eWalletNumber: signupController
-                                .eWalletNumberController
-                                .text = _eWalletNumberController.text,
+                            whatsappNumber: signupController.whatsappNumberController.text,
+                            ktpNumber: signupController.ktpNumberController.text,
+                            tShirtSize: signupController.tshirtSizeController.text,
+                            poloShirtSize: signupController.poloShirtSizeController.text,
+                            eWalletType: signupController.eWalletTypeController.text = _eWalletTypeController.text,
+                            eWalletNumber: signupController.eWalletNumberController.text = _eWalletNumberController.text,
                             context: context,
-                            role: 'participant',
-                            status: 'pending',
+                            role: 'Participant',
+                            status: 'Pending',
                           );
                           signupController.resetForm();
                         } catch (e) {

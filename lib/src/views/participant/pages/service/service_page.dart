@@ -121,7 +121,15 @@ class ServicePage extends StatelessWidget {
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         // Jika tidak ada laporan, kembalikan widget kosong
-                        return SizedBox(); // Mengembalikan SizedBox untuk menghindari pengembangan
+                        return Center(
+                          child: Text(
+                            'No reports available.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        );
                       }
 
                       final reports = snapshot.data!.docs

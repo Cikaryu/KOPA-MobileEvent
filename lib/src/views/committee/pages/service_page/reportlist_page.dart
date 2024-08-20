@@ -1,7 +1,7 @@
 // TODO: styling halaman report list
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/reply_report/report_controller.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/reply_report/reportlist_detail_page.dart';
+import 'package:app_kopabali/src/views/committee/pages/service_page/report_controller.dart';
+import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReportListCommitteePage extends StatelessWidget {
@@ -17,6 +17,7 @@ class ReportListCommitteePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Report List', style: TextStyle(color: Colors.black)),
+        centerTitle: true,
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: StreamBuilder<QuerySnapshot>(

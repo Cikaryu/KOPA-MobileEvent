@@ -2,9 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,8 +14,7 @@ class ProfileController extends GetxController {
   final TextEditingController whatsappNumberController =
       TextEditingController();
   final TextEditingController numberKTPController = TextEditingController();
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
-      participantKitSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? participantKitSubscription;
 
   bool canPop = true;
   var userName = ''.obs;
@@ -50,6 +46,30 @@ class ProfileController extends GetxController {
     super.onInit();
     fetchUserData();
     getUserData;
+  }
+  
+  void toggleMerchExpanded() {
+    isMerchExpanded.value = !isMerchExpanded.value;
+    if (isMerchExpanded.value) {
+      isSouvenirExpanded.value = false;
+      isBenefitExpanded.value = false;
+    }
+  }
+
+  void toggleSouvenirExpanded() {
+    isSouvenirExpanded.value = !isSouvenirExpanded.value;
+    if (isSouvenirExpanded.value) {
+      isMerchExpanded.value = false;
+      isBenefitExpanded.value = false;
+    }
+  }
+
+  void toggleBenefitExpanded() {
+    isBenefitExpanded.value = !isBenefitExpanded.value;
+    if (isBenefitExpanded.value) {
+      isMerchExpanded.value = false;
+      isSouvenirExpanded.value = false;
+    }
   }
 
   void fetchUserData() async {
@@ -223,13 +243,13 @@ class ProfileController extends GetxController {
     String imageName;
 
     switch (status) {
-      case 'pending':
+      case 'Pending':
         imageName = 'pending.png';
         break;
-      case 'received':
+      case 'Received':
         imageName = 'received.png';
         break;
-      case 'close':
+      case 'Close':
         imageName = 'close.png';
         break;
       default:

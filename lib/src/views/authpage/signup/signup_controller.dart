@@ -40,6 +40,10 @@ class SignupController extends GetxController {
     selfieImage.value = image;
     update();
   }
+    void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
 
   void nextPage() {
     pageController.nextPage(

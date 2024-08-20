@@ -148,10 +148,7 @@ class SignupSlide1View extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => SigninView()),
-                                );
+                                Get.offAll(() => SigninView());
                               },
                               child: Text(
                                 "Sign in",

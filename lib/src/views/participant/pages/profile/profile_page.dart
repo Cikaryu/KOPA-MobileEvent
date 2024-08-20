@@ -286,7 +286,7 @@ class ProfileParticipantPage extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              profileController.isMerchExpanded.toggle();
+                              profileController.toggleMerchExpanded();
                             },
                             child: Container(
                               padding: EdgeInsets.all(8),
@@ -503,7 +503,7 @@ class ProfileParticipantPage extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              profileController.isSouvenirExpanded.toggle();
+                              profileController.toggleSouvenirExpanded();
                             },
                             child: Container(
                               padding: EdgeInsets.all(8),
@@ -665,7 +665,7 @@ class ProfileParticipantPage extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              profileController.isBenefitExpanded.toggle();
+                              profileController.toggleBenefitExpanded();
                             },
                             child: Container(
                               padding: EdgeInsets.all(8),

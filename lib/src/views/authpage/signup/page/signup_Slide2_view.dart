@@ -28,12 +28,6 @@ class SignupSlide2View extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              signupController.backPage();
-            },
-          ),
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,
@@ -246,7 +240,7 @@ class SignupSlide2View extends StatelessWidget {
                                         if (value != null) {
                                           signupController.showImagePreview(
                                               context,
-                                              value); // Memanggil fungsi di controller
+                                              value);
                                         }
                                       },
                                       child: Container(
@@ -273,6 +267,7 @@ class SignupSlide2View extends StatelessWidget {
                                     SizedBox(height: 16),
                                     ElevatedButton(
                                       onPressed: () {
+                                        FocusScope.of(context).unfocus();
                                         signupController.showImageSourceDialog(
                                           context,
                                           'selfie',
@@ -386,6 +381,7 @@ class SignupSlide2View extends StatelessWidget {
                                     SizedBox(height: 16),
                                     ElevatedButton(
                                       onPressed: () {
+                                        FocusScope.of(context).unfocus();
                                         signupController.showImageSourceDialog(
                                           context,
                                           'ktp',

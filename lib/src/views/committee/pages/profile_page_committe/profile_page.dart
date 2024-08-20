@@ -1,5 +1,4 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/reply_report/reportlist_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_controller.dart';
 
@@ -167,66 +166,6 @@ class ProfileCommitteePage extends StatelessWidget {
                                       ),
                                       Text(
                                         'Edit Participant kits and search Participants',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Icon(
-                                    Icons.keyboard_arrow_right_rounded,
-                                    color: Colors.grey,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ReportListCommitteePage()),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 12.0),
-                              decoration: BoxDecoration(
-                                color: HexColor("#F3F3F3"),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 4,
-                                    spreadRadius: 0,
-                                    offset: Offset(0, 0),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.receipt_long_rounded,
-                                    color: Colors.orange,
-                                  ),
-                                  SizedBox(width: 16.0),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Reply Report',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Reply report from participants',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,

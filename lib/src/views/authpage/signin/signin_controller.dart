@@ -41,6 +41,7 @@ class SigninController extends GetxController {
 
         if (user!.emailVerified) {
           await _handleVerifiedUser(user, context);
+          _checkEmailVerificationStatus();
         } else {
           _showVerificationDialog(context, user);
         }
@@ -100,11 +101,13 @@ class SigninController extends GetxController {
     await prefs.setString('userId', user.uid);
     await prefs.setString('role', role);
 
-    if (role == 'participant') {
+    if (role == 'Participant') {
       Navigator.of(context).pushReplacementNamed('/participant');
-    } else if (role == 'committee') {
+    } else if (role == 'Committee') {
       Navigator.of(context).pushReplacementNamed('/committee');
-    } else if (role == 'admin') {
+    } else if (role == 'Event Organizer') {
+      Navigator.of(context).pushReplacementNamed('/admin_view');
+    } else if (role == 'Super Event Organizer') {
       Navigator.of(context).pushReplacementNamed('/admin_view');
     }
   }
@@ -168,28 +171,30 @@ class SigninController extends GetxController {
   void _checkEmailVerificationStatus() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       if (user != null) {
-        // Reload user untuk memastikan status terkini
-        await user.reload();
-        user = FirebaseAuth
-            .instance.currentUser; // Ambil user yang sudah diperbarui
+        await Future.delayed(Duration(seconds: 2)); // Beri sedikit waktu
+        await user.reload(); // Memuat ulang untuk memastikan status terbaru
+        User? updatedUser = FirebaseAuth.instance.currentUser;
+        if (updatedUser!.emailVerified) {
+          try {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(updatedUser.uid)
+                .update({'emailVerified': true});
 
-        // Cek jika email sudah diverifikasi
-        if (user!.emailVerified) {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .update({'emailVerified': true});
+            // Simpan status ke SharedPreferences
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('isLoggedIn', true);
+            await prefs.setString('userId', updatedUser.uid);
 
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('userId', user.uid);
-
-          DocumentSnapshot userDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-          String role = userDoc['role'];
-          await prefs.setString('role', role);
+            DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                .collection('users')
+                .doc(updatedUser.uid)
+                .get();
+            String role = userDoc['role'];
+            await prefs.setString('role', role);
+          } catch (e) {
+            print("Firestore update error: $e");
+          }
         }
       }
     });
