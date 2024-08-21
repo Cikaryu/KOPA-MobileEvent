@@ -9,7 +9,6 @@ class AttendancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AttendanceController attendanceController =
         Get.put(AttendanceController());
-        
 
     return Scaffold(
       appBar: AppBar(
@@ -21,24 +20,28 @@ class AttendancePage extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: Obx(() {
-        return SizedBox(
-          width: Get.width,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(children: [
-                buildDayContainer(attendanceController, 1),
-                buildDayContainer(attendanceController, 2),
-                buildDayContainer(attendanceController, 3),
-              ]),
+        if (attendanceController.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          return SizedBox(
+            width: Get.width,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(children: [
+                  buildDayContainer(attendanceController, 1),
+                  buildDayContainer(attendanceController, 2),
+                  buildDayContainer(attendanceController, 3),
+                ]),
+              ),
             ),
-          ),
-        );
+          );
+        }
       }),
     );
   }
 
-  // Membuat container untuk setiap hari
   Widget buildDayContainer(AttendanceController controller, int day) {
     return Container(
       margin: EdgeInsets.only(bottom: 20),
@@ -124,65 +127,68 @@ class AttendancePage extends StatelessWidget {
     );
   }
 
-  // Membuat row untuk setiap event dalam container
-Widget buildEventRow(AttendanceController controller, int day, String event) {
-  bool canAttend = controller.canAttendEvent(day, event);
-  String status = controller.attendanceStatus[day]![event] ?? 'Pending';
+  Widget buildEventRow(AttendanceController controller, int day, String event) {
+    bool canAttend = controller.canAttendEvent(day, event);
+    String status = controller.attendanceStatus[day]![event] ?? 'Pending';
+    String displayName = controller.eventDisplayNames[event] ?? event;
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(event),
-      if (status == 'Attending')
-        buildStatusContainer('Attended', Colors.green, Icons.check_circle)
-      else if (status == 'Sick' || status == 'Permit')
-        buildStatusContainer(status, Colors.yellow, Icons.warning)
-      else if (status == 'Not Participating' || status == 'Left Early')
-        buildStatusContainer(status, Colors.red, Icons.cancel)
-      else
-        ElevatedButton(
-          onPressed: canAttend
-              ? () {
-                  controller.currentEvent = event;
-                  Get.to(() => AttendanceStatusPage(day: day, event: event));
-                }
-              : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: canAttend ? Colors.green : Colors.grey,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(displayName),
+        if (status == 'Attending')
+          buildStatusContainer('Attended', Colors.green, Icons.check_circle)
+        else if (status == 'Sick' || status == 'Permit')
+          buildStatusContainer(status, Colors.yellow, Icons.warning)
+        else if (status == 'Not Participating' || status == 'Left Early')
+          buildStatusContainer(status, Colors.red, Icons.cancel)
+        else
+          ElevatedButton(
+            onPressed: canAttend
+                ? () async {
+                    controller.currentEvent = event;
+                    await Get.to(
+                        () => AttendanceStatusPage(day: day, event: event));
+                    // Refresh data when coming back from the status page
+                    await controller.refreshAttendanceData();
+                  }
+                : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: canAttend ? Colors.green : Colors.grey,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              'Attend',
+              style: TextStyle(color: Colors.white),
             ),
           ),
-          child: Text(
-            'Attend',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
-Widget buildStatusContainer(String status, Color color, IconData icon) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color),
+  Widget buildStatusContainer(String status, Color color, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color),
+        ),
+        child: Row(
+          children: [
+            Text(
+              status,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 5),
+            Icon(icon, color: color, size: 16)
+          ],
+        ),
       ),
-      child: Row(
-        children: [
-          Text(
-            status,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(width: 5),
-          Icon(icon, color: color, size: 16)
-        ],
-      ),
-    ),
-  );
-}
+    );
+  }
 }

@@ -217,12 +217,14 @@ class SearchParticipantPage extends StatelessWidget {
                                   Text(
                                     participant.name ?? 'Unknown',
                                     style: TextStyle(
+                                      fontSize: 16,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                            SizedBox(width: 16),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: HexColor('E97717'),

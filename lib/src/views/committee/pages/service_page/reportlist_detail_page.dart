@@ -146,15 +146,15 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                       ),
                                     ),
                                     dropdownStyleData: DropdownStyleData(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.grey[300],
-                                        ),
-                                        width: double.infinity,
-                                        elevation: 5,
-                                        padding: EdgeInsets.all(10),
-                                        maxHeight: 240),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.grey[300],
+                                      ),
+                                      width: 140,
+                                      offset: Offset(144, 48),
+                                      elevation: 5,
+                                      padding: EdgeInsets.all(10),
+                                    ),
                                     items:
                                         categoryOptions.map((String category) {
                                       return DropdownMenuItem<String>(
@@ -175,7 +175,7 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 16),
+                            SizedBox(height: 140),
                             ElevatedButton(
                               onPressed: () async {
                                 // Proses Update Laporan
@@ -186,12 +186,22 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
+                                backgroundColor: HexColor('72BB65'),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                                 padding: EdgeInsets.symmetric(
                                   vertical: 12,
                                   horizontal: 16,
                                 ),
                               ),
-                              child: Center(child: Text('Save')),
+                              child: Center(
+                                child: Text(
+                                  'Submit Reply',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
+                              ),
                             ),
                           ],
                         ),

@@ -28,40 +28,46 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
         ),
         centerTitle: true,
       ),
-      body: Obx(() => Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      buildStatusDropdown(),
-                      SizedBox(height: 20),
-                      if (selectedStatus == 'Sick' ||
-                          selectedStatus == 'Permit') ...[
-                        buildDescriptionField(),
+      body: Obx(() => SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         SizedBox(height: 20),
+                        buildStatusDropdown(),
+                        SizedBox(height: 50),
+                        if (selectedStatus == 'Sick' ||
+                            selectedStatus == 'Permit') ...[
+                          buildDescriptionField(),
+                          SizedBox(height: 20),
+                        ],
+                        if (selectedStatus != 'Not Participating' &&
+                            selectedStatus != 'Left Early')
+                          buildAttachmentButton(),
+                        SizedBox(height: 20),
+                        if (controller.imageFile.value != null &&
+                            selectedStatus != 'Not Participating' &&
+                            selectedStatus != 'Left Early')
+                          buildImagePreview(),
                       ],
-                      if (selectedStatus != 'Not Participating' &&
-                          selectedStatus != 'Left Early')
-                        buildAttachmentButton(),
-                      SizedBox(height: 20),
-                      if (controller.imageFile.value != null)
-                        buildImagePreview(),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: buildSubmitButton(),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: buildSubmitButton(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           )),
     );
   }
@@ -112,8 +118,8 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.grey[300],
               ),
-              width: 140,
-              offset: Offset(109, 60),
+              width: 180,
+              offset: Offset(70, 60),
               elevation: 5,
               padding: EdgeInsets.all(10),
             ),
@@ -124,27 +130,32 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
   }
 
   Widget buildDescriptionField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Description",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        TextFormField(
-          decoration: InputDecoration(
-            hintText: 'Write your attendance description',
-            filled: true,
-            fillColor: Colors.grey[200],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Description",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          maxLines: 5,
-          onChanged: (value) => controller.description.value = value,
-        ),
-      ],
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: 'Write your attendance description',
+              filled: true,
+              fillColor: Colors.grey[200],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+            ),
+            maxLines: 5,
+            onChanged: (value) => controller.description.value = value,
+          ),
+        ],
+      ),
     );
   }
 
@@ -215,8 +226,7 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
           } else {
             controller.submitAttendance(
                 widget.day, widget.event, selectedStatus!);
-            Get.back(); // Return to the previous page after submitting
-            controller.loadAttendanceData(); // Reload attendance data
+            controller.loadAttendanceData();
           }
         },
         style: ElevatedButton.styleFrom(
