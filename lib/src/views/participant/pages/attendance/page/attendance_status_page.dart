@@ -39,11 +39,13 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
                       SizedBox(height: 20),
                       buildStatusDropdown(),
                       SizedBox(height: 20),
-                      if (selectedStatus == 'Sick' || selectedStatus == 'Permit') ...[
+                      if (selectedStatus == 'Sick' ||
+                          selectedStatus == 'Permit') ...[
                         buildDescriptionField(),
                         SizedBox(height: 20),
                       ],
-                      if (selectedStatus != 'Not Participating' && selectedStatus != 'Left Early')
+                      if (selectedStatus != 'Not Participating' &&
+                          selectedStatus != 'Left Early')
                         buildAttachmentButton(),
                       SizedBox(height: 20),
                       if (controller.imageFile.value != null)
@@ -206,12 +208,15 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
           } else if ((selectedStatus == 'Sick' || selectedStatus == 'Permit') &&
               controller.description.value.isEmpty) {
             Get.snackbar('Error', 'Please provide a description');
-          } else if (selectedStatus != 'Not Participating' && 
-                     selectedStatus != 'Left Early' && 
-                     controller.imageFile.value == null) {
+          } else if (selectedStatus != 'Not Participating' &&
+              selectedStatus != 'Left Early' &&
+              controller.imageFile.value == null) {
             Get.snackbar('Error', 'Please take a photo');
           } else {
-            controller.submitAttendance(widget.day, widget.event, selectedStatus!);
+            controller.submitAttendance(
+                widget.day, widget.event, selectedStatus!);
+            Get.back(); // Return to the previous page after submitting
+            controller.loadAttendanceData(); // Reload attendance data
           }
         },
         style: ElevatedButton.styleFrom(

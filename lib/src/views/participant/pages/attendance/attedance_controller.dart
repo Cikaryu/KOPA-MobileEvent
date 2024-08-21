@@ -17,7 +17,7 @@ class AttendanceController extends GetxController {
   var imageFile = Rx<File?>(null);
   var description = ''.obs;
 
-  var attendanceStatus = {
+var attendanceStatus = {
     1: {
       'departure': 'Pending',
       'arrival': 'Pending',
@@ -100,11 +100,31 @@ class AttendanceController extends GetxController {
         status == 'Attended' || status == 'Sick' || status == 'Permit');
   }
 
-  bool canAttendEvent(int day, String event) {
-    if (notParticipating.value || leftEarly.value) return false;
-    if (day == 1 && event == 'departure') return true;
-    return isPreviousEventAttended(day, event) && (day == 1 || areAllEventsAttended(day - 1));
+bool canAttendEvent(int day, String event) {
+  if (day == 1 && event == 'departure') return true;
+  
+  var eventIndex = events[day]!.indexOf(event);
+  if (eventIndex == 0 && day != 1) {
+    // Check last event of previous day
+    var lastEventPreviousDay = events[day - 1]!.last;
+    var lastStatusPreviousDay = attendanceStatus[day - 1]![lastEventPreviousDay];
+    return lastStatusPreviousDay == 'Attending' || lastStatusPreviousDay == 'Sick' || lastStatusPreviousDay == 'Permit';
   }
+  
+  if (eventIndex > 0) {
+    var previousEvent = events[day]![eventIndex - 1];
+    var previousStatus = attendanceStatus[day]![previousEvent];
+    
+    if (day == 1 && previousEvent == 'departure') {
+      return previousStatus == 'Attending';
+    }
+    
+    return previousStatus == 'Attending' || previousStatus == 'Sick' || previousStatus == 'Permit';
+  }
+  
+  return false;
+}
+
 
   Future<void> loadAttendanceData() async {
     try {
@@ -157,50 +177,53 @@ class AttendanceController extends GetxController {
   }
 
   Future<void> submitAttendance(int day, String event, String status) async {
-    if (imageFile.value == null && status != 'Pending' && status != 'Not Participating' && status != 'Left Early') {
-      Get.snackbar('Error', 'Please take a photo before submitting');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      String userId = _auth.currentUser!.uid;
-      String? imageUrl;
-      if (imageFile.value != null) {
-        imageUrl = await uploadImage(imageFile.value!, event);
-      }
-
-      await _firestore.collection('attendance').doc(userId).set({
-        'day${day}': {
-          event: {
-            'status': status,
-            'img': imageUrl ?? '',
-            'desc': description.value,
-            'createdAt': FieldValue.serverTimestamp(),
-            'updatedAt': FieldValue.serverTimestamp(),
-          }
-        }
-      }, SetOptions(merge: true));
-
-      attendanceStatus[day]![event] = status;
-      imageFile.value = null;
-      description.value = '';
-
-      if (status == 'Not Participating') {
-        notParticipating.value = true;
-      } else if (status == 'Left Early') {
-        leftEarly.value = true;
-      }
-
-      Get.back();
-      Get.snackbar('Success', 'Attendance submitted successfully');
-    } catch (e) {
-      print('Error submitting attendance: $e');
-      Get.snackbar('Error', 'Failed to submit attendance');
-    } finally {
-      setLoading(false);
-    }
+  if (imageFile.value == null && status != 'Pending' && status != 'Not Participating' && status != 'Left Early') {
+    Get.snackbar('Error', 'Please take a photo before submitting');
+    return;
   }
 
-  
+  setLoading(true);
+  try {
+    String userId = _auth.currentUser!.uid;
+    String? imageUrl;
+    if (imageFile.value != null) {
+      imageUrl = await uploadImage(imageFile.value!, event);
+    }
+
+    await _firestore.collection('attendance').doc(userId).set({
+      'day${day}': {
+        event: {
+          'status': status,
+          'img': imageUrl ?? '',
+          'desc': description.value,
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        }
+      }
+    }, SetOptions(merge: true));
+
+    // Update status event dalam `attendanceStatus`
+    attendanceStatus[day]![event] = status;
+    imageFile.value = null;
+    description.value = '';
+
+    // Update status umum peserta berdasarkan pilihan mereka
+    if (status == 'Attended') {
+      notParticipating.value = false;
+      leftEarly.value = false;
+    } else if (status == 'Not Participating') {
+      notParticipating.value = true;
+    } else if (status == 'Left Early') {
+      leftEarly.value = true;
+    }
+
+    Get.back();
+    Get.snackbar('Success', 'Attendance submitted successfully');
+  } catch (e) {
+    print('Error submitting attendance: $e');
+    Get.snackbar('Error', 'Failed to submit attendance');
+  } finally {
+    setLoading(false);
+  }
+}
 }

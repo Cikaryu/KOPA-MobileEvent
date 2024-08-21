@@ -9,6 +9,7 @@ class AttendancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AttendanceController attendanceController =
         Get.put(AttendanceController());
+        
 
     return Scaffold(
       appBar: AppBar(
@@ -124,100 +125,64 @@ class AttendancePage extends StatelessWidget {
   }
 
   // Membuat row untuk setiap event dalam container
-  Widget buildEventRow(AttendanceController controller, int day, String event) {
-    bool canAttend = controller.canAttendEvent(day, event);
-    String status = controller.attendanceStatus[day]![event] ?? 'Pending';
+Widget buildEventRow(AttendanceController controller, int day, String event) {
+  bool canAttend = controller.canAttendEvent(day, event);
+  String status = controller.attendanceStatus[day]![event] ?? 'Pending';
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(event),
-        if (status == 'Attending')
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.green),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    'Attended',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.check_circle, color: Colors.green, size: 16)
-                ],
-              ),
-            ),
-          )
-        else if (status == 'Sick' || status == 'Permit')
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.yellow),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    status,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.warning, color: Colors.yellow, size: 16)
-                ],
-              ),
-            ),
-          )
-        else if (status == 'Not Participating' || status == 'Left Early')
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.red),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    status,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(Icons.cancel, color: Colors.red, size: 16)
-                ],
-              ),
-            ),
-          )
-        else
-          ElevatedButton(
-            onPressed: canAttend
-                ? () {
-                    controller.currentEvent = event;
-                    Get.to(() => AttendanceStatusPage(day: day, event: event));
-                  }
-                : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: canAttend ? Colors.green : Colors.grey,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: Text(
-              'Attend',
-              style: TextStyle(color: Colors.white),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(event),
+      if (status == 'Attending')
+        buildStatusContainer('Attended', Colors.green, Icons.check_circle)
+      else if (status == 'Sick' || status == 'Permit')
+        buildStatusContainer(status, Colors.yellow, Icons.warning)
+      else if (status == 'Not Participating' || status == 'Left Early')
+        buildStatusContainer(status, Colors.red, Icons.cancel)
+      else
+        ElevatedButton(
+          onPressed: canAttend
+              ? () {
+                  controller.currentEvent = event;
+                  Get.to(() => AttendanceStatusPage(day: day, event: event));
+                }
+              : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: canAttend ? Colors.green : Colors.grey,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
-      ],
-    );
-  }
+          child: Text(
+            'Attend',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+    ],
+  );
+}
+
+Widget buildStatusContainer(String status, Color color, IconData icon) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color),
+      ),
+      child: Row(
+        children: [
+          Text(
+            status,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 5),
+          Icon(icon, color: color, size: 16)
+        ],
+      ),
+    ),
+  );
+}
 }
