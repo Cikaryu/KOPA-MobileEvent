@@ -116,7 +116,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.userName.value,
                             prefixIcon: Icon(Icons.person),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -133,7 +133,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.userArea.value,
                             prefixIcon: Icon(Icons.location_on),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -150,7 +150,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.userDivisi.value,
                             prefixIcon: Icon(Icons.work),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -167,7 +167,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.userDepartment.value,
                             prefixIcon: Icon(Icons.business),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -188,7 +188,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.userAlamat.value,
                             prefixIcon: Icon(Icons.location_on),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -210,7 +210,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.userWhatsapp.value,
                             prefixIcon: Icon(Icons.phone),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -231,7 +231,7 @@ class EditProfileView extends StatelessWidget {
                             hintText: profileController.numberKtp.value,
                             prefixIcon: Icon(Icons.credit_card),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: HexColor('F3F3F3'),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,

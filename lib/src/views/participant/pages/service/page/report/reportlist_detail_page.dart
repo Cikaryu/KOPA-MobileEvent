@@ -86,6 +86,7 @@ class ReportDetailPage extends StatelessWidget {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 4),
                   TextFormField(
+                    initialValue: reportData['reply'],
                     maxLines: 8,
                     readOnly: true,
                     decoration: InputDecoration(

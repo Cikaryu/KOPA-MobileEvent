@@ -162,7 +162,9 @@ class SearchParticipantPage extends StatelessWidget {
                     Spacer(),
                     IconButton(
                       icon: Icon(Icons.swap_vert),
-                      onPressed: () {},
+                      onPressed: () {
+                        searchParticipantController.toggleSortOrder();
+                      },
                     ),
                   ],
                 ),

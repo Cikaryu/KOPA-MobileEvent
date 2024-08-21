@@ -12,8 +12,9 @@ class ReportCommitteeController extends GetxController {
   var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
   var statusImageUrls =
       <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
-
   var isLoading = false.obs; // Untuk mengatur status loading
+  RxBool isAscending = true.obs;
+  RxString selectedFilter = ''.obs; // Menyimpan filter yang dipilih
 
   late Rx<User?> _user;
 
@@ -66,6 +67,44 @@ class ReportCommitteeController extends GetxController {
       debugPrint('Error fetching status image: $e'); // Debug statement
       statusImageUrls[reportId] = ''; // Set to empty string if failed
     }
+  }
+
+  void toggleSortOrder() {
+    isAscending.value = !isAscending.value;
+  }
+
+  Stream<List<QueryDocumentSnapshot>> getFilteredReports() {
+    return _firestore.collection('report').snapshots().map((snapshot) {
+      var reports = snapshot.docs;
+
+      if (selectedFilter.isNotEmpty) {
+        reports = reports.where((report) {
+          final data = report.data() as Map<String, dynamic>;
+          return data['status'] == selectedFilter.value ||
+              data['title'].contains(selectedFilter.value);
+        }).toList();
+      }
+
+      if (isAscending.value) {
+        reports.sort((a, b) {
+          final dataA = a.data() as Map<String, dynamic>;
+          final dataB = b.data() as Map<String, dynamic>;
+          return (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
+        });
+      } else {
+        reports.sort((a, b) {
+          final dataA = a.data() as Map<String, dynamic>;
+          final dataB = b.data() as Map<String, dynamic>;
+          return (dataB['title'] ?? '').compareTo(dataA['title'] ?? '');
+        });
+      }
+
+      return reports;
+    });
+  }
+
+  void applyFilter(String filter) {
+    selectedFilter.value = filter;
   }
 
   Future<bool> updateReport({

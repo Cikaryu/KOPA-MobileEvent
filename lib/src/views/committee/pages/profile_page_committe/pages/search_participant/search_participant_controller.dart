@@ -9,6 +9,7 @@ class SearchParticipantController extends GetxController {
 
   // TextEditingController for the search field
   TextEditingController searchController = TextEditingController();
+  RxBool isAscending = true.obs;
 
   @override
   void onInit() {
@@ -46,6 +47,17 @@ class SearchParticipantController extends GetxController {
               (p) => (p.name ?? '').toLowerCase().contains(query.toLowerCase()))
           .toList();
     }
+  }
+  void sortParticipants() {
+    if (isAscending.value) {
+      filteredParticipants.sort((a, b) => (a.name ?? '').compareTo(b.name ?? ''));
+    } else {
+      filteredParticipants.sort((a, b) => (b.name ?? '').compareTo(a.name ?? ''));
+    }
+  }
+  void toggleSortOrder() {
+    isAscending.value = !isAscending.value;
+    sortParticipants(); // Apply sorting when order changes
   }
 }
 

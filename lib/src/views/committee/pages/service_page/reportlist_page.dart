@@ -5,17 +5,9 @@ import 'package:app_kopabali/src/views/committee/pages/service_page/report_contr
 import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ReportListCommitteePage extends StatefulWidget {
+class ReportListCommitteePage extends StatelessWidget {
   const ReportListCommitteePage({super.key});
 
-  @override
-  State<ReportListCommitteePage> createState() =>
-      _ReportListCommitteePageState();
-}
-
-class _ReportListCommitteePageState extends State<ReportListCommitteePage> {
-  bool isAscending = false;
-  String selectedFilter = 'Title';
   @override
   Widget build(BuildContext context) {
     final ReportCommitteeController reportController =
@@ -36,54 +28,42 @@ class _ReportListCommitteePageState extends State<ReportListCommitteePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 21),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Sort By",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16.0,
                     )),
-                SizedBox(width: 4),
-                DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isDense: true,
-                    value: selectedFilter,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedFilter = value!;
-                      });
-                    },
-                    items: [
-                      DropdownMenuItem(
-                        value: 'Resolved',
-                        child: Text('Resolved'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Unresolved',
-                        child: Text('Unresolved'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Title',
-                        child: Text('Title'),
-                      ),
-                    ],
-                    dropdownColor: HexColor("F3F3F3"),
-                    borderRadius: BorderRadius.circular(10),
-                    icon: null,
-                    iconSize: 0,
-                  ),
+                SizedBox(width: 8.0),
+                DropdownButton<String>(
+                  value: reportController.selectedFilter.value.isEmpty
+                      ? null
+                      : reportController.selectedFilter.value,
+                  hint: Text("Filter"),
+                  items: [
+                    DropdownMenuItem(
+                      value: '',
+                      child: Text('All'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Resolved',
+                      child: Text('Resolved'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Unresolved',
+                      child: Text('Unresolved'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    reportController.applyFilter(value ?? '');
+                  },
                 ),
                 Spacer(),
                 IconButton(
-                  icon: Icon(
-                    isAscending ? Icons.swap_vert : Icons.swap_vert_rounded,
-                    color: Colors.black,
-                  ),
+                  icon: Icon(Icons.swap_vert),
                   onPressed: () {
-                    setState(() {
-                      isAscending = !isAscending; // Toggle between ASC and DSC
-                      print('isAscending: $isAscending'); // Debugging line
-                    });
+                    reportController.toggleSortOrder();
                   },
                 ),
               ],
@@ -91,29 +71,23 @@ class _ReportListCommitteePageState extends State<ReportListCommitteePage> {
           ),
           SizedBox(height: 8.0),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _getReportsStream(), // Ambil semua laporan
+            child: StreamBuilder<List<QueryDocumentSnapshot>>(
+              stream: reportController.getFilteredReports(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
-
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(child: Text('No reports found.'));
                 }
-
-                final reports = snapshot.data!.docs;
-
+                final reports = snapshot.data!;
                 return ListView.builder(
                   itemCount: reports.length,
                   itemBuilder: (context, index) {
                     final report = reports[index];
                     final reportData = report.data() as Map<String, dynamic>;
-
-                    // Memanggil fetchStatusImage untuk memastikan gambar diambil
                     reportController.fetchStatusImage(
                         report.id, reportData['status']);
-
                     return GestureDetector(
                       onTap: () {
                         Get.to(() =>
@@ -275,26 +249,5 @@ class _ReportListCommitteePageState extends State<ReportListCommitteePage> {
         ],
       ),
     );
-  }
-
-  Stream<QuerySnapshot> _getReportsStream() {
-    Query<Map<String, dynamic>> query =
-        FirebaseFirestore.instance.collection('report');
-
-    // Apply filtering and sorting based on the selected filter
-    if (selectedFilter == 'Resolved') {
-      query = query.where('status', isEqualTo: 'Resolved');
-    } else if (selectedFilter == 'Unresolved') {
-      query = query.where('status', isEqualTo: 'Unresolved');
-    } else if (selectedFilter == 'Title') {
-      query = query.orderBy('title', descending: !isAscending);
-    }
-
-    // If 'All' is selected, do not apply any filtering
-    if (selectedFilter != 'Title') {
-      query = query.orderBy('title', descending: !isAscending);
-    }
-
-    return query.snapshots();
   }
 }

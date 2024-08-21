@@ -51,22 +51,20 @@ class AttendanceController extends GetxController {
   };
 
   var eventDisplayNames = {
-  'departure': 'Departure',
-  'arrival': 'Arrival',
-  'csr': 'CSR Activity',
-  'lunch': 'Lunch',
-  'checkInHotel': 'Check-In Hotel',
-  'welcomeDinner': 'Welcome Dinner',
-  'arrivedHotel': 'Arrived at Hotel',
-  'teamBuilding': 'Team Building',
-  'galaDinner': 'Gala Dinner',
-  'roomCheckOut': 'Room Check-Out',
-  'luggageDrop': 'Luggage Drop',
-  'departure': 'Departure',
-  'arrivalJakarta': 'Arrival in Jakarta'
-};
-
-
+    'departure': 'Departure',
+    'arrival': 'Arrival',
+    'csr': 'CSR Activity',
+    'lunch': 'Lunch',
+    'checkInHotel': 'Check-In Hotel',
+    'welcomeDinner': 'Welcome Dinner',
+    'arrivedHotel': 'Arrived at Hotel',
+    'teamBuilding': 'Team Building',
+    'galaDinner': 'Gala Dinner',
+    'roomCheckOut': 'Room Check-Out',
+    'luggageDrop': 'Luggage Drop',
+    'departure': 'Departure',
+    'arrivalJakarta': 'Arrival in Jakarta'
+  };
 
   var currentEvent = '';
   var notParticipating = false.obs;
@@ -84,10 +82,22 @@ class AttendanceController extends GetxController {
 
   void toggleDayExpanded(int day) {
     if (day == 1) {
+      if (!isDay1Expanded.value) {
+        isDay2Expanded.value = false;
+        isDay3Expanded.value = false;
+      }
       isDay1Expanded.value = !isDay1Expanded.value;
     } else if (day == 2) {
+      if (!isDay2Expanded.value) {
+        isDay1Expanded.value = false;
+        isDay3Expanded.value = false;
+      }
       isDay2Expanded.value = !isDay2Expanded.value;
     } else if (day == 3) {
+      if (!isDay3Expanded.value) {
+        isDay1Expanded.value = false;
+        isDay2Expanded.value = false;
+      }
       isDay3Expanded.value = !isDay3Expanded.value;
     }
   }
@@ -159,10 +169,8 @@ class AttendanceController extends GetxController {
       // Fetch the data for each day
       for (int day = 1; day <= 3; day++) {
         String dayKey = 'day$day';
-        DocumentSnapshot dayData = await _firestore
-            .collection('attendance')
-            .doc(userId)
-            .get();
+        DocumentSnapshot dayData =
+            await _firestore.collection('attendance').doc(userId).get();
 
         // Check if the document exists
         if (dayData.exists) {

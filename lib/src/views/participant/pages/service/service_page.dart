@@ -28,7 +28,9 @@ class ServicePage extends StatelessWidget {
             SizedBox(height: 20),
             InkWell(
               onTap: () {
-                Get.to(() => FaqPage());
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => FaqPage()),
+                );
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -206,7 +208,10 @@ class ServicePage extends StatelessWidget {
                       width: 140,
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.to(() => ReportPage());
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => ReportPage()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HexColor("#72BB65"),
@@ -265,7 +270,10 @@ class ServicePage extends StatelessWidget {
                       width: 140,
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.to(() => FeedbackPage());
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => FeedbackPage()),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HexColor("#72BB65"),

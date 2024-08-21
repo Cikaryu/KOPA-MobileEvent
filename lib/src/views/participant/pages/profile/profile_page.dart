@@ -1,4 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/participant/pages/profile/page/change_password_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 
@@ -197,7 +198,10 @@ class ProfileParticipantPage extends StatelessWidget {
                         // Container for Change Password
                         InkWell(
                           onTap: () {
-                            Get.toNamed('/changepassword');
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => ChangePasswordPage()),
+                            );
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(

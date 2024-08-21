@@ -62,7 +62,7 @@ class AttendancePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          GestureDetector(
+          InkWell(
             onTap: () {
               controller.toggleDayExpanded(day);
             },
