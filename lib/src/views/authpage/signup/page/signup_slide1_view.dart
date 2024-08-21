@@ -60,6 +60,7 @@ class SignupSlide1View extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                         ),
+                        //TODO : Email validator add end with .com , .co.id, .ac.id
                         validator: (value) {
                           String pattern =
                               r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
