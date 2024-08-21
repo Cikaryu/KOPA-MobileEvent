@@ -92,14 +92,34 @@ class ForgotPasswordView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text(message),
+          title: Text(
+            'Invalid Email Address',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content:
+              Text('Please enter your email !', textAlign: TextAlign.center),
           actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 70),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: HexColor("E97717"),
+                  border: Border(
+                    top: BorderSide(color: Colors.orange[400]!),
+                  ),
+                ),
+                child: TextButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
             ),
           ],
         );

@@ -117,22 +117,57 @@ class SigninController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Email Not Verified'),
+          title: Text('Email Not Verified',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           content: Text(
-              'Your email is not verified. Please check your email for verification link.'),
+            'Your email is not verified. Please check your email for verification link',
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
-            TextButton(
-              child: Text('Resend Verification Email'),
-              onPressed: () async {
-                await sendVerificationEmail(user);
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: HexColor("E97717"),
+                    border: Border(
+                      top: BorderSide(color: Colors.orange[400]!),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text(
+                      'Resend Verification Email',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      await sendVerificationEmail(user);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+                SizedBox(width: 8),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: HexColor("E97717"),
+                    border: Border(
+                      top: BorderSide(color: Colors.orange[400]!),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -205,11 +240,34 @@ class SigninController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Login Failed'),
-          content: Text(message),
+          title: Column(
+            children: [
+              Text(
+                'Login Failed',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+          content: Text(message, textAlign: TextAlign.center),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Center(
+                child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: HexColor("E97717"),
+                      border: Border(
+                        top: BorderSide(color: Colors.orange[400]!),
+                      ),
+                    ),
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -30,11 +30,29 @@ class ForgetPasswordController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text(message),
+          title: Text(
+            'Invalid Email Address',
+            textAlign: TextAlign.center,
+          ),
+          content: Text("Please enter your correct email !",
+              textAlign: TextAlign.center),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Center(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: HexColor("E97717"),
+                        border: Border(
+                          top: BorderSide(color: Colors.orange[400]!),
+                        ),
+                      ),
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white),
+                      ))),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -53,11 +71,31 @@ class ForgetPasswordController extends GetxController {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Password Reset'),
-            content: Text('A password reset link has been sent to $email.'),
+            title: Text(
+              'Password Reset',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            content: Text('A password reset link has been sent to \n\n$email.',
+                textAlign: TextAlign.center),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: Center(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: HexColor("E97717"),
+                        border: Border(
+                          top: BorderSide(color: Colors.orange[400]!),
+                        ),
+                      ),
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pushReplacementNamed('/signin');

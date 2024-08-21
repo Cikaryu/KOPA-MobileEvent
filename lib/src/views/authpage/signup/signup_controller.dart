@@ -40,7 +40,8 @@ class SignupController extends GetxController {
     selfieImage.value = image;
     update();
   }
-    void onClose() {
+
+  void onClose() {
     pageController.dispose();
     super.onClose();
   }
@@ -51,7 +52,8 @@ class SignupController extends GetxController {
       curve: Curves.easeInOut,
     );
   }
-    void backPage() {
+
+  void backPage() {
     pageController.previousPage(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -245,14 +247,36 @@ class SignupController extends GetxController {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Registration Failed'),
-            content: Text(errorMessage),
+            title: Text(
+              'Registration Failed',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+            ),
             actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 70),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: HexColor("E97717"),
+                    border: Border(
+                      top: BorderSide(color: Colors.orange[400]!),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
               ),
             ],
           );
@@ -302,36 +326,74 @@ class SignupController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Choose Image Source'),
+          title: Text(
+            'Choose Image Source',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                GestureDetector(
-                  child: Row(
-                    children: [
-                      Icon(Icons.camera_alt),
-                      SizedBox(width: 10),
-                      Text('Camera'),
-                    ],
-                  ),
-                  onTap: () {
-                    _pickImage(ImageSource.camera, type, signupController);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  child: Row(
-                    children: [
-                      Icon(Icons.image),
-                      SizedBox(width: 10),
-                      Text('Gallery'),
-                    ],
-                  ),
-                  onTap: () {
-                    _pickImage(ImageSource.gallery, type, signupController);
-                    Navigator.of(context).pop();
-                  },
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: HexColor("E97717"),
+                          border: Border(
+                            top: BorderSide(color: Colors.orange[400]!),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10),
+                            Text('Camera',
+                                style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        _pickImage(ImageSource.camera, type, signupController);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    SizedBox(width: 10),
+                    GestureDetector(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: HexColor("E97717"),
+                          border: Border(
+                            top: BorderSide(color: Colors.orange[400]!),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.image,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10),
+                            Text('Gallery',
+                                style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        _pickImage(ImageSource.gallery, type, signupController);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
