@@ -1,5 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/scan_page/pages/scan_fix.dart';
+import 'package:app_kopabali/src/views/event_organizer/event_organizer_view.dart';
 import 'package:app_kopabali/src/views/landingpage/landingpage_view.dart';
 import 'package:app_kopabali/src/views/authpage/forget_password/forgetpass_view.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
@@ -37,6 +38,7 @@ abstract class AppPages {
     ),
     GetPage(name: AppRoutes.participant, page: () => ParticipantView()),
     GetPage(name: AppRoutes.committee, page: () => CommitteeView()),
+    GetPage(name: AppRoutes.eventOrganizer, page: () => EventOrganizerView()),
     GetPage(name: AppRoutes.scan, page: () => ScanProfileView()),
     GetPage(name: AppRoutes.editProfile, page: () => EditProfileView()),
     GetPage(name: AppRoutes.changePassword, page: () => ChangePasswordPage()),

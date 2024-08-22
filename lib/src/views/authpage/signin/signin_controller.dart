@@ -106,7 +106,7 @@ class SigninController extends GetxController {
     } else if (role == 'Committee') {
       Navigator.of(context).pushReplacementNamed('/committee');
     } else if (role == 'Event Organizer') {
-      Navigator.of(context).pushReplacementNamed('/admin_view');
+      Navigator.of(context).pushReplacementNamed('/eventorganizer');
     } else if (role == 'Super Event Organizer') {
       Navigator.of(context).pushReplacementNamed('/admin_view');
     }
