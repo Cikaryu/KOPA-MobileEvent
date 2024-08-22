@@ -219,11 +219,30 @@ class SignupController extends GetxController {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Registration Successful'),
-            content: Text('Please check your email for verification.'),
+            title: Text(
+              'Registration Successful',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              'Please check your email for verification !',
+              textAlign: TextAlign.center,
+            ),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: Center(
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: HexColor("E97717"),
+                          border: Border(
+                            top: BorderSide(color: Colors.orange[400]!),
+                          ),
+                        ),
+                        child:
+                            Text('OK', style: TextStyle(color: Colors.white)))),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Get.offAllNamed('/signin');

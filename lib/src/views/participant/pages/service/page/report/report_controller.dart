@@ -40,16 +40,53 @@ class ReportController extends GetxController {
       context: Get.context!,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Select Image Source"),
-          content: Text("Choose an image from"),
+          title: Text(
+            "Select Image Source",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            "Choose an image from",
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
-            TextButton(
-              child: Text("Camera"),
-              onPressed: () => Navigator.pop(context, ImageSource.camera),
-            ),
-            TextButton(
-              child: Text("Gallery"),
-              onPressed: () => Navigator.pop(context, ImageSource.gallery),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: HexColor("E97717"),
+                    border: Border(
+                      top: BorderSide(color: Colors.orange[400]!),
+                    ),
+                  ),
+                  child: TextButton(
+                    child:
+                        Text("Camera", style: TextStyle(color: Colors.white)),
+                    onPressed: () => Navigator.pop(context, ImageSource.camera),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: HexColor("E97717"),
+                    border: Border(
+                      top: BorderSide(color: Colors.orange[400]!),
+                    ),
+                  ),
+                  child: TextButton(
+                    child:
+                        Text("Gallery", style: TextStyle(color: Colors.white)),
+                    onPressed: () =>
+                        Navigator.pop(context, ImageSource.gallery),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -57,7 +94,8 @@ class ReportController extends GetxController {
     );
 
     if (source != null) {
-      final XFile? image = await _picker.pickImage(source: source, imageQuality: 50);
+      final XFile? image =
+          await _picker.pickImage(source: source, imageQuality: 50);
       if (image != null) {
         selectedImage.value = image;
       }
@@ -157,14 +195,14 @@ class ReportController extends GetxController {
   Future<void> fetchStatusImage(String reportId, String status) async {
     String imageName;
 
-     switch (status) {
+    switch (status) {
       case 'Unresolved':
         imageName = 'close.png';
         break;
       case 'Resolved':
         imageName = 'received.png';
         break;
-        case 'Pending':
+      case 'Pending':
         imageName = 'pending.png';
         break;
       default:

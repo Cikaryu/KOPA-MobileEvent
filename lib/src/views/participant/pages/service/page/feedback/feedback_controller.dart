@@ -66,8 +66,13 @@ class FeedbackController extends GetxController {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Success'),
-          content: Text('Feedback submitted successfully'),
+          title: Text(
+            'Success',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Text('Feedback submitted successfully',
+              textAlign: TextAlign.center),
           actions: [
             TextButton(
               onPressed: () {
@@ -76,7 +81,21 @@ class FeedbackController extends GetxController {
                 Navigator.of(context).pop();
                 Get.back();
               },
-              child: Text('OK'),
+              child: Center(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: HexColor("E97717"),
+                        border: Border(
+                          top: BorderSide(color: Colors.orange[400]!),
+                        ),
+                      ),
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white),
+                      ))),
             ),
           ],
         );

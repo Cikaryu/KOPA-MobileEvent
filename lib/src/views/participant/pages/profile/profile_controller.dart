@@ -14,7 +14,8 @@ class ProfileController extends GetxController {
   final TextEditingController whatsappNumberController =
       TextEditingController();
   final TextEditingController numberKTPController = TextEditingController();
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? participantKitSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+      participantKitSubscription;
 
   bool canPop = true;
   var userName = ''.obs;
@@ -47,7 +48,7 @@ class ProfileController extends GetxController {
     fetchUserData();
     getUserData;
   }
-  
+
   void toggleMerchExpanded() {
     isMerchExpanded.value = !isMerchExpanded.value;
     if (isMerchExpanded.value) {
@@ -438,14 +439,31 @@ class ProfileController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
+          title: Text(
+            'Error',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           content: Text(message),
           actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: HexColor("E97717"),
+                border: Border(
+                  top: BorderSide(color: Colors.orange[400]!),
+                ),
+              ),
+              child: TextButton(
+                child: Text(
+                  'OK',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
           ],
         );
@@ -469,36 +487,78 @@ class ProfileController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Choose Image Source'),
+          title: Text(
+            'Choose Image Source',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                GestureDetector(
-                  child: Row(
-                    children: [
-                      Icon(Icons.camera_alt),
-                      SizedBox(width: 10),
-                      Text('Camera'),
-                    ],
-                  ),
-                  onTap: () {
-                    pickImage(ImageSource.camera, profileController);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  child: Row(
-                    children: [
-                      Icon(Icons.image),
-                      SizedBox(width: 10),
-                      Text('Gallery'),
-                    ],
-                  ),
-                  onTap: () {
-                    pickImage(ImageSource.gallery, profileController);
-                    Navigator.of(context).pop();
-                  },
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: HexColor("E97717"),
+                          border: Border(
+                            top: BorderSide(color: Colors.orange[400]!),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Camera',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        pickImage(ImageSource.camera, profileController);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    SizedBox(width: 10),
+                    GestureDetector(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: HexColor("E97717"),
+                          border: Border(
+                            top: BorderSide(color: Colors.orange[400]!),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.image,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              'Gallery',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        pickImage(ImageSource.gallery, profileController);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -516,11 +576,31 @@ class ProfileController extends GetxController {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Password Reset'),
-            content: Text('A password reset link has been sent to $email.'),
+            title: Text('Password Reset',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)),
+            content: Text(
+              'A password reset link has been sent to $email.',
+              textAlign: TextAlign.center,
+            ),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: Center(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: HexColor("E97717"),
+                        border: Border(
+                          top: BorderSide(color: Colors.orange[400]!),
+                        ),
+                      ),
+                      child: Text('OK', style: TextStyle(color: Colors.white))),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Get.back();
