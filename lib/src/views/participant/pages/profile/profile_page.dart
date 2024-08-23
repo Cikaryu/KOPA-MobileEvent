@@ -252,6 +252,64 @@ class ProfileParticipantPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(height: 12),
+                        profileController.hasPreviouslyBeenCommittee.value
+                            ? InkWell(
+                                onTap: () {
+                                  profileController.switchRole();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 12.0),
+                                  decoration: BoxDecoration(
+                                    color: HexColor("#F3F3F3"),
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        blurRadius: 4,
+                                        spreadRadius: 0,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.import_export_rounded,
+                                        color: Colors.orange,
+                                      ),
+                                      SizedBox(width: 16.0),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Switch account',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18.0,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Change account into selected role',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Icon(
+                                        Icons.keyboard_arrow_right_rounded,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
                       ],
                     ),
                   ),

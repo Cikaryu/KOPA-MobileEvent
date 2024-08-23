@@ -1,14 +1,14 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_controller.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/profile_page_event_organizer/pages/search_participant/search_participant_page.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/profile_controller.dart';
 
-class ProfileCommitteePage extends StatelessWidget {
-  const ProfileCommitteePage({super.key});
+class ProfileSuperEOPage extends StatelessWidget {
+  const ProfileSuperEOPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ProfileCommitteeController profileCommitteeController =
-        Get.put(ProfileCommitteeController());
+    final ProfileSuperEOController profileSuperEOController =
+        Get.put(ProfileSuperEOController());
 
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +23,7 @@ class ProfileCommitteePage extends StatelessWidget {
           return Container(
             child: RefreshIndicator(
               onRefresh: () async {
-                profileCommitteeController.refreshData();
+                profileSuperEOController.refreshData();
               },
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
@@ -60,19 +60,19 @@ class ProfileCommitteePage extends StatelessWidget {
                                     width: 82,
                                     height: 82,
                                     decoration: ShapeDecoration(
-                                      image: profileCommitteeController
+                                      image: profileSuperEOController
                                                   .imageBytes.value !=
                                               null
                                           ? DecorationImage(
                                               image: MemoryImage(
-                                                  profileCommitteeController
+                                                  profileSuperEOController
                                                       .imageBytes.value!),
                                               fit: BoxFit.cover,
                                             )
                                           : null,
                                       shape: OvalBorder(),
                                     ),
-                                    child: profileCommitteeController
+                                    child: profileSuperEOController
                                                 .imageBytes.value ==
                                             null
                                         ? Icon(Icons.person,
@@ -81,7 +81,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                   ),
                                   SizedBox(height: 16),
                                   Obx(() => Text(
-                                        profileCommitteeController
+                                        profileSuperEOController
                                             .userName.value,
                                         style: TextStyle(
                                             fontSize: 20,
@@ -89,13 +89,13 @@ class ProfileCommitteePage extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       )),
                                   Obx(() => Text(
-                                        profileCommitteeController
+                                        profileSuperEOController
                                             .userEmail.value,
                                         style: TextStyle(fontSize: 16),
                                         overflow: TextOverflow.ellipsis,
                                       )),
                                   Obx(() => Text(
-                                        profileCommitteeController
+                                        profileSuperEOController
                                             .userDivisi.value,
                                         style: TextStyle(fontSize: 16),
                                         overflow: TextOverflow.ellipsis,
@@ -237,70 +237,66 @@ class ProfileCommitteePage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 20),
-                          profileCommitteeController.role.value == 'Committee'
-                              ? InkWell(
-                                  onTap: () {
-                                    profileCommitteeController.switchRole();
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 12.0),
-                                    decoration: BoxDecoration(
-                                      color: HexColor("#F3F3F3"),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3F000000),
-                                          blurRadius: 4,
-                                          spreadRadius: 0,
-                                          offset: Offset(0, 0),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 12.0),
+                              decoration: BoxDecoration(
+                                color: HexColor("#F3F3F3"),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x3F000000),
+                                    blurRadius: 4,
+                                    spreadRadius: 0,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.import_export_rounded,
+                                    color: Colors.orange,
+                                  ),
+                                  SizedBox(width: 16.0),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Switch account',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0,
                                         ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.import_export_rounded,
-                                          color: Colors.orange,
-                                        ),
-                                        SizedBox(width: 16.0),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Switch account',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18.0,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Change account into selected role',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        Icon(
-                                          Icons.keyboard_arrow_right_rounded,
+                                      ),
+                                      Text(
+                                        'Change account into selected role',
+                                        style: TextStyle(
+                                          fontSize: 12,
                                           color: Colors.grey,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                )
-                              : SizedBox.shrink(),
+                                  Spacer(),
+                                  Icon(
+                                    Icons.keyboard_arrow_right_rounded,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                     SizedBox(height: 25),
                     ElevatedButton(
                       onPressed: () async {
-                        await profileCommitteeController.logout();
+                        await profileSuperEOController.logout();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,

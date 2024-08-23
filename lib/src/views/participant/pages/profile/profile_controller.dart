@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/committee/committee_view.dart';
+import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +26,7 @@ class ProfileController extends GetxController {
   var qrCodeUrl = ''.obs;
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
+  var role = ''.obs;
   RxMap<String, String> status = <String, String>{}.obs;
   final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
   var userArea = ''.obs;
@@ -40,6 +43,7 @@ class ProfileController extends GetxController {
   var imageUrl = ''.obs;
   var imageBytes = Rxn<Uint8List>();
   var isLoading = false.obs;
+  var hasPreviouslyBeenCommittee = false.obs;
 
   // Call this to load data initially
   @override
@@ -47,6 +51,7 @@ class ProfileController extends GetxController {
     super.onInit();
     fetchUserData();
     getUserData;
+    getUserRole();
   }
 
   void toggleMerchExpanded() {
@@ -90,6 +95,7 @@ class ProfileController extends GetxController {
         userAlamat.value = data['address'] ?? '';
         userWhatsapp.value = data['whatsappNumber'] ?? '';
         numberKtp.value = data['NIK'] ?? '';
+        hasPreviouslyBeenCommittee.value = data['wasCommittee'] ?? false;
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {
           var response = await FirebaseStorage.instance.ref(imageUrl).getData();
@@ -612,6 +618,62 @@ class ProfileController extends GetxController {
       );
     } catch (e) {
       _showErrorDialog(context, e.toString());
+    }
+  }
+
+  Future<void> getUserRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          role.value = userDoc['role'] ?? 'Participant';
+        } else {
+          print('Document does not exist on the database');
+        }
+      } catch (e) {
+        print('Error getting role: $e');
+      }
+    } else {
+      print('No user is signed in');
+    }
+  }
+
+  Future<void> switchRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        if (role.value == 'Committee') {
+          // Switch to Participant role
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Participant',
+            'wasCommittee': true,
+          });
+          role.value = 'Participant';
+          Get.offAll(() => ParticipantView());
+        } else if (role.value == 'Participant') {
+          // Switch to Committee role
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Committee',
+            'wasCommittee': true,
+          });
+          role.value = 'Committee';
+          Get.offAll(() => CommitteeView());
+        }
+      } catch (e) {
+        debugPrint('Error switching role: $e');
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ import 'package:app_kopabali/src/views/participant/pages/profile/page/change_pas
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_page.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
+import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:app_kopabali/src/views/testing/testing_view.dart';
 
 part 'app_routes.dart';
@@ -39,6 +40,7 @@ abstract class AppPages {
     GetPage(name: AppRoutes.participant, page: () => ParticipantView()),
     GetPage(name: AppRoutes.committee, page: () => CommitteeView()),
     GetPage(name: AppRoutes.eventOrganizer, page: () => EventOrganizerView()),
+    GetPage(name: AppRoutes.superEO, page: () => SuperEOView()),
     GetPage(name: AppRoutes.scan, page: () => ScanProfileView()),
     GetPage(name: AppRoutes.editProfile, page: () => EditProfileView()),
     GetPage(name: AppRoutes.changePassword, page: () => ChangePasswordPage()),

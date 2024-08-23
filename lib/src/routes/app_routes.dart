@@ -18,4 +18,5 @@ abstract class AppRoutes {
   static const profile = '/profile';
   static const scan = '/scan';
   static const eventOrganizer = '/eventorganizer';
+  static const superEO = '/superEO';
 }
