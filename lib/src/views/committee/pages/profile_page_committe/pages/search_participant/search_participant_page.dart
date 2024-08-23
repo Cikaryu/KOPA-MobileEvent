@@ -1,6 +1,5 @@
-// TODO : styling halaman search participant sesuaikan figma
-
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/participant_detail_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,8 +9,7 @@ class SearchParticipantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController searchParticipantController =
-        Get.put(SearchParticipantController());
+    final SearchParticipantController searchParticipantController = Get.put(SearchParticipantController());
 
     return Scaffold(
       appBar: AppBar(
@@ -235,16 +233,24 @@ class SearchParticipantPage extends StatelessWidget {
                                   ),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 18, vertical: 8)),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ParticipantDetailPage(
+                                        participant: participant),
+                                  ),
+                                );
+                              },
                               child: Row(
                                 children: [
                                   Icon(
-                                    Icons.edit,
+                                    Icons.remove_red_eye,
                                     color: Colors.white,
                                   ),
                                   SizedBox(width: 10),
                                   Text(
-                                    'Edit',
+                                    'View',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],
