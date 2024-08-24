@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
-class HomePageParticipantController extends GetxController {
+class HomePageSuperEOController extends GetxController {
   var userName = ''.obs;
   var duration = Duration().obs;
   Timer? timer;

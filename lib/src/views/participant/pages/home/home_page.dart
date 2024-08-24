@@ -9,7 +9,7 @@ class HomePageParticipant extends StatefulWidget {
 class _HomePageParticipantState extends State<HomePageParticipant> {
   @override
   Widget build(BuildContext context) {
-    final HomePageController homePageController = Get.put(HomePageController());
+    final HomePageParticipantController homePageController = Get.put(HomePageParticipantController());
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
