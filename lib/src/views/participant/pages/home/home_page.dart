@@ -1,11 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/home_page_controller.dart';
 
-//TODO : welcom nama user belum realtime ketika di ubah
-//TODO : Time Countdown masih belum past (benar atau tidak)
-
-
-
 class HomePageParticipant extends StatefulWidget {
   @override
   State<HomePageParticipant> createState() => _HomePageParticipantState();
@@ -15,7 +10,6 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
   @override
   Widget build(BuildContext context) {
     final HomePageController homePageController = Get.put(HomePageController());
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -36,7 +30,7 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                       bottom: Radius.circular(20.0), // Apply radius here
                     ),
                     child: Container(
-                      color: HexColor('#E97717'), // Background color of AppBar
+                      color: HexColor('#01613B'), // Background color of AppBar
                       padding: EdgeInsets.all(16.0),
                       child: Column(
                         children: [
@@ -63,7 +57,7 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Column(
                       children: [
                         SizedBox(height: 150),
@@ -73,7 +67,7 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: HexColor('#E97717'),
+                            color: HexColor('#01613B'),
                           ),
                         ),
                         SizedBox(height: 8),
@@ -84,6 +78,128 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                               color: Colors.grey[800],
                               fontWeight: FontWeight.bold),
                         ),
+                        SizedBox(height: 32),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 22, horizontal: 27),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.grey[400]!),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.event,
+                                        size: 32, color: HexColor('#E97717')),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Agenda',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.grey[400]!),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.card_giftcard,
+                                        size: 32, color: HexColor('#E97717')),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Participant\nKit',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.grey[400]!),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.emoji_events,
+                                        size: 32, color: HexColor('#E97717')),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Participant\nBenefit',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 34),
+                        Container(
+                          width: 329,
+                          height: 180,
+                          decoration: ShapeDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                  "https://d3p0bla3numw14.cloudfront.net/news-content/img/2021/05/03112735/Tempat-Tinggal-Terbaik-di-Bali.jpg"),
+                              fit: BoxFit.fill,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Welcome To Bali",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 12),
+                              IconButton(
+                                  onPressed: null,
+                                  icon: Icon(
+                                    Icons.arrow_circle_right_sharp,
+                                    color: HexColor("#01613B"),
+                                    size: 50,
+                                  )),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 100),
+                        Divider(
+                          color: Colors.grey[200],
+                          thickness: 60,
+                        ),
+                        SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -125,7 +241,7 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                                 Container(
                                   padding: EdgeInsets.all(16.0),
                                   decoration: BoxDecoration(
-                                    color: HexColor('#E97717'),
+                                    color: HexColor('#01613B'),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Column(
@@ -231,14 +347,15 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 160),
                         Divider(
                           color: Colors.grey[200],
-                          thickness: 18,
+                          thickness: 100,
                         ),
                         SizedBox(height: 16),
+
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 18.0),
                           child: Column(
                             children: [
                               Text(
@@ -247,7 +364,7 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: HexColor('#E97717'),
+                                  color: HexColor('#01613B'),
                                 ),
                               ),
                               SizedBox(height: 8),
@@ -269,7 +386,7 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: HexColor('#E97717'),
+                                  color: HexColor('#01613B'),
                                 ),
                               ),
                               Text(
@@ -282,102 +399,12 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 32),
+                        SizedBox(height: 120),
                         Divider(
                           color: Colors.grey[200],
-                          thickness: 28,
+                          thickness: 90,
                         ),
                         SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 22, horizontal: 27),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.event,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Agenda',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.card_giftcard,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Participant\nKit',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.emoji_events,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Participant\nBenefit',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 44),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 38,
-                        ),
-                        SizedBox(height: 34),
-                        Container(
-                          child: Column(
-                            children: [],
-                          ),
-                        ),
                       ],
                     ),
                   ),

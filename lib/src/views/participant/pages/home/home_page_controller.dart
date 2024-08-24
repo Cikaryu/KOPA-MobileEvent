@@ -1,60 +1,23 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:async';
 
 class HomePageController extends GetxController {
-  final TextEditingController nameController = TextEditingController();
   var userName = ''.obs;
-  late Timer timer;
-
-  // Make duration reactive
   var duration = Duration().obs;
-  DateTime? serverTime;
+  Timer? timer;
 
   @override
   void onInit() {
     super.onInit();
     fetchUserData();
-    _fetchServerTime();
-  }
-
-   Future<void> _fetchServerTime() async {
-    try {
-      final response = await http
-          .get(Uri.parse('http://worldtimeapi.org/api/timezone/Etc/UTC'));
-      if (response.statusCode == 200) {
-        final serverTimeJson = jsonDecode(response.body);
-        serverTime = DateTime.parse(serverTimeJson['utc_datetime']);
-        DateTime eventDate = DateTime(2024, 9, 20, 0, 0, 0);
-
-        // Convert eventDate to UTC+07:00
-        eventDate = eventDate.toUtc().add(Duration(hours: 7));
-
-        // Update the duration value using .value
-        duration.value = eventDate.difference(serverTime!);
-
-        timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-          if (duration.value.isNegative) {
-            timer.cancel();
-          } else {
-            duration.value -= Duration(seconds: 1);
-          }
-        });
-      } else {
-        throw Exception('Failed to load server time');
-      }
-    } catch (e) {
-      print("Error fetching server time: $e");
-      duration.value = Duration.zero; // Set duration to zero on error
-    }
+    startCountdown();
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -72,19 +35,23 @@ class HomePageController extends GetxController {
     }
   }
 
-  Future<void> getUserData(User user) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      if (doc.exists) {
-        userName.value = doc['name'];
-      } else {
-        debugPrint('No user data found');
-      }
-    } catch (e) {
-      debugPrint('Error fetching user data: $e');
-    }
+  Future<DateTime> getServerTime() async {
+    DocumentReference docRef = FirebaseFirestore.instance.collection('serverTime').doc('time');
+    await docRef.set({'timestamp': FieldValue.serverTimestamp()});
+    DocumentSnapshot snapshot = await docRef.get();
+    Timestamp timestamp = snapshot['timestamp'];
+    return timestamp.toDate();
+  }
+
+  void startCountdown() async {
+    DateTime serverTime = await getServerTime();
+    DateTime eventDate = DateTime(2024, 9, 20, 0, 0, 0); // Set tanggal event (20 September 2024) di zona waktu Bali (GMT+8)
+
+    // Hitung perbedaan waktu antara server dan waktu event
+    duration.value = eventDate.difference(serverTime);
+
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      duration.value = duration.value - Duration(seconds: 1);
+    });
   }
 }
