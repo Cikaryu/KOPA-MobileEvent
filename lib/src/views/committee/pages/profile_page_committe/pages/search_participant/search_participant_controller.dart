@@ -5,15 +5,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// TODO Function fetch data status participant kit
+// TODO: Function fetch data status participant kit
 
 class SearchParticipantController extends GetxController {
   RxList<Participant> allParticipants = <Participant>[].obs;
   RxList<Participant> filteredParticipants = <Participant>[].obs;
   TextEditingController searchController = TextEditingController();
   RxBool isAscending = true.obs;
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
-      participantKitSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? participantKitSubscription;
   final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
   RxMap<String, String> status = <String, String>{}.obs;
   var isMerchExpanded = false.obs;
@@ -23,6 +22,7 @@ class SearchParticipantController extends GetxController {
   var poloShirtSize = ''.obs;
   var isLoading = false.obs;
   Rx<Stream<DocumentSnapshot>>? participantKitStream;
+  RxBool isKitStatusFiltered = false.obs;
 
   @override
   void onInit() {
@@ -32,6 +32,7 @@ class SearchParticipantController extends GetxController {
     if (user != null) {
       getUserData(user);
       initParticipantKitStream();
+      listenToParticipantKitStatus(user);
     }
   }
 
@@ -41,7 +42,7 @@ class SearchParticipantController extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await getUserData(user);
-      listenToParticipantKitStatus(user); 
+      listenToParticipantKitStatus(user);
     } else {
       debugPrint("User not logged in");
     }
@@ -153,35 +154,8 @@ class SearchParticipantController extends GetxController {
         .snapshots()
         .listen((doc) {
       if (doc.exists) {
-        final participantKit = doc.data()!;
-        final merchandise = participantKit['merchandise'] ?? {};
-        final souvenirs = participantKit['souvenir'] ?? {};
-        final benefits = participantKit['benefit'] ?? {};
-
-        // Clear previous status
-        status.clear();
-        statusImageUrls.clear();
-
-        // Add merchandise status and fetch images
-        merchandise.forEach((key, value) {
-          status[key] = value['status'];
-          fetchStatusImage(key, value['status']);
-        });
-
-        // Add souvenirs status and fetch images
-        souvenirs.forEach((key, value) {
-          status[key] = value['status'];
-          fetchStatusImage(key, value['status']);
-        });
-
-        // Add benefits status and fetch images
-        benefits.forEach((key, value) {
-          status[key] = value['status'];
-          fetchStatusImage(key, value['status']);
-        });
-
-        // Call update() on the controller to refresh the UI if needed
-        update();
+        updateParticipantKitStatus(doc);
+        update(); // Notify listeners if necessary
       } else {
         debugPrint('No participantKit data found');
       }
@@ -265,20 +239,83 @@ class SearchParticipantController extends GetxController {
     isAscending.value = !isAscending.value;
     sortParticipants();
   }
+
+  Future<void> toggleKitStatusFilter() async {
+    isLoading.value = true;
+    try {
+      isKitStatusFiltered.value = !isKitStatusFiltered.value;
+      if (isKitStatusFiltered.value) {
+        await filterParticipantsByKitStatus();
+      } else {
+        filteredParticipants.value = allParticipants;
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> filterParticipantsByKitStatus() async {
+    isLoading.value = true;
+    try {
+      List<Participant> closedParticipants = [];
+      for (var participant in allParticipants) {
+        final kitStatus = await getParticipantKitStatus(participant);
+        print(
+            'Participant ${participant.uid} has kit status: $kitStatus'); // Debugging
+        if (kitStatus == 'Close') {
+          closedParticipants.add(participant);
+        }
+      }
+      filteredParticipants.value = closedParticipants;
+      print(
+          'Filtered participants with status Close: ${closedParticipants.length}'); // Debugging
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<String> getParticipantKitStatus(Participant participant) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('participantKit')
+          .doc(participant.uid)
+          .get();
+      if (doc.exists) {
+        final kitData = doc.data() as Map<String, dynamic>;
+        final allStatuses = [
+          ...?kitData['merchandise']?.values.map((item) => item['status']),
+          ...?kitData['souvenir']?.values.map((item) => item['status']),
+          ...?kitData['benefit']?.values.map((item) => item['status']),
+        ];
+
+        print('All statuses for ${participant.uid}: $allStatuses'); // Debugging
+
+        // Check if there's at least one status that is 'Close'
+        if (allStatuses.contains('Close')) {
+          return 'Close';
+        }
+      }
+    } catch (e) {
+      print('Error fetching participant kit status: $e');
+    }
+    return 'Pending'; // Default value if 'Close' is not found
+  }
 }
 
 class Participant {
   final String? name;
   final String? role;
   final String? selfieUrl;
+  final String uid;
 
-  Participant({this.name, this.role, this.selfieUrl});
+  Participant({this.name, this.role, this.selfieUrl, required this.uid});
 
   factory Participant.fromDocument(DocumentSnapshot doc) {
     return Participant(
       name: doc['name'] as String?,
       role: doc['role'] as String?,
       selfieUrl: doc['selfieUrl'] as String?,
+      uid: doc.id,
     );
   }
 }

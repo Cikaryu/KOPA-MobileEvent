@@ -34,42 +34,36 @@ class ParticipantView extends StatelessWidget {
           return _pages[index];
         },
       ),
-      bottomNavigationBar: Obx(() => ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            ),
-            child: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  backgroundColor: HexColor('01613B'),
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.people),
-                  backgroundColor: HexColor('01613B'),
-                  label: 'Attendance',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  backgroundColor: HexColor('01613B'),
-                  label: 'Service',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  backgroundColor: HexColor('01613B'),
-                  label: 'Profile',
-                ),
-              ],
-              currentIndex: participantController.selectedIndex.value,
-              selectedItemColor: HexColor('F3F3F3'),
-              unselectedItemColor: HexColor('D4D4D4'),
-              onTap: (index) {
-                participantController.changeTabIndex(index);
-              },
-            ),
-          )),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            backgroundColor: HexColor('01613B'),
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            backgroundColor: HexColor('01613B'),
+            label: 'Attendance',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            backgroundColor: HexColor('01613B'),
+            label: 'Service',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            backgroundColor: HexColor('01613B'),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: participantController.selectedIndex.value,
+        selectedItemColor: HexColor('F3F3F3'),
+        unselectedItemColor: HexColor('D4D4D4'),
+        onTap: (index) {
+          participantController.changeTabIndex(index);
+        },
+      )),
     );
   }
 }

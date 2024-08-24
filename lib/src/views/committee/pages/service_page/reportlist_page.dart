@@ -167,6 +167,7 @@ class ReportListCommitteePage extends StatelessWidget {
                                                               FontWeight.bold)),
                                                 ],
                                               ),
+                                              SizedBox(height: 8),
                                               Row(
                                                 children: [
                                                   Text(
@@ -184,8 +185,6 @@ class ReportListCommitteePage extends StatelessWidget {
                                                 ],
                                               ),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
                                                 children: [
                                                   Text(
                                                     'Status: ',

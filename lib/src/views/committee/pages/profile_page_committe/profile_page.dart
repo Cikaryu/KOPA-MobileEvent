@@ -132,25 +132,39 @@ class ProfileCommitteePage extends StatelessWidget {
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 12.0),
+                              padding: EdgeInsets.symmetric(vertical: 12.0),
                               decoration: BoxDecoration(
-                                color: HexColor("#F3F3F3"),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 4,
-                                    spreadRadius: 0,
-                                    offset: Offset(0, 0),
+                                  // color: HexColor("#F3F3F3"),
+                                  // borderRadius: BorderRadius.circular(20),
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: Color(0x3F000000),
+                                  //     blurRadius: 4,
+                                  //     spreadRadius: 0,
+                                  //     offset: Offset(0, 0),
+                                  //   ),
+                                  // ],
                                   ),
-                                ],
-                              ),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.person_2_rounded,
-                                    color: Colors.orange,
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: HexColor("E97717"),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0x3F000000),
+                                          spreadRadius: 0,
+                                          offset: Offset(0, 0),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.person_2_rounded,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                   SizedBox(width: 16.0),
                                   Column(
@@ -164,13 +178,6 @@ class ProfileCommitteePage extends StatelessWidget {
                                           fontSize: 18.0,
                                         ),
                                       ),
-                                      Text(
-                                        'Edit Participant kits and search Participants',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
                                     ],
                                   ),
                                   Spacer(),
@@ -182,29 +189,43 @@ class ProfileCommitteePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 12),
                           InkWell(
                             onTap: () {},
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 12.0),
+                              padding: EdgeInsets.symmetric(vertical: 12.0),
                               decoration: BoxDecoration(
-                                color: HexColor("#F3F3F3"),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x3F000000),
-                                    blurRadius: 4,
-                                    spreadRadius: 0,
-                                    offset: Offset(0, 0),
+                                  // color: HexColor("#F3F3F3"),
+                                  // borderRadius: BorderRadius.circular(20),
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: Color(0x3F000000),
+                                  //     blurRadius: 4,
+                                  //     spreadRadius: 0,
+                                  //     offset: Offset(0, 0),
+                                  //   ),
+                                  // ],
                                   ),
-                                ],
-                              ),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.upload_rounded,
-                                    color: Colors.orange,
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: HexColor("E97717"),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0x3F000000),
+                                          spreadRadius: 0,
+                                          offset: Offset(0, 0),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.upload_rounded,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                   SizedBox(width: 16.0),
                                   Column(
@@ -218,13 +239,6 @@ class ProfileCommitteePage extends StatelessWidget {
                                           fontSize: 18.0,
                                         ),
                                       ),
-                                      Text(
-                                        'Export data from database into excel',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
                                     ],
                                   ),
                                   Spacer(),
@@ -236,32 +250,50 @@ class ProfileCommitteePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 12),
                           profileCommitteeController.role.value == 'Committee'
                               ? InkWell(
                                   onTap: () {
                                     profileCommitteeController.switchRole();
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 12.0),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 12.0),
                                     decoration: BoxDecoration(
-                                      color: HexColor("#F3F3F3"),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3F000000),
-                                          blurRadius: 4,
-                                          spreadRadius: 0,
-                                          offset: Offset(0, 0),
+                                        // color: HexColor("#F3F3F3"),
+                                        // borderRadius: BorderRadius.circular(20),
+                                        // boxShadow: [
+                                        //   BoxShadow(
+                                        //     color: Color(0x3F000000),
+                                        //     blurRadius: 4,
+                                        //     spreadRadius: 0,
+                                        //     offset: Offset(0, 0),
+                                        //   ),
+                                        // ],
                                         ),
-                                      ],
-                                    ),
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        Icon(
-                                          Icons.import_export_rounded,
-                                          color: Colors.orange,
+                                        Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: HexColor("E97717"),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(0x3F000000),
+                                                spreadRadius: 0,
+                                                offset: Offset(0, 0),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Icon(
+                                            Icons.import_export_rounded,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                         SizedBox(width: 16.0),
                                         Column(
@@ -273,13 +305,6 @@ class ProfileCommitteePage extends StatelessWidget {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Change account into selected role',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey,
                                               ),
                                             ),
                                           ],

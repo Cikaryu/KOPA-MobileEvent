@@ -124,8 +124,8 @@ class ProfileParticipantPage extends StatelessWidget {
                   ),
                   SizedBox(height: 24),
                   // Container for Edit Profile
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -146,25 +146,30 @@ class ProfileParticipantPage extends StatelessWidget {
                             profileController.getUserData;
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 12.0),
+                            padding: EdgeInsets.symmetric(vertical: 12.0),
                             decoration: BoxDecoration(
-                              color: HexColor("#F3F3F3"),
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x3F000000),
-                                  spreadRadius: 0,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 0),
-                                ),
-                              ],
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.person,
-                                  color: Colors.orange,
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: HexColor("E97717"),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        spreadRadius: 0,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                  ),
                                 ),
                                 SizedBox(width: 16.0),
                                 Column(
@@ -175,12 +180,6 @@ class ProfileParticipantPage extends StatelessWidget {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Update your profile information',
-                                      style: TextStyle(
-                                        color: Colors.grey,
                                       ),
                                     ),
                                   ],
@@ -204,25 +203,30 @@ class ProfileParticipantPage extends StatelessWidget {
                             );
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 12.0),
+                            padding: EdgeInsets.symmetric(vertical: 12.0),
                             decoration: BoxDecoration(
-                              color: HexColor("#F3F3F3"),
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x3F000000),
-                                  blurRadius: 4,
-                                  spreadRadius: 0,
-                                  offset: Offset(0, 0),
-                                ),
-                              ],
                             ),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.lock,
-                                  color: Colors.orange,
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: HexColor("E97717"),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x3F000000),
+                                        spreadRadius: 0,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                  ),
                                 ),
                                 SizedBox(width: 16.0),
                                 Column(
@@ -233,12 +237,6 @@ class ProfileParticipantPage extends StatelessWidget {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Change your account password',
-                                      style: TextStyle(
-                                        color: Colors.grey,
                                       ),
                                     ),
                                   ],
@@ -259,25 +257,31 @@ class ProfileParticipantPage extends StatelessWidget {
                                   profileController.switchRole();
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 12.0),
+                                  padding: EdgeInsets.symmetric(vertical: 12.0),
                                   decoration: BoxDecoration(
-                                    color: HexColor("#F3F3F3"),
                                     borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3F000000),
-                                        blurRadius: 4,
-                                        spreadRadius: 0,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ],
                                   ),
                                   child: Row(
                                     children: [
-                                      Icon(
-                                        Icons.import_export_rounded,
-                                        color: Colors.orange,
+                                      Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: HexColor("E97717"),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0x3F000000),
+                                              spreadRadius: 0,
+                                              offset: Offset(0, 0),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Icon(
+                                          Icons.import_export_rounded,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                       SizedBox(width: 16.0),
                                       Column(
@@ -289,13 +293,6 @@ class ProfileParticipantPage extends StatelessWidget {
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18.0,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Change account into selected role',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
                                             ),
                                           ),
                                         ],
