@@ -1,5 +1,4 @@
 import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/scan_controller.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,12 +8,10 @@ import 'package:hexcolor/hexcolor.dart';
 // TODO : button check all belum diimplementasikan
 // TODO : dropdownbutton status tidak fetch ke database firebase ketika di referesh
 // TODO : button save belum diimplementasikan
-// TODO : dropdown promote belum diimplementasikan
 // TODO : image profile belum di fetch
 
 //Design : 
 // TODO : desain dropdown promote belum fix
-// TODO : desain item yang di dropdownbutton status belum fix
 // TODO : App Bar terlihat ketika di scroll
 
 class ScanProfileView extends StatefulWidget {
@@ -85,81 +82,8 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                     participantData['email'],
                     style: TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Promote",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 10),
-                      //dropdown for promote
-                      SizedBox(
-                        width: Get.width / 2.5,
-                        child: DropdownButtonFormField2<String>(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            prefixIcon: Icon(Icons.arrow_drop_down,
-                                color: Colors.black45),
-                          ),
-                          isExpanded: true,
-                          hint: const Text(
-                            'Choose',
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                          items: [
-                            DropdownMenuItem<String>(
-                              value: 'committe',
-                              child: Text('Committee'),
-                            ),
-                            DropdownMenuItem<String>(
-                              value: 'eo',
-                              child: Text(
-                                'Event Organizer',
-                                style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                maxLines: 1,
-                              ),
-                            ),
-                          ],
-                          value: selectedValue,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value;
-                            });
-                          },
-                          buttonStyleData: ButtonStyleData(
-                            height: 40,
-                            padding: EdgeInsets.only(right: 16),
-                            width: Get.width / 2.5,
-                          ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(null),
-                            iconSize: 0,
-                          ),
-                          dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          menuItemStyleData: MenuItemStyleData(
-                            padding: EdgeInsets.only(left: 16, right: 16),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 26),
+                  ),                  
+                  SizedBox(height: 36),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                     decoration: ShapeDecoration(

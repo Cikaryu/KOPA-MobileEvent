@@ -2,6 +2,7 @@ import 'dart:io'; // Add this line to import the 'dart:io' package
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:flutter/services.dart';
+//TODO : foto profile dan ktp bisa tersubmit tanpa diisi
 
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -312,6 +313,7 @@ class SignupSlide2View extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 16),
+                
                 Text('KTP Picture',
                     style: TextStyle(
                         color: Colors.grey[800],

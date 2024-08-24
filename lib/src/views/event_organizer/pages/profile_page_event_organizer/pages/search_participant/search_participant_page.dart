@@ -1,5 +1,3 @@
-// TODO : styling halaman search participant sesuaikan figma
-
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/profile_page_event_organizer/pages/search_participant/search_participant_controller.dart';
 import 'package:flutter/material.dart';
