@@ -6,15 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 //Function:
-// TODO : button check all belum diimplementasikan
-// TODO : dropdownbutton status tidak fetch ke database firebase ketika di referesh
-// TODO : button save belum diimplementasikan
-// TODO : dropdown promote belum diimplementasikan
-// TODO : image profile belum di fetch
+// TODO Function fetch data status participant kit
+// TODO image profile belum di fetch
 
-//Design : 
-// TODO : desain dropdown promote belum fix
-// TODO : desain item yang di dropdownbutton status belum fix
+//Design :
 // TODO : App Bar terlihat ketika di scroll
 
 class ScanProfileView extends StatefulWidget {
@@ -50,14 +45,14 @@ class _ScanProfileViewState extends State<ScanProfileView> {
           }
 
           var participantData = snapshot.data!;
-          return Padding(
-            padding: EdgeInsets.all(16.0),
+          return Align(
+            alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Tambahkan detail lainnya sesuai kebutuhan
-
+                  SizedBox(height: 16),
                   Container(
                     width: 82,
                     height: 82,
@@ -87,78 +82,78 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Promote",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 10),
-                      //dropdown for promote
-                      SizedBox(
-                        width: Get.width / 2.5,
-                        child: DropdownButtonFormField2<String>(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            prefixIcon: Icon(Icons.arrow_drop_down,
-                                color: Colors.black45),
-                          ),
-                          isExpanded: true,
-                          hint: const Text(
-                            'Choose',
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                          items: [
-                            DropdownMenuItem<String>(
-                              value: 'committe',
-                              child: Text('Committee'),
-                            ),
-                            DropdownMenuItem<String>(
-                              value: 'eo',
-                              child: Text(
-                                'Event Organizer',
-                                style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                maxLines: 1,
-                              ),
-                            ),
-                          ],
-                          value: selectedValue,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value;
-                            });
-                          },
-                          buttonStyleData: ButtonStyleData(
-                            height: 40,
-                            padding: EdgeInsets.only(right: 16),
-                            width: Get.width / 2.5,
-                          ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(null),
-                            iconSize: 0,
-                          ),
-                          dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          menuItemStyleData: MenuItemStyleData(
-                            padding: EdgeInsets.only(left: 16, right: 16),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Text(
+                  //       "Promote",
+                  //       style: TextStyle(
+                  //           fontSize: 18, fontWeight: FontWeight.bold),
+                  //     ),
+                  //     SizedBox(width: 10),
+                  //     //dropdown for promote
+                  //     SizedBox(
+                  //       width: Get.width / 2.5,
+                  //       child: DropdownButtonFormField2<String>(
+                  //         decoration: InputDecoration(
+                  //           isDense: true,
+                  //           contentPadding: EdgeInsets.zero,
+                  //           border: OutlineInputBorder(
+                  //             borderRadius: BorderRadius.circular(15),
+                  //           ),
+                  //           prefixIcon: Icon(Icons.arrow_drop_down,
+                  //               color: Colors.black45),
+                  //         ),
+                  //         isExpanded: true,
+                  //         hint: const Text(
+                  //           'Choose',
+                  //           style: TextStyle(
+                  //             fontSize: 14,
+                  //           ),
+                  //         ),
+                  //         items: [
+                  //           DropdownMenuItem<String>(
+                  //             value: 'committe',
+                  //             child: Text('Committee'),
+                  //           ),
+                  //           DropdownMenuItem<String>(
+                  //             value: 'eo',
+                  //             child: Text(
+                  //               'Event Organizer',
+                  //               style: TextStyle(
+                  //                 overflow: TextOverflow.ellipsis,
+                  //               ),
+                  //               maxLines: 1,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //         value: selectedValue,
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             selectedValue = value;
+                  //           });
+                  //         },
+                  //         buttonStyleData: ButtonStyleData(
+                  //           height: 40,
+                  //           padding: EdgeInsets.only(right: 16),
+                  //           width: Get.width / 2.5,
+                  //         ),
+                  //         iconStyleData: const IconStyleData(
+                  //           icon: Icon(null),
+                  //           iconSize: 0,
+                  //         ),
+                  //         dropdownStyleData: DropdownStyleData(
+                  //           decoration: BoxDecoration(
+                  //             borderRadius: BorderRadius.circular(15),
+                  //           ),
+                  //         ),
+                  //         menuItemStyleData: MenuItemStyleData(
+                  //           padding: EdgeInsets.only(left: 16, right: 16),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(height: 26),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -222,10 +217,11 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                                     width: 300,
                                     duration: Duration(milliseconds: 300),
                                     height: scanController.isMerchExpanded.value
-                                        ? 310
+                                        ? 240
                                         : 0,
                                     curve: Curves.easeInOut,
                                     child: SingleChildScrollView(
+                                      physics: NeverScrollableScrollPhysics(),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -276,9 +272,9 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                                               'Jas Hujan',
                                               'merchandise.jasHujan'),
                                           SizedBox(height: 20),
-                                          Center(
-                                              child: buildButtonCheckAll(
-                                                  scanController))
+                                          // Center(
+                                          //     child: buildButtonCheckAll(
+                                          //         scanController))
                                         ],
                                       ),
                                     ),
@@ -356,10 +352,11 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                                     duration: Duration(milliseconds: 300),
                                     height:
                                         scanController.isSouvenirExpanded.value
-                                            ? 230
+                                            ? 150
                                             : 0,
                                     curve: Curves.easeInOut,
                                     child: SingleChildScrollView(
+                                      physics: NeverScrollableScrollPhysics(),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
@@ -400,7 +397,7 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                                               'Selendang Udeng',
                                               'souvenir.selendangUdeng'),
                                           SizedBox(height: 20),
-                                          buildButtonCheckAll(scanController)
+                                          // buildButtonCheckAll(scanController)
                                         ],
                                       ),
                                     ),
@@ -478,10 +475,11 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                                     duration: Duration(milliseconds: 300),
                                     height:
                                         scanController.isBenefitExpanded.value
-                                            ? 230
+                                            ? 150
                                             : 0,
                                     curve: Curves.easeInOut,
                                     child: SingleChildScrollView(
+                                      physics: NeverScrollableScrollPhysics(),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
@@ -522,7 +520,7 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                                               'Voucher E-Wallet',
                                               'benefit.voucherBelanja'),
                                           SizedBox(height: 20),
-                                          buildButtonCheckAll(scanController)
+                                          // buildButtonCheckAll(scanController)
                                         ],
                                       ),
                                     ),
@@ -536,22 +534,22 @@ class _ScanProfileViewState extends State<ScanProfileView> {
                     ),
                   ),
                   SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: HexColor("72BB65"),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15, horizontal: 70),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      'Save',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {},
+                  //   style: ElevatedButton.styleFrom(
+                  //     backgroundColor: HexColor("72BB65"),
+                  //     padding:
+                  //         EdgeInsets.symmetric(vertical: 15, horizontal: 70),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(10),
+                  //     ),
+                  //   ),
+                  //   child: Text(
+                  //     'Save',
+                  //     style: TextStyle(color: Colors.white, fontSize: 20),
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
                   SizedBox(height: 40),
                 ],
               ),
@@ -563,35 +561,35 @@ class _ScanProfileViewState extends State<ScanProfileView> {
   }
 }
 
-Widget buildButtonCheckAll(ScanController controller) {
-  return ElevatedButton(
-    onPressed: () {},
-    style: ElevatedButton.styleFrom(
-      backgroundColor: HexColor("E97717"),
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-    ),
-    child: Text(
-      'Check All',
-      style: TextStyle(color: Colors.white, fontSize: 16),
-      textAlign: TextAlign.center,
-    ),
-  );
-}
+// Widget buildButtonCheckAll(ScanController controller) {
+//   return ElevatedButton(
+//     onPressed: () {},
+//     style: ElevatedButton.styleFrom(
+//       backgroundColor: HexColor("E97717"),
+//       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(10),
+//       ),
+//     ),
+//     child: Text(
+//       'Check All',
+//       style: TextStyle(color: Colors.white, fontSize: 16),
+//       textAlign: TextAlign.center,
+//     ),
+//   );
+// }
 
 //Dropdown status
 Widget buildStatusRow(
     ScanController controller, String itemName, String field) {
   return Obx(() {
-    final currentStatus = controller.status[field] ?? 'pending';
+    final currentStatus = controller.status[field] ?? 'Pending';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           itemName,
-          style: TextStyle(fontSize: 16),
+          style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         Container(
           padding: EdgeInsets.all(6),
@@ -599,37 +597,34 @@ Widget buildStatusRow(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               width: 2,
-              color: currentStatus == 'pending' ? Colors.yellow : Colors.green,
+              color: currentStatus == 'Pending'
+                  ? HexColor('E3CF3C')
+                  : Colors.green,
             ),
             color: Colors.grey[200],
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
-              icon: currentStatus == 'pending'
-                  ? Icon(
-                      Icons.timer,
-                      size: 20,
-                      color: Colors.yellow[600],
-                    )
-                  : Icon(
-                      Icons.done,
-                      size: 20,
-                      color: Colors.green,
-                    ),
-              isDense: true,
-              value: currentStatus,
-              items: controller.statusOptions.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  controller.updateStatus(field, newValue);
-                }
-              },
-            ),
+                icon: currentStatus == 'Pending'
+                    ? Icon(
+                        Icons.error,
+                        size: 20,
+                        color: HexColor('E3CF3C'),
+                      )
+                    : Icon(
+                        Icons.done,
+                        size: 20,
+                        color: Colors.green,
+                      ),
+                isDense: true,
+                value: currentStatus,
+                items: controller.statusOptions.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: null),
           ),
         ),
       ],

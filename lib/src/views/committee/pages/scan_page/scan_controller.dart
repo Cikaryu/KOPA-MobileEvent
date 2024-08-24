@@ -24,7 +24,7 @@ class ScanController extends GetxController {
   var poloShirtSize = ''.obs;
 
   //item dropdown
-  final List<String> statusOptions = ['pending', 'received'];
+  final List<String> statusOptions = ['Pending', 'Received'];
 
   @override
   void onInit() {
@@ -129,10 +129,10 @@ class ScanController extends GetxController {
           if (categoryData != null && categoryData[fieldParts[1]] != null) {
             final itemData =
                 categoryData[fieldParts[1]] as Map<String, dynamic>?;
-            final fieldStatus = itemData?['status'] ?? 'pending';
+            final fieldStatus = itemData?['status'] ?? 'Pending';
             status[field] = fieldStatus;
           } else {
-            status[field] = 'pending';
+            status[field] = 'Pending';
           }
         }
       }
