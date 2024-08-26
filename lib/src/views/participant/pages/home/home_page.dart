@@ -1,6 +1,8 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/home_page_controller.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/pages/Agenda/participant_agenda_view.dart';
 
+import 'pages/Participant_Benefit/participant_Benefit_view.dart';
 import 'pages/participant_kit/participant_kit.dart';
 
 class HomePageParticipant extends StatefulWidget {
@@ -87,27 +89,37 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 22, horizontal: 27),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.event,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Agenda',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ParticipantAgendaView()),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 22, horizontal: 27),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(20),
+                                    border:
+                                        Border.all(color: Colors.grey[400]!),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.event,
+                                          size: 32, color: HexColor('#E97717')),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Agenda',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               InkWell(
@@ -143,28 +155,38 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.emoji_events,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Participant\nBenefit',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ParticipantBenefitView()),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(20),
+                                    border:
+                                        Border.all(color: Colors.grey[400]!),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.emoji_events,
+                                          size: 32, color: HexColor('#E97717')),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Participant\nBenefit',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
