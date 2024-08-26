@@ -1,6 +1,8 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/home_page_controller.dart';
 
+import 'pages/participant_kit/participant_kit.dart';
+
 class HomePageParticipant extends StatefulWidget {
   @override
   State<HomePageParticipant> createState() => _HomePageParticipantState();
@@ -9,7 +11,8 @@ class HomePageParticipant extends StatefulWidget {
 class _HomePageParticipantState extends State<HomePageParticipant> {
   @override
   Widget build(BuildContext context) {
-    final HomePageParticipantController homePageController = Get.put(HomePageParticipantController());
+    final HomePageParticipantController homePageController =
+        Get.put(HomePageParticipantController());
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -107,28 +110,37 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                                   ],
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.card_giftcard,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Participant\nKit',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => ParticipantKit()),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(20),
+                                    border:
+                                        Border.all(color: Colors.grey[400]!),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.card_giftcard,
+                                          size: 32, color: HexColor('#E97717')),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Participant\nKit',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               Container(
