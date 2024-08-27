@@ -3,6 +3,10 @@ import 'package:app_kopabali/src/views/participant/pages/profile/page/change_pas
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 
+// TODO : appbar dengan body terlalu mepet, perlu diatur padding/kasih sizedbox
+// TODO : container participant kit height nya terlalu tinggi
+
+
 class ProfileParticipantPage extends StatelessWidget {
   const ProfileParticipantPage({super.key});
 

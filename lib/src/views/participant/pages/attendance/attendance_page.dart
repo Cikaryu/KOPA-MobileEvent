@@ -3,6 +3,7 @@ import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_co
 import 'package:app_kopabali/src/views/participant/pages/attendance/page/attendance_status_page.dart';
 
 //TODO: Attend must by GPS location
+//TODO: Atur besar container ketika memilih sick/permit/leave/notparticipanting agar seperti attended.
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({super.key});

@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
+// TODO : buatkan tombol retake setelah pick foto
+// TODO : Snackbar buat jadi pop up
+
 class AttendanceStatusPage extends StatefulWidget {
   final int day;
   final String event;
