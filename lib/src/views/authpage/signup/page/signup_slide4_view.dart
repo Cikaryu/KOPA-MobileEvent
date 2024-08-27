@@ -3,6 +3,8 @@ import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 
+// TODO : Back button
+
 class SignupSlide4View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _eWalletTypeController = TextEditingController();
@@ -95,6 +97,7 @@ class SignupSlide4View extends StatelessWidget {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
+                  //TODO : E wallet number validation gopay / ovo bisanya minimal 11 digit sampai 13
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your E-Wallet number';

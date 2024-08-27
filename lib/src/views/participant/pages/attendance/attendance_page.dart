@@ -2,6 +2,8 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/page/attendance_status_page.dart';
 
+//TODO: Attend must by GPS location
+
 class AttendancePage extends StatelessWidget {
   const AttendancePage({super.key});
 

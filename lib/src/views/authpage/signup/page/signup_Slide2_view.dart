@@ -3,7 +3,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:flutter/services.dart';
 //TODO : foto profile dan ktp bisa tersubmit tanpa diisi
-
+// TODO : Back button
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();

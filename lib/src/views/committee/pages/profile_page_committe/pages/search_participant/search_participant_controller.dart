@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// TODO: Function fetch data status participant kit
 
 class SearchParticipantController extends GetxController {
   RxList<Participant> allParticipants = <Participant>[].obs;
