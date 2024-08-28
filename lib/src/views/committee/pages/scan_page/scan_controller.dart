@@ -13,24 +13,12 @@ class ScanController extends GetxController {
   var isLoading = true.obs;
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
-  var isCameraActive = true.obs;
   var isProcessing = false.obs;
 
   var expandedContainer = RxString('');
   @override
   void onInit() {
     super.onInit();
-    ever(isCameraActive, (_) => _handleCameraState());
-  }
-
-  void _handleCameraState() {
-    if (isCameraActive.value) {
-      print('Camera activated');
-      // Lakukan sesuatu ketika kamera diaktifkan
-    } else {
-      print('Camera deactivated');
-      // Lakukan sesuatu ketika kamera dinonaktifkan
-    }
   }
 
   void toggleContainerExpansion(String containerName) {
@@ -139,26 +127,28 @@ class ScanController extends GetxController {
 
   Future<void> processQRCode(String qrCode) async {
     if (isProcessing.value) return; // Prevent multiple simultaneous processes
-
     try {
       isProcessing(true);
+      isLoading(true);
       print('Processing QR Code: $qrCode');
 
-      // Immediately navigate to ScanProfileView
-      Get.off(() => ScanProfileView(), arguments: {'userId': qrCode});
+      DocumentSnapshot participantDoc =
+          await _firestore.collection('users').doc(qrCode).get();
 
-      // Fetch data in the background
-      fetchParticipantData(qrCode).then((_) {
-        // Update UI once data is fetched
-        update();
-      }).catchError((error) {
-        print('Error fetching participant data: $error');
-        Get.snackbar("Error", "Failed to fetch participant data.");
-      });
+      if (participantDoc.exists) {
+        print('Participant found. Fetching data...');
+        await fetchParticipantData(qrCode);
+        print('Data fetched. Navigating to scan profile page.');
+        Get.off(() => ScanProfileView(), arguments: {'userId': qrCode});
+      } else {
+        print('Participant not found.');
+        Get.snackbar("Error", "Participant not found.");
+      }
     } catch (e) {
       print('Error processing QR code: $e');
       Get.snackbar("Error", "Failed to process QR code.");
     } finally {
+      isLoading(false);
       isProcessing(false);
     }
   }
@@ -189,13 +179,5 @@ class ScanController extends GetxController {
       debugPrint('Error fetching status image: $e');
       statusImageUrls[key] = ''; // Set to empty string if failed
     }
-  }
-
-  void deactivateCamera() {
-    isCameraActive.value = false;
-  }
-
-  void activateCamera() {
-    isCameraActive.value = true;
   }
 }
