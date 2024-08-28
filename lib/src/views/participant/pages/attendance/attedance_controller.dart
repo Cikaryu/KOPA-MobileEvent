@@ -224,7 +224,7 @@ class AttendanceController extends GetxController {
 
   Future<void> takePhoto() async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (image != null) {
       imageFile.value = File(image.path);
     }
