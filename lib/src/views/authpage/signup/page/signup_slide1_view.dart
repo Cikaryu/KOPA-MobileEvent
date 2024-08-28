@@ -60,15 +60,13 @@ class SignupSlide1View extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                         ),
-                        //TODO : Email validator add end with .com , .co.id, .ac.id
                         validator: (value) {
                           String pattern =
-                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|co\.id|ac\.id)$';
                           RegExp regex = RegExp(pattern);
                           if (value!.isEmpty) {
                             return 'Please enter your email';
-                          } else if (!regex.hasMatch(value) ||
-                              !value.endsWith('.com')) {
+                          } else if (!regex.hasMatch(value)) {
                             return 'Please enter a valid email.';
                           }
                           return null;

@@ -31,7 +31,6 @@ class SignupSlide4View extends StatelessWidget {
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,
-
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -86,7 +85,7 @@ class SignupSlide4View extends StatelessWidget {
                 TextFormField(
                   controller: _eWalletNumberController,
                   keyboardType: TextInputType.number,
-                  maxLength: 16,
+                  maxLength: 13,
                   decoration: InputDecoration(
                     hintText: 'Your E-Wallet Number',
                     border: OutlineInputBorder(
@@ -97,12 +96,11 @@ class SignupSlide4View extends StatelessWidget {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
                   ],
-                  //TODO : E wallet number validation gopay / ovo bisanya minimal 11 digit sampai 13
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your E-Wallet number';
-                    } else if (value.length < 10 || value.length > 16) {
-                      return 'E-Wallet number must be between 10 to 16 digits';
+                    } else if (value.length < 11 || value.length > 13) {
+                      return 'E-Wallet number must be between 11 to 13 digits';
                     }
                     return null; // Valid
                   },
@@ -121,14 +119,22 @@ class SignupSlide4View extends StatelessWidget {
                             name: signupController.nameController.text,
                             area: signupController.areaController.text,
                             division: signupController.divisionController.text,
-                            department: signupController.departmentController.text,
+                            department:
+                                signupController.departmentController.text,
                             address: signupController.addressController.text,
-                            whatsappNumber: signupController.whatsappNumberController.text,
-                            ktpNumber: signupController.ktpNumberController.text,
-                            tShirtSize: signupController.tshirtSizeController.text,
-                            poloShirtSize: signupController.poloShirtSizeController.text,
-                            eWalletType: signupController.eWalletTypeController.text = _eWalletTypeController.text,
-                            eWalletNumber: signupController.eWalletNumberController.text = _eWalletNumberController.text,
+                            whatsappNumber:
+                                signupController.whatsappNumberController.text,
+                            ktpNumber:
+                                signupController.ktpNumberController.text,
+                            tShirtSize:
+                                signupController.tshirtSizeController.text,
+                            poloShirtSize:
+                                signupController.poloShirtSizeController.text,
+                            eWalletType: signupController.eWalletTypeController
+                                .text = _eWalletTypeController.text,
+                            eWalletNumber: signupController
+                                .eWalletNumberController
+                                .text = _eWalletNumberController.text,
                             context: context,
                             role: 'Participant',
                             status: 'Pending',
