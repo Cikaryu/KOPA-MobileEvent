@@ -3,7 +3,6 @@ import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_co
 import 'package:app_kopabali/src/views/participant/pages/attendance/page/attendance_status_page.dart';
 
 //TODO: Attend must by GPS location
-//TODO: Atur besar container ketika memilih sick/permit/leave/notparticipanting agar seperti attended.
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({super.key});
@@ -142,7 +141,7 @@ class AttendancePage extends StatelessWidget {
         if (status == 'Attending')
           buildStatusContainer('Attended', Colors.green, Icons.check_circle)
         else if (status == 'Sick' || status == 'Permit')
-          buildStatusContainer(status, Colors.yellow, Icons.warning)
+          buildStatusContainer(status, Colors.yellow, Icons.check_circle)
         else if (status == 'Not Participating' || status == 'Left Early')
           buildStatusContainer(status, Colors.red, Icons.cancel)
         else
@@ -175,6 +174,7 @@ class AttendancePage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Container(
+        width: status == 'Not Participating' ? 135 : 94,
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -182,9 +182,11 @@ class AttendancePage extends StatelessWidget {
           border: Border.all(color: color),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               status,
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
             SizedBox(width: 5),
