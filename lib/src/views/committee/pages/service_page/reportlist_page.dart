@@ -16,9 +16,9 @@ class ReportListCommitteePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: HexColor('01613B'),
         title: Text('Report List',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.black),
         automaticallyImplyLeading: false,

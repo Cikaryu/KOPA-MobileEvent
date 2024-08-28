@@ -14,11 +14,12 @@ class SearchParticipantPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'Search Participant',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: HexColor('01613B'),
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: true,
         centerTitle: true,
@@ -152,7 +153,7 @@ class SearchParticipantPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Container(
-                      height: 2,
+                      height: 1,
                       color: Colors.black,
                       width: Get.width,
                     ),

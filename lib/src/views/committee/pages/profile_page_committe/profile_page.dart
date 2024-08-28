@@ -15,8 +15,10 @@ class ProfileCommitteePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Center(child: Text('My Profile')),
-        backgroundColor: Colors.white,
+        title: Center(
+          child: Text('My Profile', style: TextStyle(color: Colors.white)),
+        ),
+        backgroundColor: HexColor('01613B'),
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
@@ -79,8 +81,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: 16),
                                 Obx(() => Text(
-                                      profileCommitteeController
-                                          .userName.value,
+                                      profileCommitteeController.userName.value,
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold),
@@ -166,8 +167,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                 ),
                                 SizedBox(width: 16.0),
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'Search Participant',
@@ -227,8 +227,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                 ),
                                 SizedBox(width: 16.0),
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       'Export Data',
@@ -255,8 +254,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                   profileCommitteeController.switchRole();
                                 },
                                 child: Container(
-                                  padding:
-                                      EdgeInsets.symmetric(vertical: 12.0),
+                                  padding: EdgeInsets.symmetric(vertical: 12.0),
                                   decoration: BoxDecoration(
                                       // color: HexColor("#F3F3F3"),
                                       // borderRadius: BorderRadius.circular(20),
@@ -270,8 +268,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                       // ],
                                       ),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: 40,
