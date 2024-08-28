@@ -12,17 +12,15 @@ import 'package:hexcolor/hexcolor.dart';
 //Design :
 // TODO : App Bar terlihat ketika di scroll
 
-class ScanProfileView extends StatefulWidget {
+class ScanProfileView extends StatelessWidget {
   ScanProfileView({super.key});
 
-  @override
-  State<ScanProfileView> createState() => _ScanProfileViewState();
-}
-
-class _ScanProfileViewState extends State<ScanProfileView> {
   final String userId = Get.arguments['userId'];
+
   final ScanController scanController = Get.put(ScanController());
+
   String? selectedValue;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
