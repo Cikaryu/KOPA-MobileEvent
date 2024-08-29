@@ -18,15 +18,19 @@ class ScanProfileView extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Participant Profile'),
+        scrolledUnderElevation: 0,
+        backgroundColor: HexColor('01613B'),
+        title:
+            Text('Particpant Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => CommitteeView ()),
+              MaterialPageRoute(builder: (context) => CommitteeView()),
             );
           },
         ),
