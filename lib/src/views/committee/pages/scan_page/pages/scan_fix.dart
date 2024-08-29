@@ -167,9 +167,7 @@ class ScanProfileView extends StatelessWidget {
                   SizedBox(height: 8),
                   Obx(() {
                     return AnimatedContainer(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      width: 300,
+                      width: 420,
                       duration: Duration(milliseconds: 300),
                       height: scanController.isContainerExpanded(containerName)
                           ? (children.length * 40.0 + 60)
@@ -177,29 +175,40 @@ class ScanProfileView extends StatelessWidget {
                       curve: Curves.easeInOut,
                       child: SingleChildScrollView(
                         physics: NeverScrollableScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Name',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'Status',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            ...children,
-                          ],
+                        child: Container(
+                          width: Get.width,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
+                              border: Border.all(color: Colors.grey[300]!)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Name',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Status',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              ...children,
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -217,25 +226,30 @@ class ScanProfileView extends StatelessWidget {
 Widget buildStatusRow(
     ScanController controller, String itemName, String field) {
   return Obx(() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        Text(
-          itemName,
-          style: TextStyle(fontSize: 16, color: Colors.black),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              itemName,
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: controller.statusImageUrls[field] != null &&
+                      controller.statusImageUrls[field]!.isNotEmpty
+                  ? Image.network(
+                      controller.statusImageUrls[field]!,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    )
+                  : SizedBox(width: 24, height: 24),
+            ),
+          ],
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: controller.statusImageUrls[field] != null &&
-                  controller.statusImageUrls[field]!.isNotEmpty
-              ? Image.network(
-                  controller.statusImageUrls[field]!,
-                  width: 24,
-                  height: 24,
-                  fit: BoxFit.contain,
-                )
-              : SizedBox(width: 24, height: 24),
-        ),
+        SizedBox(height: 8),
       ],
     );
   });

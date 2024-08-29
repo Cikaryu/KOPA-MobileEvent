@@ -144,39 +144,47 @@ class ParticipantDetailPage extends StatelessWidget {
                   SizedBox(height: 8),
                   Obx(() {
                     return AnimatedContainer(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       width: 300,
                       duration: Duration(milliseconds: 300),
                       height: controller.isContainerExpanded(containerName)
-                          ? (children.length * 30 + 40)
+                          ? (children.length * 40 + 40)
                           : 0,
                       curve: Curves.easeInOut,
                       child: SingleChildScrollView(
                         physics: NeverScrollableScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Name',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'Status',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            ...children,
-                          ],
+                        child: Container(
+                          width: Get.width,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
+                              border: Border.all(color: Colors.grey[300]!)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Name',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    'Status',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              ...children,
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -195,35 +203,40 @@ class ParticipantDetailPage extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      return Column(
         children: [
-          Text(
-            itemName,
-            style: TextStyle(fontSize: 16, color: Colors.black),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                itemName,
+                style: TextStyle(fontSize: 16, color: Colors.black),
+              ),
+              FutureBuilder<String>(
+                future: controller.getStatusImageUrl(status),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.hasData) {
+                    return Image.network(
+                      snapshot.data!,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Icon(Icons.error, color: Colors.red, size: 24);
+                  } else {
+                    return SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
-          FutureBuilder<String>(
-            future: controller.getStatusImageUrl(status),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                return Image.network(
-                  snapshot.data!,
-                  width: 24,
-                  height: 24,
-                  fit: BoxFit.contain,
-                );
-              } else if (snapshot.hasError) {
-                return Icon(Icons.error, color: Colors.red, size: 24);
-              } else {
-                return SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                );
-              }
-            },
-          ),
+          SizedBox(height: 8),
         ],
       );
     });
