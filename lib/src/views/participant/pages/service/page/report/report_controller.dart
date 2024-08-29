@@ -3,7 +3,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 
-//TODO : Report pop up submited
 
 class ReportController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -153,15 +152,33 @@ class ReportController extends GetxController {
       // Show success dialog
       Get.dialog(
         AlertDialog(
-          title: Text('Success'),
-          content: Text('Report submitted successfully!'),
+          title: Text('Success',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          content: Text('Report submitted successfully!',
+              textAlign: TextAlign.center),
           actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Get.back(); // Close dialog
-                Get.back(); // Go back to previous page
-              },
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: HexColor("E97717"),
+                  border: Border(
+                    top: BorderSide(color: Colors.orange[400]!),
+                  ),
+                ),
+                child: TextButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Get.back(); // Close dialog
+                    Get.back(); // Go back to previous page
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -172,12 +189,29 @@ class ReportController extends GetxController {
     } catch (e) {
       Get.dialog(
         AlertDialog(
-          title: Text('Error'),
+          title: Text('Failed',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           content: Text('Failed to submit report: $e'),
           actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Get.back(),
+            Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: HexColor("E97717"),
+                  border: Border(
+                    top: BorderSide(color: Colors.orange[400]!),
+                  ),
+                ),
+                child: TextButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () => Get.back(),
+                ),
+              ),
             ),
           ],
         ),
