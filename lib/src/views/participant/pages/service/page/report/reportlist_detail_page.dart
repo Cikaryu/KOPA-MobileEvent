@@ -29,9 +29,19 @@ class ReportDetailPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.white,
               scrolledUnderElevation: 0,
-              title: Text('${reportData['title']}'), // Dynamic title
+              backgroundColor: HexColor('01613B'),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Get.back(),
+              ),
+
+              centerTitle: true,
+
+              title: Text(
+                '${reportData['title']}',
+                style: TextStyle(color: Colors.white),
+              ), // Dynamic title
             ),
             body: SingleChildScrollView(
               // Wrap with SingleChildScrollView

@@ -13,10 +13,15 @@ class FaqPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+        backgroundColor: HexColor('01613B'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
         title: Text('Frequently Asked Questions',
-            style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+            style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0),

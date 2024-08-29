@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 // TODO : buatkan tombol retake setelah pick foto
 // TODO : Snackbar buat jadi pop up
@@ -25,12 +26,16 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Attendance Status',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        scrolledUnderElevation: 0,
+        backgroundColor: HexColor('01613B'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
         ),
+        title: Text('Attendance Status', style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
+      backgroundColor: Colors.white,
       body: Obx(() => SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Column(

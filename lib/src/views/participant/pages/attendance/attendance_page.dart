@@ -14,10 +14,13 @@ class AttendancePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Attendance'),
-        backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
-        centerTitle: true,
+        title: Center(
+          child: Text('Attendance',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+        backgroundColor: HexColor('01613B'),
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,

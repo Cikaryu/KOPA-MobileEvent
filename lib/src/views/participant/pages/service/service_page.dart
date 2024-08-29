@@ -16,9 +16,12 @@ class ServicePage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text('Service'),
-        backgroundColor: Colors.white,
-        centerTitle: true,
+        title: Center(
+          child: Text('Service',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+        backgroundColor: HexColor('01613B'),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(

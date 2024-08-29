@@ -39,11 +39,15 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                       padding: EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Text(
-                            'Hello, ${homePageController.userName.value}!',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 100),
+                            child: Text(
+                              'Hello, ${homePageController.userName.value}!',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                overflow: TextOverflow.visible,
+                              ),
                             ),
                           ),
                           SizedBox(height: 8),
@@ -229,11 +233,6 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                           ),
                         ),
                         SizedBox(height: 100),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 60,
-                        ),
-                        SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -382,11 +381,6 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                           ),
                         ),
                         SizedBox(height: 160),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 100,
-                        ),
-                        SizedBox(height: 16),
 
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -434,11 +428,6 @@ class _HomePageParticipantState extends State<HomePageParticipant> {
                           ),
                         ),
                         SizedBox(height: 120),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 90,
-                        ),
-                        SizedBox(height: 16),
                       ],
                     ),
                   ),

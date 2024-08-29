@@ -15,9 +15,14 @@ class ChangePasswordPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text('Change Password'),
         scrolledUnderElevation: 0,
+        backgroundColor: HexColor('01613B'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        title: Text('Change Password', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

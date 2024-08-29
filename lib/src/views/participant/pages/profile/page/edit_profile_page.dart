@@ -18,16 +18,23 @@ class EditProfileView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
+          backgroundColor: HexColor('01613B'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
             onPressed: () {
               profileController.resetForm;
               Get.back();
             },
           ),
-          title: Text('Edit Profile'),
+          title: Text(
+            'Edit Profile',
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: true,
         ),
         body: Obx(() {
           return Stack(

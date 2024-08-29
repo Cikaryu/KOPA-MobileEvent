@@ -3,6 +3,8 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 
+//TODO : Report pop up submited
+
 class ReportController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;

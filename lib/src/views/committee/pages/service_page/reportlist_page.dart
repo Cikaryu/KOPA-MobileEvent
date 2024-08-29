@@ -36,36 +36,38 @@ class ReportListCommitteePage extends StatelessWidget {
                       fontSize: 16.0,
                     )),
                 SizedBox(width: 8.0),
-                DropdownButton<String>(
-                  value: reportController.selectedFilter.value.isEmpty
-                      ? null
-                      : reportController.selectedFilter.value,
-                  hint: Text("Filter"),
-                  items: [
-                    DropdownMenuItem(
-                      value: '',
-                      child: Text('All'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Resolved',
-                      child: Text('Resolved'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Unresolved',
-                      child: Text('Unresolved'),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    reportController.applyFilter(value ?? '');
-                  },
-                ),
+                Obx(() => DropdownButton<String>(
+                      value: reportController.selectedFilter.value.isEmpty
+                          ? null
+                          : reportController.selectedFilter.value,
+                      hint: Text("Filter"),
+                      items: [
+                        DropdownMenuItem(
+                          value: '',
+                          child: Text('All'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Resolved',
+                          child: Text('Resolved'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Unresolved',
+                          child: Text('Unresolved'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        reportController.applyFilter(value!);
+                      },
+                    )),
                 Spacer(),
-                IconButton(
-                  icon: Icon(Icons.swap_vert),
-                  onPressed: () {
-                    reportController.toggleSortOrder();
-                  },
-                ),
+                Obx(() => IconButton(
+                      icon: Icon(reportController.isAscending.value
+                          ? Icons.arrow_upward
+                          : Icons.arrow_downward),
+                      onPressed: () {
+                        reportController.toggleSortOrder();
+                      },
+                    )),
               ],
             ),
           ),

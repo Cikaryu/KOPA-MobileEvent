@@ -9,13 +9,11 @@ class ReportCommitteeController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<XFile?> selectedImage = Rx<XFile?>(null);
-  var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
-  var statusImageUrls =
-      <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
-  var isLoading = false.obs; // Untuk mengatur status loading
+  var reportStatus = <String, String>{}.obs;
+  var statusImageUrls = <String, String>{}.obs;
+  var isLoading = false.obs;
   RxBool isAscending = true.obs;
-  RxString selectedFilter = ''.obs; // Menyimpan filter yang dipilih
-
+  RxString selectedFilter = ''.obs;
   late Rx<User?> _user;
 
   @override
@@ -31,8 +29,7 @@ class ReportCommitteeController extends GetxController {
 
   Future<String> getUserName() async {
     if (_user.value != null) {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(_user.value!.uid).get();
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(_user.value!.uid).get();
       return userDoc['name'] ?? '';
     }
     return '';
@@ -55,17 +52,12 @@ class ReportCommitteeController extends GetxController {
         imageName = 'default.png';
     }
 
-    debugPrint('Image name determined: $imageName'); // Debug statement
-
     try {
-      final downloadUrl = await FirebaseStorage.instance
-          .ref('status/$imageName')
-          .getDownloadURL();
-      debugPrint('Fetched image URL: $downloadUrl'); // Debug statement
-      statusImageUrls[reportId] = downloadUrl; // Menyimpan URL gambar
+      final downloadUrl = await FirebaseStorage.instance.ref('status/$imageName').getDownloadURL();
+      statusImageUrls[reportId] = downloadUrl;
     } catch (e) {
-      debugPrint('Error fetching status image: $e'); // Debug statement
-      statusImageUrls[reportId] = ''; // Set to empty string if failed
+      debugPrint('Error fetching status image: $e');
+      statusImageUrls[reportId] = '';
     }
   }
 
@@ -80,24 +72,16 @@ class ReportCommitteeController extends GetxController {
       if (selectedFilter.isNotEmpty) {
         reports = reports.where((report) {
           final data = report.data() as Map<String, dynamic>;
-          return data['status'] == selectedFilter.value ||
-              data['title'].contains(selectedFilter.value);
+          return data['status'] == selectedFilter.value;
         }).toList();
       }
 
-      if (isAscending.value) {
-        reports.sort((a, b) {
-          final dataA = a.data() as Map<String, dynamic>;
-          final dataB = b.data() as Map<String, dynamic>;
-          return (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
-        });
-      } else {
-        reports.sort((a, b) {
-          final dataA = a.data() as Map<String, dynamic>;
-          final dataB = b.data() as Map<String, dynamic>;
-          return (dataB['title'] ?? '').compareTo(dataA['title'] ?? '');
-        });
-      }
+      reports.sort((a, b) {
+        final dataA = a.data() as Map<String, dynamic>;
+        final dataB = b.data() as Map<String, dynamic>;
+        final comparison = (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
+        return isAscending.value ? comparison : -comparison;
+      });
 
       return reports;
     });
@@ -112,49 +96,30 @@ class ReportCommitteeController extends GetxController {
     required String reply,
     required String status,
   }) async {
-    isLoading.value = true; // Memulai loading
+    isLoading.value = true;
     try {
       await _firestore.collection('report').doc(reportId).update({
         'reply': reply,
         'status': status,
         'updatedAt': Timestamp.now(),
       });
-      _showDialog('Success', 'Report updated successfully.');
+      Get.snackbar('Sukses', 'Laporan berhasil diperbarui.');
       return true;
     } catch (e) {
       debugPrint('Error updating report: $e');
-      _showDialog('Error', 'Failed to update report.');
+      Get.snackbar('Error', 'Gagal memperbarui laporan.');
       return false;
     } finally {
-      isLoading.value = false; // Menghentikan loading
+      isLoading.value = false;
     }
   }
 
-  void _showDialog(String title, String message) {
-    Get.dialog(
-      AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-              Get.back();
-            }, // Close the dialog
-            child: Text('OK'),
-          ),
-        ],
-      ),
-      barrierDismissible: false,
-    );
-  }
-
   Stream<QuerySnapshot> getReports() {
-    final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       return FirebaseFirestore.instance
           .collection('report')
-          .where('userId', isEqualTo: userId) // Filter berdasarkan userId
+          .where('userId', isEqualTo: userId)
           .snapshots();
     }
     return Stream.empty();

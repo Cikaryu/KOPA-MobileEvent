@@ -13,8 +13,12 @@ class ProfileParticipantPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Center(child: Text('My Profile')),
-        backgroundColor: Colors.white,
+        title: Center(
+          child: Text('My Profile',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+        backgroundColor: HexColor('01613B'),
         automaticallyImplyLeading: false,
       ),
       body: Obx(() {

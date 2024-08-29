@@ -46,9 +46,14 @@ class ReportListPage extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text('Report List', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+        scrolledUnderElevation: 0,
+        backgroundColor: HexColor('01613B'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        title: Text('Report List', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

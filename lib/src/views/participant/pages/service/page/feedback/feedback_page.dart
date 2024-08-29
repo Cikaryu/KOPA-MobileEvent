@@ -13,9 +13,13 @@ class FeedbackPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
-        title: Text('Feedback', style: TextStyle(color: Colors.black)),
-        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: HexColor('01613B'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        title: Text('Feedback', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(

@@ -16,14 +16,10 @@ class ParticipantAgendaView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor:
-              Colors.transparent, // Makes the status bar transparent
-          statusBarIconBrightness:
-              Brightness.dark, // Sets the icon brightness for better visibility
+        backgroundColor: HexColor('01613B'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
         ),
       ),
       backgroundColor: Colors.white,

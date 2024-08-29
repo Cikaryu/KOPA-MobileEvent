@@ -16,7 +16,9 @@ class ProfileCommitteePage extends StatelessWidget {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: Center(
-          child: Text('My Profile', style: TextStyle(color: Colors.white)),
+          child: Text('My Profile',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
         backgroundColor: HexColor('01613B'),
         automaticallyImplyLeading: false,

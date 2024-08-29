@@ -118,19 +118,20 @@ class ProfileCommitteeController extends GetxController {
     }
   }
 
-Future<void> logout() async {
-  try {
-    debugPrint("Logging out...");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    await FirebaseAuth.instance.signOut();
-    debugPrint("User signed out.");
-    Get.offAllNamed('/signin');
-  } catch (e) {
-    debugPrint("Error during logout: $e");
+  Future<void> logout() async {
+    try {
+      debugPrint("Logging out...");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      await FirebaseAuth.instance.signOut();
+      debugPrint("User signed out.");
+      return Get.offAllNamed('/signin');
+    } catch (e) {
+      debugPrint("Error during logout: $e");
+    }
   }
-}
-Future<void> getUserRole() async {
+
+  Future<void> getUserRole() async {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -159,17 +160,25 @@ Future<void> getUserRole() async {
     if (user != null) {
       if (role.value == 'Committee') {
         // Switch ke role participant
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
           'role': 'Participant',
-          'wasCommittee': true, // Indicate that this user was previously a Committee
+          'wasCommittee':
+              true, // Indicate that this user was previously a Committee
         });
         role.value = 'Participant';
         Get.offAll(() => ParticipantView());
       } else if (role.value == 'Participant') {
         // Switch ke role committee
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
           'role': 'Committee',
-          'wasCommittee': true, // Indicate that this user was previously a Committee
+          'wasCommittee':
+              true, // Indicate that this user was previously a Committee
         });
         role.value = 'Committee';
         Get.offAll(() => CommitteeView());
