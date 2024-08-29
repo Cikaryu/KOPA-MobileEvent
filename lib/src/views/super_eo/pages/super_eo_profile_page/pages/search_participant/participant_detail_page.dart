@@ -1,46 +1,35 @@
-import 'package:app_kopabali/src/views/super_eo/pages/scan_page/scan_controller.dart';
-import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
-import 'package:flutter/foundation.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/pages/search_participant/search_participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class ScanProfileView extends StatelessWidget {
-  ScanProfileView({super.key});
+class ParticipantDetailPage extends StatelessWidget {
+  final Participant participant;
 
-  final ScanController scanController = Get.put(ScanController());
+  const ParticipantDetailPage({super.key, required this.participant});
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print('Current participantData: ${scanController.participantData}');
-    }
+    final SearchParticipantController controller =
+        Get.find<SearchParticipantController>();
+    controller.fetchParticipantKitStatus(participant.uid);
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
         backgroundColor: HexColor('01613B'),
         title:
-            Text('Particpant Profile', style: TextStyle(color: Colors.white)),
+            Text('Participant Detail', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => SuperEOView()),
-            );
-          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       backgroundColor: Colors.white,
       body: Obx(() {
-        if (scanController.isLoading.value) {
+        if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator());
-        }
-        if (scanController.participantData.isEmpty) {
-          return Center(child: Text('Participant not found.'));
         }
         return Align(
           alignment: Alignment.topCenter,
@@ -49,62 +38,51 @@ class ScanProfileView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 16),
-                Container(
-                  width: 82,
-                  height: 82,
-                  decoration: ShapeDecoration(
-                    image: scanController.imageBytes.value != null
-                        ? DecorationImage(
-                            image:
-                                MemoryImage(scanController.imageBytes.value!),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                    shape: OvalBorder(),
-                  ),
-                  child: scanController.imageBytes.value == null
-                      ? Icon(Icons.person, size: 82, color: Colors.grey[500])
+                CircleAvatar(
+                  backgroundImage: participant.selfieUrl != null &&
+                          participant.selfieUrl!.isNotEmpty
+                      ? NetworkImage(participant.selfieUrl!)
+                      : null,
+                  radius: 41,
+                  child: participant.selfieUrl == null ||
+                          participant.selfieUrl!.isEmpty
+                      ? Icon(Icons.person, size: 41, color: Colors.grey[500])
                       : null,
                 ),
                 SizedBox(height: 16),
                 Text(
-                  scanController.participantData['name'] ?? '',
+                  participant.name ?? 'Unknown',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  scanController.participantData['email'] ?? '',
+                  participant.role ?? '',
                   style: TextStyle(fontSize: 16),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 16),
-                buildDropdownContainer('Merch', 'merch', [
+                buildDropdownContainer(controller, 'Merch', 'merch', [
                   buildStatusRow(
-                      scanController,
-                      'Polo Shirt (${scanController.poloShirtSize})',
-                      'merchandise.poloShirt'),
+                      controller, 'Polo Shirt', 'merchandise.poloShirt'),
+                  buildStatusRow(controller, 'T-Shirt', 'merchandise.tShirt'),
                   buildStatusRow(
-                      scanController,
-                      'T-Shirt (${scanController.tShirtSize})',
-                      'merchandise.tShirt'),
+                      controller, 'Luggage Tag', 'merchandise.luggageTag'),
                   buildStatusRow(
-                      scanController, 'Luggage Tag', 'merchandise.luggageTag'),
-                  buildStatusRow(
-                      scanController, 'Jas Hujan', 'merchandise.jasHujan'),
+                      controller, 'Jas Hujan', 'merchandise.jasHujan'),
                 ]),
                 SizedBox(height: 16),
-                buildDropdownContainer('Souvenir', 'souvenir', [
-                  buildStatusRow(scanController, 'Gelang Tridatu',
-                      'souvenir.gelangTridatu'),
-                  buildStatusRow(scanController, 'Selendang Udeng',
-                      'souvenir.selendangUdeng'),
+                buildDropdownContainer(controller, 'Souvenir', 'souvenir', [
+                  buildStatusRow(
+                      controller, 'Gelang Tridatu', 'souvenir.gelangTridatu'),
+                  buildStatusRow(
+                      controller, 'Selendang Udeng', 'souvenir.selendangUdeng'),
                 ]),
                 SizedBox(height: 16),
-                buildDropdownContainer('Benefit', 'benefit', [
-                  buildStatusRow(scanController, 'Voucher Belanja',
-                      'benefit.voucherBelanja'),
-                  buildStatusRow(scanController, 'Voucher E-Wallet',
-                      'benefit.voucherEwallet'),
+                buildDropdownContainer(controller, 'Benefit', 'benefit', [
+                  buildStatusRow(
+                      controller, 'Voucher Belanja', 'benefit.voucherBelanja'),
+                  buildStatusRow(
+                      controller, 'Voucher E-Wallet', 'benefit.voucherEwallet'),
                 ]),
                 SizedBox(height: 40),
               ],
@@ -115,7 +93,7 @@ class ScanProfileView extends StatelessWidget {
     );
   }
 
-  Widget buildDropdownContainer(
+  Widget buildDropdownContainer(SearchParticipantController controller,
       String title, String containerName, List<Widget> children) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
@@ -137,7 +115,7 @@ class ScanProfileView extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              scanController.toggleContainerExpansion(containerName);
+              controller.toggleContainerExpansion(containerName);
             },
             child: Container(
               padding: EdgeInsets.all(8),
@@ -155,7 +133,7 @@ class ScanProfileView extends StatelessWidget {
                       ),
                       Obx(() {
                         return Icon(
-                          scanController.isContainerExpanded(containerName)
+                          controller.isContainerExpanded(containerName)
                               ? Icons.keyboard_arrow_down_rounded
                               : Icons.keyboard_arrow_up_rounded,
                           color: Colors.grey,
@@ -170,8 +148,8 @@ class ScanProfileView extends StatelessWidget {
                           EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       width: 300,
                       duration: Duration(milliseconds: 300),
-                      height: scanController.isContainerExpanded(containerName)
-                          ? (children.length * 40.0 + 60)
+                      height: controller.isContainerExpanded(containerName)
+                          ? (children.length * 30 + 40)
                           : 0,
                       curve: Curves.easeInOut,
                       child: SingleChildScrollView(
@@ -211,31 +189,43 @@ class ScanProfileView extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget buildStatusRow(
-    ScanController controller, String itemName, String field) {
-  return Obx(() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          itemName,
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: controller.statusImageUrls[field] != null &&
-                  controller.statusImageUrls[field]!.isNotEmpty
-              ? Image.network(
-                  controller.statusImageUrls[field]!,
+  Widget buildStatusRow(
+      SearchParticipantController controller, String itemName, String field) {
+    return Obx(() {
+      String status =
+          controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            itemName,
+            style: TextStyle(fontSize: 16, color: Colors.black),
+          ),
+          FutureBuilder<String>(
+            future: controller.getStatusImageUrl(status),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                return Image.network(
+                  snapshot.data!,
                   width: 24,
                   height: 24,
                   fit: BoxFit.contain,
-                )
-              : SizedBox(width: 24, height: 24),
-        ),
-      ],
-    );
-  });
+                );
+              } else if (snapshot.hasError) {
+                return Icon(Icons.error, color: Colors.red, size: 24);
+              } else {
+                return SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
+              }
+            },
+          ),
+        ],
+      );
+    });
+  }
 }

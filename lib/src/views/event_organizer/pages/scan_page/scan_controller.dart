@@ -1,116 +1,83 @@
-import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/pages/scan_fix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ScanController extends GetxController {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController divisiController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  bool canPop = true;
-  var userName = ''.obs;
-  var userDivisi = ''.obs;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  RxMap<String, dynamic> participantData = <String, dynamic>{}.obs;
   RxMap<String, String> status = <String, String>{}.obs;
   final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
-  var isMerchExpanded = true.obs;
-  var isSouvenirExpanded = false.obs;
-  var isBenefitExpanded = false.obs;
-  var isLoadingStatusImage = true.obs;
-  var statusImageUrl = ''.obs;
-  var selfieImage = Rxn<File>();
-  var imageUrl = ''.obs;
   var imageBytes = Rxn<Uint8List>();
-  var isLoading = false.obs;
+  var isLoading = true.obs;
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
+  var isProcessing = false.obs;
 
-  //item dropdown
-  final List<String> statusOptions = ['pending', 'received'];
-
+  var expandedContainer = RxString('');
   @override
   void onInit() {
     super.onInit();
-    fetchUserData();
-    getUserData;
   }
 
-  tapMerch() {
-    isMerchExpanded.value = !isMerchExpanded.value;
-  }
-
-  tapSouvenir() {
-    isSouvenirExpanded.value = !isSouvenirExpanded.value;
-  }
-
-  tapBenefit() {
-    isBenefitExpanded.value = !isBenefitExpanded.value;
-  }
-
-  Future<void> getImageBytes(User user) async {
-    try {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('/users/participant/${user.uid}/selfie/selfie.jpg');
-      debugPrint('Fetching image from path: ${ref.fullPath}');
-      final data = await ref.getData();
-      if (data != null) {
-        debugPrint('Image data length: ${data.length}');
-        imageBytes.value = data;
-      } else {
-        debugPrint('No image data found');
-      }
-    } catch (e) {
-      debugPrint('Error fetching image: $e');
+  void toggleContainerExpansion(String containerName) {
+    if (expandedContainer.value == containerName) {
+      expandedContainer.value = ''; // Close if it's already open
+    } else {
+      expandedContainer.value =
+          containerName; // Open the new one, closing others
     }
   }
 
-  Future<void> getUserData(User user) async {
+  bool isContainerExpanded(String containerName) {
+    return expandedContainer.value == containerName;
+  }
+
+  Future<void> fetchParticipantData(String userId) async {
     try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      if (doc.exists) {
-        userName.value = doc['name'];
-        userDivisi.value = doc['division'];
-        tShirtSize.value = doc['tShirtSize'];
-        poloShirtSize.value = doc['poloShirtSize'];
-      } else {
-        debugPrint('No user data found');
-      }
-    } catch (e) {
-      debugPrint('Error fetching user data: $e');
-    }
-  }
+      print('Fetching participant data for userId: $userId');
 
-  @override
-  void onReady() async {
-    update();
-    super.onReady();
-  }
-
-  fetchUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(userId).get();
 
       if (userDoc.exists) {
-        var data = userDoc.data() as Map<String, dynamic>;
-        userName.value = data['name'] ?? '';
-        userDivisi.value = data['division'] ?? '';
-        tShirtSize.value = data['tShirtSize'] ?? '';
-        poloShirtSize.value = data['poloShirtSize'] ?? '';
-        String imageUrl = data['profileImageUrl'] ?? '';
-        if (imageUrl.isNotEmpty) {
-          var response = await FirebaseStorage.instance.ref(imageUrl).getData();
-          if (response != null) {
-            imageBytes.value = response;
-          }
-        }
+        print('User document exists. Data: ${userDoc.data()}');
+        participantData.value = userDoc.data() as Map<String, dynamic>;
+        tShirtSize.value = participantData['tShirtSize'] ?? '';
+        poloShirtSize.value = participantData['poloShirtSize'] ?? '';
 
-        // Fetch status for each field
+        await Future.wait(
+            [fetchParticipantImage(userId), fetchParticipantKitStatus(userId)]);
+      }
+    } catch (e) {
+      print('Error fetching participant data: $e');
+      throw e; // Re-throw the error to be caught in processQRCode
+    }
+  }
+
+  Future<void> fetchParticipantImage(String userId) async {
+    try {
+      final ref =
+          _storage.ref().child('/users/participant/$userId/selfie/selfie.jpg');
+      final data = await ref.getData();
+      if (data != null) {
+        imageBytes.value = data;
+      }
+    } catch (e) {
+      print('Error fetching participant image: $e');
+      // Don't throw here, just log the error
+    }
+  }
+
+  Future<void> fetchParticipantKitStatus(String userId) async {
+    try {
+      DocumentSnapshot kitDoc =
+          await _firestore.collection('participantKit').doc(userId).get();
+
+      if (kitDoc.exists) {
+        Map<String, dynamic> kitData = kitDoc.data() as Map<String, dynamic>;
+
         final fields = [
           'merchandise.tShirt',
           'merchandise.poloShirt',
@@ -124,72 +91,93 @@ class ScanController extends GetxController {
 
         for (var field in fields) {
           final fieldParts = field.split('.');
-          final categoryData = data[fieldParts[0]] as Map<String, dynamic>?;
+          final categoryData = kitData[fieldParts[0]] as Map<String, dynamic>?;
 
           if (categoryData != null && categoryData[fieldParts[1]] != null) {
             final itemData =
                 categoryData[fieldParts[1]] as Map<String, dynamic>?;
-            final fieldStatus = itemData?['status'] ?? 'pending';
+            final fieldStatus = itemData?['status'] ?? 'Pending';
             status[field] = fieldStatus;
+            await fetchStatusImage(field, fieldStatus);
           } else {
-            status[field] = 'pending';
+            status[field] = 'Pending';
+            await fetchStatusImage(field, 'Pending');
           }
         }
       }
+    } catch (e) {
+      print('Error fetching participant kit status: $e');
     }
-    update();
   }
 
-  // Add new method to update status in Firebase
   Future<void> updateStatus(String field, String newStatus) async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final fieldParts = field.split('.');
-        await FirebaseFirestore.instance
-            .collection('participantKit')
-            .doc(user.uid)
-            .update({
-          '${fieldParts[0]}.${fieldParts[1]}.status': newStatus,
-          '${fieldParts[0]}.${fieldParts[1]}.updatedAt':
-              FieldValue.serverTimestamp(),
-        });
-        // Update local status
-        status[field] = newStatus;
-        update();
-      }
+      String userId = Get.arguments['userId'];
+      final fieldParts = field.split('.');
+      await _firestore.collection('participantKit').doc(userId).update({
+        '${fieldParts[0]}.${fieldParts[1]}.status': newStatus,
+        '${fieldParts[0]}.${fieldParts[1]}.updatedAt':
+            FieldValue.serverTimestamp(),
+      });
+      status[field] = newStatus;
     } catch (e) {
-      debugPrint('Error updating status: $e');
+      print('Error updating status: $e');
     }
   }
 
-  void setLoading(bool value) {
-    isLoading.value = value;
-  }
-
-  @override
-  void onClose() async {
-    super.onClose();
-  }
-
-  onGoBack() {
-    Get.back();
-  }
-
-  void processQRCode(String qrCode) async {
+  Future<void> processQRCode(String qrCode) async {
+    if (isProcessing.value) return; // Prevent multiple simultaneous processes
     try {
-      // Query ke Firestore berdasarkan userId dari QR code
+      isProcessing(true);
+      isLoading(true);
+      print('Processing QR Code: $qrCode');
+
       DocumentSnapshot participantDoc =
           await _firestore.collection('users').doc(qrCode).get();
 
       if (participantDoc.exists) {
-        // Jika peserta ditemukan, navigasi ke halaman profil dengan userId
-        Get.toNamed('/scan', arguments: {'userId': qrCode});
+        print('Participant found. Fetching data...');
+        await fetchParticipantData(qrCode);
+        print('Data fetched. Navigating to scan profile page.');
+        Get.off(() => ScanProfileView(), arguments: {'userId': qrCode});
       } else {
+        print('Participant not found.');
         Get.snackbar("Error", "Participant not found.");
       }
     } catch (e) {
-      Get.snackbar("Error", "Failed to process QR code: $e");
+      print('Error processing QR code: $e');
+      Get.snackbar("Error", "Failed to process QR code.");
+    } finally {
+      isLoading(false);
+      isProcessing(false);
+    }
+  }
+
+  Future<void> fetchStatusImage(String key, String status) async {
+    String imageName;
+
+    switch (status) {
+      case 'Pending':
+        imageName = 'pending.png';
+        break;
+      case 'Received':
+        imageName = 'received.png';
+        break;
+      case 'Close':
+        imageName = 'close.png';
+        break;
+      default:
+        imageName = 'default.png';
+    }
+
+    try {
+      final downloadUrl = await FirebaseStorage.instance
+          .ref('status/$imageName')
+          .getDownloadURL();
+      statusImageUrls[key] = downloadUrl;
+    } catch (e) {
+      debugPrint('Error fetching status image: $e');
+      statusImageUrls[key] = ''; // Set to empty string if failed
     }
   }
 }
