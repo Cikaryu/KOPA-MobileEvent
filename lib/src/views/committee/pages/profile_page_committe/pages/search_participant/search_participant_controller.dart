@@ -5,18 +5,15 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class SearchParticipantController extends GetxController {
   RxList<Participant> allParticipants = <Participant>[].obs;
   RxList<Participant> filteredParticipants = <Participant>[].obs;
   TextEditingController searchController = TextEditingController();
+  RxMap<String, dynamic> participantKitStatus = <String, dynamic>{}.obs;
   RxBool isAscending = true.obs;
-  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? participantKitSubscription;
   final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
   RxMap<String, String> status = <String, String>{}.obs;
-  var isMerchExpanded = false.obs;
-  var isSouvenirExpanded = false.obs;
-  var isBenefitExpanded = false.obs;
+  var expandedContainer = RxString('');
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
   var isLoading = false.obs;
@@ -30,8 +27,6 @@ class SearchParticipantController extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       getUserData(user);
-      initParticipantKitStream();
-      listenToParticipantKitStatus(user);
     }
   }
 
@@ -41,71 +36,23 @@ class SearchParticipantController extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await getUserData(user);
-      listenToParticipantKitStatus(user);
     } else {
       debugPrint("User not logged in");
     }
     update();
   }
 
-  void initParticipantKitStream() {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      participantKitStream = FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(user.uid)
-          .snapshots()
-          .obs;
-    }
-  }
-
-  void updateParticipantKitStatus(DocumentSnapshot doc) {
-    if (doc.exists) {
-      final participantKit = doc.data() as Map<String, dynamic>;
-      final merchandise = participantKit['merchandise'] ?? {};
-      final souvenirs = participantKit['souvenir'] ?? {};
-      final benefits = participantKit['benefit'] ?? {};
-
-      status.clear();
-      statusImageUrls.clear();
-
-      updateStatusAndFetchImage(merchandise);
-      updateStatusAndFetchImage(souvenirs);
-      updateStatusAndFetchImage(benefits);
+  void toggleContainerExpansion(String containerName) {
+    if (expandedContainer.value == containerName) {
+      expandedContainer.value = ''; // Close if it's already open
     } else {
-      debugPrint('No participantKit data found');
+      expandedContainer.value =
+          containerName; // Open the new one, closing others
     }
   }
 
-  void updateStatusAndFetchImage(Map<String, dynamic> items) {
-    items.forEach((key, value) {
-      status[key] = value['status'];
-      fetchStatusImage(key, value['status']);
-    });
-  }
-
-  void toggleMerchExpanded() {
-    isMerchExpanded.value = !isMerchExpanded.value;
-    if (isMerchExpanded.value) {
-      isSouvenirExpanded.value = false;
-      isBenefitExpanded.value = false;
-    }
-  }
-
-  void toggleSouvenirExpanded() {
-    isSouvenirExpanded.value = !isSouvenirExpanded.value;
-    if (isSouvenirExpanded.value) {
-      isMerchExpanded.value = false;
-      isBenefitExpanded.value = false;
-    }
-  }
-
-  void toggleBenefitExpanded() {
-    isBenefitExpanded.value = !isBenefitExpanded.value;
-    if (isBenefitExpanded.value) {
-      isMerchExpanded.value = false;
-      isSouvenirExpanded.value = false;
-    }
+  bool isContainerExpanded(String containerName) {
+    return expandedContainer.value == containerName;
   }
 
   void setLoading(bool value) {
@@ -129,41 +76,34 @@ class SearchParticipantController extends GetxController {
     }
   }
 
-  void refreshData() async {
-    setLoading(true);
-    await Future.delayed(Duration(milliseconds: 500));
+  Future<void> fetchParticipantKitStatus(String participantId) async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        initParticipantKitStream(); // Refresh participant kit status
+      final doc = await FirebaseFirestore.instance
+          .collection('participantKit')
+          .doc(participantId)
+          .get();
+
+      if (doc.exists) {
+        participantKitStatus.value = doc.data() as Map<String, dynamic>;
       } else {
-        debugPrint("User not logged in");
+        participantKitStatus.value = {};
       }
     } catch (e) {
-      debugPrint('Error refreshing data: $e');
-    } finally {
-      setLoading(false);
+      print('Error fetching participant kit status: $e');
+      participantKitStatus.value = {};
     }
   }
 
-  void listenToParticipantKitStatus(User user) {
-    participantKitSubscription = FirebaseFirestore.instance
-        .collection('participantKit')
-        .doc(user.uid)
-        .snapshots()
-        .listen((doc) {
-      if (doc.exists) {
-        updateParticipantKitStatus(doc);
-        update(); // Notify listeners if necessary
-      } else {
-        debugPrint('No participantKit data found');
-      }
-    });
+  String getStatusForItem(String category, String item) {
+    if (participantKitStatus.containsKey(category) &&
+        participantKitStatus[category].containsKey(item)) {
+      return participantKitStatus[category][item]['status'] ?? 'Unknown';
+    }
+    return 'Unknown';
   }
 
-  Future<void> fetchStatusImage(String key, String status) async {
+  Future<String> getStatusImageUrl(String status) async {
     String imageName;
-
     switch (status) {
       case 'Pending':
         imageName = 'pending.png';
@@ -179,20 +119,13 @@ class SearchParticipantController extends GetxController {
     }
 
     try {
-      final downloadUrl = await FirebaseStorage.instance
+      return await FirebaseStorage.instance
           .ref('status/$imageName')
           .getDownloadURL();
-      statusImageUrls[key] = downloadUrl;
     } catch (e) {
-      debugPrint('Error fetching status image: $e');
-      statusImageUrls[key] = ''; // Set to empty string if failed
+      print('Error fetching status image: $e');
+      return '';
     }
-  }
-
-  @override
-  void onClose() {
-    participantKitSubscription?.cancel();
-    super.onClose();
   }
 
   Future<void> fetchParticipants() async {
@@ -263,6 +196,8 @@ class SearchParticipantController extends GetxController {
             'Participant ${participant.uid} has kit status: $kitStatus'); // Debugging
         if (kitStatus == 'Close') {
           closedParticipants.add(participant);
+        } else if (kitStatus == 'Pending') {
+          closedParticipants.add(participant);
         }
       }
       filteredParticipants.value = closedParticipants;
@@ -292,6 +227,8 @@ class SearchParticipantController extends GetxController {
         // Check if there's at least one status that is 'Close'
         if (allStatuses.contains('Close')) {
           return 'Close';
+        } else if (allStatuses.contains('Pending')) {
+          return 'Pending';
         }
       }
     } catch (e) {

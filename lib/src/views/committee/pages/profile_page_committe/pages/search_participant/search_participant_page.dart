@@ -109,40 +109,39 @@ class SearchParticipantPage extends StatelessWidget {
                             searchParticipantController.toggleKitStatusFilter();
                           },
                           child: Container(
-                            width: 238,
+                            width: 280,
                             height: 50,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 15),
                             decoration: ShapeDecoration(
-                              color: searchParticipantController
-                                      .isKitStatusFiltered.value
-                                  ? HexColor('E97717')
-                                  : Color(0xFFF3F3F3),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              shadows: [
-                                BoxShadow(
-                                  color: Color(0x3F000000),
-                                  blurRadius: 4,
-                                  offset: Offset(0, 0),
-                                  spreadRadius: 0,
-                                )
-                              ],
+                              shape: RoundedRectangleBorder(),
                             ),
-                            child: Text(
-                              'Categorize by Kit Status',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: searchParticipantController
-                                        .isKitStatusFiltered.value
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
+                            child: Row(
+                              children: [
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: HexColor("E97717"),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(Icons.person)),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Categorize by Kit Status',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: searchParticipantController
+                                            .isKitStatusFiltered.value
+                                        ? HexColor("E97717")
+                                        : Colors.black,
+                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

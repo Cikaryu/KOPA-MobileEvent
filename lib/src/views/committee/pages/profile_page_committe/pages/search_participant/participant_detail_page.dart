@@ -1,7 +1,8 @@
-import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_controller.dart';
 
-// TODO Function fetch data status participant kit
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 
@@ -9,594 +10,222 @@ class ParticipantDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController profileController =
-        Get.put(SearchParticipantController());
+    final SearchParticipantController controller =
+        Get.find<SearchParticipantController>();
+    controller.fetchParticipantKitStatus(participant.uid);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Participant Detail'),
-        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+        backgroundColor: HexColor('01613B'),
+        title:
+            Text('Participant Detail', style: TextStyle(color: Colors.white)),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       backgroundColor: Colors.white,
-      body: Obx(
-        () {
-          return Container(
-            width: Get.width,
-            padding: EdgeInsets.all(16),
-            child: SingleChildScrollView(
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 16),
+                CircleAvatar(
+                  backgroundImage: participant.selfieUrl != null &&
+                          participant.selfieUrl!.isNotEmpty
+                      ? NetworkImage(participant.selfieUrl!)
+                      : null,
+                  radius: 41,
+                  child: participant.selfieUrl == null ||
+                          participant.selfieUrl!.isEmpty
+                      ? Icon(Icons.person, size: 41, color: Colors.grey[500])
+                      : null,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  participant.name ?? 'Unknown',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  participant.role ?? '',
+                  style: TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 16),
+                buildDropdownContainer(controller, 'Merch', 'merch', [
+                  buildStatusRow(
+                      controller, 'Polo Shirt', 'merchandise.poloShirt'),
+                  buildStatusRow(controller, 'T-Shirt', 'merchandise.tShirt'),
+                  buildStatusRow(
+                      controller, 'Luggage Tag', 'merchandise.luggageTag'),
+                  buildStatusRow(
+                      controller, 'Jas Hujan', 'merchandise.jasHujan'),
+                ]),
+                SizedBox(height: 16),
+                buildDropdownContainer(controller, 'Souvenir', 'souvenir', [
+                  buildStatusRow(
+                      controller, 'Gelang Tridatu', 'souvenir.gelangTridatu'),
+                  buildStatusRow(
+                      controller, 'Selendang Udeng', 'souvenir.selendangUdeng'),
+                ]),
+                SizedBox(height: 16),
+                buildDropdownContainer(controller, 'Benefit', 'benefit', [
+                  buildStatusRow(
+                      controller, 'Voucher Belanja', 'benefit.voucherBelanja'),
+                  buildStatusRow(
+                      controller, 'Voucher E-Wallet', 'benefit.voucherEwallet'),
+                ]),
+                SizedBox(height: 40),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget buildDropdownContainer(SearchParticipantController controller,
+      String title, String containerName, List<Widget> children) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        color: HexColor('F3F3F3'),
+        shadows: [
+          BoxShadow(
+            color: Color(0x3F000000),
+            blurRadius: 4,
+            offset: Offset(0, 0),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              controller.toggleContainerExpansion(containerName);
+            },
+            child: Container(
+              padding: EdgeInsets.all(8),
+              width: 300,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    backgroundImage: participant.selfieUrl != null &&
-                            participant.selfieUrl!.isNotEmpty
-                        ? NetworkImage(participant.selfieUrl!)
-                        : null,
-                    radius: 50,
-                    child: participant.selfieUrl == null ||
-                            participant.selfieUrl!.isEmpty
-                        ? Icon(Icons.person, size: 50)
-                        : null,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    participant.name ?? 'Unknown',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      Obx(() {
+                        return Icon(
+                          controller.isContainerExpanded(containerName)
+                              ? Icons.keyboard_arrow_down_rounded
+                              : Icons.keyboard_arrow_up_rounded,
+                          color: Colors.grey,
+                        );
+                      }),
+                    ],
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    participant.role ?? 'Not specified',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  // Add more details here if needed
-                  SizedBox(height: 24),
-
-                  // Kontainer untuk Merchandise
-                  Center(
-                    child: Container(
+                  Obx(() {
+                    return AnimatedContainer(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: HexColor('F3F3F3'),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 4,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              profileController.toggleMerchExpanded();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              width: 300,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Merch',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Icon(
-                                        profileController.isMerchExpanded.value
-                                            ? Icons.keyboard_arrow_down_rounded
-                                            : Icons
-                                                .keyboard_arrow_right_rounded,
-                                        color: Colors.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8),
-                                  AnimatedContainer(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.grey[300]!,
-                                      ),
-                                    ),
-                                    width: 300,
-                                    duration: Duration(milliseconds: 300),
-                                    height:
-                                        profileController.isMerchExpanded.value
-                                            ? 180
-                                            : 0,
-                                    curve: Curves.easeInOut,
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Name',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                'Status',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Polo Shirt (${profileController.poloShirtSize.value})',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'poloShirt'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'T-Shirt (${profileController.tShirtSize.value})',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'tShirt'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Luggage Tag',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'luggageTag'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Jas Hujan',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'jasHujan'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      width: 300,
+                      duration: Duration(milliseconds: 300),
+                      height: controller.isContainerExpanded(containerName)
+                          ? (children.length * 30 + 40)
+                          : 0,
+                      curve: Curves.easeInOut,
+                      child: SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Name',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Status',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  // Kontainer untuk Souvenir
-                  Center(
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                            SizedBox(height: 8),
+                            ...children,
+                          ],
                         ),
-                        color: HexColor('F3F3F3'),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 4,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                          ),
-                        ],
                       ),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              profileController.toggleSouvenirExpanded();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              width: 300,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Souvenir',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Icon(
-                                        profileController
-                                                .isSouvenirExpanded.value
-                                            ? Icons.keyboard_arrow_down_rounded
-                                            : Icons
-                                                .keyboard_arrow_right_rounded,
-                                        color: Colors.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8),
-                                  AnimatedContainer(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.grey[300]!,
-                                      ),
-                                    ),
-                                    width: 300,
-                                    duration: Duration(milliseconds: 300),
-                                    height: profileController
-                                            .isSouvenirExpanded.value
-                                        ? 120
-                                        : 0,
-                                    curve: Curves.easeInOut,
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Name',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                'Status',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Gelang Tridatu',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'gelangTridatu'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Selendang/Udeng',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'selendangUdeng'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  // Kontainer untuk Benefit
-                  Center(
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: HexColor('F3F3F3'),
-                        shadows: [
-                          BoxShadow(
-                            color: Color(0x3F000000),
-                            blurRadius: 4,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              profileController.toggleBenefitExpanded();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              width: 300,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Benefit',
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Icon(
-                                        profileController
-                                                .isBenefitExpanded.value
-                                            ? Icons.keyboard_arrow_down_rounded
-                                            : Icons
-                                                .keyboard_arrow_right_rounded,
-                                        color: Colors.grey,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8),
-                                  AnimatedContainer(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: Colors.grey[300]!,
-                                      ),
-                                    ),
-                                    width: 300,
-                                    duration: Duration(milliseconds: 300),
-                                    height: profileController
-                                            .isBenefitExpanded.value
-                                        ? 120
-                                        : 0,
-                                    curve: Curves.easeInOut,
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Name',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                'Status',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Voucher E-Wallet',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'voucherEwallet'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Voucher Belanja',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Obx(() {
-                                                final imageUrl =
-                                                    profileController
-                                                                .statusImageUrls[
-                                                            'voucherBelanja'] ??
-                                                        '';
-
-                                                if (imageUrl.isEmpty) {
-                                                  return Icon(Icons
-                                                      .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                }
-                                                return Image.network(
-                                                  imageUrl,
-                                                  width: 24,
-                                                  height: 24,
-                                                ); // Menampilkan gambar status jika berhasil diambil
-                                              }),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
+                    );
+                  }),
                 ],
               ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
+  }
+
+  Widget buildStatusRow(
+      SearchParticipantController controller, String itemName, String field) {
+    return Obx(() {
+      String status =
+          controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            itemName,
+            style: TextStyle(fontSize: 16, color: Colors.black),
+          ),
+          FutureBuilder<String>(
+            future: controller.getStatusImageUrl(status),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                return Image.network(
+                  snapshot.data!,
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.contain,
+                );
+              } else if (snapshot.hasError) {
+                return Icon(Icons.error, color: Colors.red, size: 24);
+              } else {
+                return SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
+              }
+            },
+          ),
+        ],
+      );
+    });
   }
 }
