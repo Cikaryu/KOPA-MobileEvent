@@ -12,11 +12,11 @@ abstract class AppRoutes {
   static const testing = '/testing';
   static const participant = '/participant';
   static const committee = '/committee';
-  static const participanscan = '/participanscan';  
+  static const participanscan = '/participanscan';
   static const editProfile = '/editprofile';
   static const changePassword = '/changepassword';
   static const profile = '/profile';
   static const scan = '/scan';
   static const eventOrganizer = '/eventorganizer';
-  static const superEO = '/superEO';
+  static const superEO = '/supereo';
 }

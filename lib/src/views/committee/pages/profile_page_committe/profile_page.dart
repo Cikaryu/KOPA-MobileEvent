@@ -2,7 +2,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_controller.dart';
 
-//TODO : Function Logout Error || button logout ketika di klik error
 
 class ProfileCommitteePage extends StatelessWidget {
   const ProfileCommitteePage({super.key});

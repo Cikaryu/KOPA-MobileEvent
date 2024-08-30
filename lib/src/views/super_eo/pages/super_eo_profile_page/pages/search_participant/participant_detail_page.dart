@@ -2,6 +2,7 @@ import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/page
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
@@ -12,7 +13,7 @@ class ParticipantDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final SearchParticipantController controller =
         Get.find<SearchParticipantController>();
-    controller.fetchParticipantKitStatus(participant.uid);
+    controller.setSelectedParticipant(participant);
 
     return Scaffold(
       appBar: AppBar(
@@ -55,13 +56,11 @@ class ParticipantDetailPage extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  participant.role ?? '',
-                  style: TextStyle(fontSize: 16),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                SizedBox(height: 8),
+                buildRoleDropdown(controller),
                 SizedBox(height: 16),
-                buildDropdownContainer(controller, 'Merch', 'merch', [
+                buildDropdownContainer(
+                    controller, 'Merchandise', 'merchandise', [
                   buildStatusRow(
                       controller, 'Polo Shirt', 'merchandise.poloShirt'),
                   buildStatusRow(controller, 'T-Shirt', 'merchandise.tShirt'),
@@ -84,12 +83,52 @@ class ParticipantDetailPage extends StatelessWidget {
                   buildStatusRow(
                       controller, 'Voucher E-Wallet', 'benefit.voucherEwallet'),
                 ]),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    controller.submitParticipantKit(participant.uid);
+                    Get.back();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: HexColor('01613B'),
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  ),
+                  child: Text('Submit'),
+                ),
                 SizedBox(height: 40),
               ],
             ),
           ),
         );
       }),
+    );
+  }
+
+  Widget buildRoleDropdown(SearchParticipantController controller) {
+    List<String> roles = [
+      'Participant',
+      'Committee',
+      'Event Organizer',
+      'Super Event Organizer'
+    ]; // Add more roles as needed
+    return DropdownButtonFormField2<String>(
+      value: participant.role,
+      items: roles.map((String role) {
+        return DropdownMenuItem<String>(
+          value: role,
+          child: Text(role),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          controller.updateParticipantRole(participant.uid, newValue);
+        }
+      },
+      decoration: InputDecoration(
+        labelText: 'User Role',
+        border: OutlineInputBorder(),
+      ),
     );
   }
 
@@ -144,12 +183,11 @@ class ParticipantDetailPage extends StatelessWidget {
                   SizedBox(height: 8),
                   Obx(() {
                     return AnimatedContainer(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       width: 300,
                       duration: Duration(milliseconds: 300),
                       height: controller.isContainerExpanded(containerName)
-                          ? (children.length * 30 + 40)
+                          ? (children.length * 60 + 90)
                           : 0,
                       curve: Curves.easeInOut,
                       child: SingleChildScrollView(
@@ -166,16 +204,33 @@ class ParticipantDetailPage extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Text(
-                                  'Status',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 40),
+                                  child: Text(
+                                    'Status',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 8),
                             ...children,
+                            SizedBox(height: 16),
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  controller.checkAllItems(
+                                      participant.uid, containerName);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: HexColor('01613B'),
+                                ),
+                                child: Text('Check All (Received)'),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -195,34 +250,90 @@ class ParticipantDetailPage extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      List<String> statusOptions = ['Pending', 'Received', 'Close'];
+
+      // Ensure that status is one of the valid options
+      if (!statusOptions.contains(status)) {
+        status = statusOptions[0]; // Default to 'Pending' if status is invalid
+      }
+
+      return Column(
         children: [
-          Text(
-            itemName,
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          ),
-          FutureBuilder<String>(
-            future: controller.getStatusImageUrl(status),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                return Image.network(
-                  snapshot.data!,
-                  width: 24,
-                  height: 24,
-                  fit: BoxFit.contain,
-                );
-              } else if (snapshot.hasError) {
-                return Icon(Icons.error, color: Colors.red, size: 24);
-              } else {
-                return SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                );
-              }
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Text(
+                  itemName,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 134,
+                      child: DropdownButtonFormField2<String>(
+                        value: status,
+                        items: statusOptions.map((String statusOption) {
+                          return DropdownMenuItem<String>(
+                            value: statusOption,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(statusOption),
+                                FutureBuilder<String>(
+                                  future: controller
+                                      .getStatusImageUrl(statusOption),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                        snapshot.hasData) {
+                                      return Image.network(
+                                        snapshot.data!,
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.contain,
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Icon(Icons.error,
+                                          color: Colors.red, size: 24);
+                                    } else {
+                                      return SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            controller.updateItemStatus(
+                                participant.uid, field, newValue);
+                          }
+                        },
+                        iconStyleData: IconStyleData(icon: SizedBox.shrink()),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       );
