@@ -147,44 +147,34 @@ class ParticipantDetailPage extends StatelessWidget {
                       width: 300,
                       duration: Duration(milliseconds: 300),
                       height: controller.isContainerExpanded(containerName)
-                          ? (children.length * 40 + 40)
+                          ? (children.length * 40 + 30)
                           : 0,
                       curve: Curves.easeInOut,
                       child: SingleChildScrollView(
                         physics: NeverScrollableScrollPhysics(),
-                        child: Container(
-                          width: Get.width,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16)),
-                              border: Border.all(color: Colors.grey[300]!)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Name',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    'Status',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              ...children,
-                            ],
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Name',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Status',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            ...children,
+                          ],
                         ),
                       ),
                     );
