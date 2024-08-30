@@ -15,6 +15,8 @@ class ReportCommitteeController extends GetxController {
   RxBool isAscending = true.obs;
   RxString selectedFilter = ''.obs;
   late Rx<User?> _user;
+  RxList<QueryDocumentSnapshot> allReports = <QueryDocumentSnapshot>[].obs;
+  RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
 
   @override
   void onInit() {
@@ -23,13 +25,15 @@ class ReportCommitteeController extends GetxController {
     _auth.authStateChanges().listen((User? user) {
       _user.value = user;
     });
+    fetchReports();
   }
 
   String get userId => _user.value?.uid ?? '';
 
   Future<String> getUserName() async {
     if (_user.value != null) {
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(_user.value!.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(_user.value!.uid).get();
       return userDoc['name'] ?? '';
     }
     return '';
@@ -53,7 +57,9 @@ class ReportCommitteeController extends GetxController {
     }
 
     try {
-      final downloadUrl = await FirebaseStorage.instance.ref('status/$imageName').getDownloadURL();
+      final downloadUrl = await FirebaseStorage.instance
+          .ref('status/$imageName')
+          .getDownloadURL();
       statusImageUrls[reportId] = downloadUrl;
     } catch (e) {
       debugPrint('Error fetching status image: $e');
@@ -63,32 +69,40 @@ class ReportCommitteeController extends GetxController {
 
   void toggleSortOrder() {
     isAscending.value = !isAscending.value;
+    sortReports();
   }
 
-  Stream<List<QueryDocumentSnapshot>> getFilteredReports() {
-    return _firestore.collection('report').snapshots().map((snapshot) {
-      var reports = snapshot.docs;
-
-      if (selectedFilter.isNotEmpty) {
-        reports = reports.where((report) {
-          final data = report.data() as Map<String, dynamic>;
-          return data['status'] == selectedFilter.value;
-        }).toList();
-      }
-
-      reports.sort((a, b) {
-        final dataA = a.data() as Map<String, dynamic>;
-        final dataB = b.data() as Map<String, dynamic>;
-        final comparison = (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
-        return isAscending.value ? comparison : -comparison;
-      });
-
-      return reports;
+  void sortReports() {
+    filteredReports.sort((a, b) {
+      final dataA = a.data() as Map<String, dynamic>;
+      final dataB = b.data() as Map<String, dynamic>;
+      final comparison = (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
+      return isAscending.value ? comparison : -comparison;
     });
   }
 
   void applyFilter(String filter) {
     selectedFilter.value = filter;
+    filterReports();
+  }
+
+  void filterReports() {
+    if (selectedFilter.isEmpty) {
+      filteredReports.value = List.from(allReports);
+    } else {
+      filteredReports.value = allReports.where((report) {
+        final data = report.data() as Map<String, dynamic>;
+        return data['status'] == selectedFilter.value;
+      }).toList();
+    }
+    sortReports();
+  }
+
+  void fetchReports() {
+    _firestore.collection('report').snapshots().listen((snapshot) {
+      allReports.value = snapshot.docs;
+      filterReports();
+    });
   }
 
   Future<bool> updateReport({
@@ -104,6 +118,8 @@ class ReportCommitteeController extends GetxController {
         'updatedAt': Timestamp.now(),
       });
       Get.snackbar('Sukses', 'Laporan berhasil diperbarui.');
+      // Refresh the reports after updating
+      fetchReports();
       return true;
     } catch (e) {
       debugPrint('Error updating report: $e');
@@ -115,13 +131,6 @@ class ReportCommitteeController extends GetxController {
   }
 
   Stream<QuerySnapshot> getReports() {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId != null) {
-      return FirebaseFirestore.instance
-          .collection('report')
-          .where('userId', isEqualTo: userId)
-          .snapshots();
-    }
-    return Stream.empty();
+    return _firestore.collection('report').snapshots();
   }
 }
