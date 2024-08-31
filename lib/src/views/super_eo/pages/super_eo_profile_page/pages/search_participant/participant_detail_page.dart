@@ -92,9 +92,15 @@ class ParticipantDetailPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: HexColor('01613B'),
-                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 150, vertical: 16),
                   ),
-                  child: Text('Submit'),
+                  child: Text(
+                    'Submit',
+                  ),
                 ),
                 SizedBox(height: 40),
               ],
@@ -112,22 +118,55 @@ class ParticipantDetailPage extends StatelessWidget {
       'Event Organizer',
       'Super Event Organizer'
     ]; // Add more roles as needed
-    return DropdownButtonFormField2<String>(
-      value: participant.role,
-      items: roles.map((String role) {
-        return DropdownMenuItem<String>(
-          value: role,
-          child: Text(role),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        if (newValue != null) {
-          controller.updateParticipantRole(participant.uid, newValue);
-        }
-      },
-      decoration: InputDecoration(
-        labelText: 'User Role',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 63.9),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text('Promote', style: TextStyle(fontSize: 16)),
+          SizedBox(width: 8),
+          Expanded(
+            child: DropdownButtonFormField2<String>(
+              alignment: Alignment.center,
+              buttonStyleData: ButtonStyleData(
+                  decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              )),
+              isDense: true,
+              value: participant.role,
+              items: roles.map((String role) {
+                return DropdownMenuItem<String>(
+                  value: role,
+                  child: Text(
+                    role,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  controller.updateParticipantRole(participant.uid, newValue);
+                }
+              },
+              dropdownStyleData: DropdownStyleData(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[300],
+                  ),
+                  elevation: 5,
+                  offset: Offset(0, 40),
+                  maxHeight: 160),
+              iconStyleData: IconStyleData(icon: SizedBox.shrink()),
+              decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -227,6 +266,11 @@ class ParticipantDetailPage extends StatelessWidget {
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
                                   backgroundColor: HexColor('01613B'),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 6),
                                 ),
                                 child: Text('Check All (Received)'),
                               ),
@@ -260,7 +304,6 @@ class ParticipantDetailPage extends StatelessWidget {
       return Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 flex: 3,
@@ -281,9 +324,15 @@ class ParticipantDetailPage extends StatelessWidget {
                           return DropdownMenuItem<String>(
                             value: statusOption,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(statusOption),
+                                SizedBox(
+                                    width: statusOption == 'Close'
+                                        ? 36
+                                        : statusOption == 'Pending'
+                                            ? 18
+                                            : 11),
                                 FutureBuilder<String>(
                                   future: controller
                                       .getStatusImageUrl(statusOption),
@@ -325,7 +374,8 @@ class ParticipantDetailPage extends StatelessWidget {
                           isDense: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 8),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
@@ -335,6 +385,7 @@ class ParticipantDetailPage extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: 8),
         ],
       );
     });
