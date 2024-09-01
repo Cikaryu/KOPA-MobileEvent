@@ -19,6 +19,7 @@ class SearchParticipantController extends GetxController {
   var isLoading = false.obs;
   Rx<Stream<DocumentSnapshot>>? participantKitStream;
   RxBool isKitStatusFiltered = false.obs;
+  Rx<Participant?> selectedParticipant = Rx<Participant?>(null);
 
   @override
   void onInit() {
@@ -236,6 +237,100 @@ class SearchParticipantController extends GetxController {
     }
     return 'Pending'; // Default value if 'Close' is not found
   }
+  Future<void> updateItemStatus(String participantId, String field, String newStatus) async {
+    try {
+      List<String> fieldParts = field.split('.');
+      String category = fieldParts[0];
+      String item = fieldParts[1];
+
+      await FirebaseFirestore.instance
+          .collection('participantKit')
+          .doc(participantId)
+          .update({
+        '$category.$item.status': newStatus
+      });
+
+      // Update local state
+      if (participantKitStatus.containsKey(category) &&
+          participantKitStatus[category].containsKey(item)) {
+        participantKitStatus[category][item]['status'] = newStatus;
+      }
+
+      // Refresh the participant kit status
+      await fetchParticipantKitStatus(participantId);
+    } catch (e) {
+      print('Error updating item status: $e');
+    }
+  }
+  Future<void> checkAllItems(String participantId, String category) async {
+    try {
+      Map<String, dynamic> updates = {};
+      participantKitStatus[category].forEach((item, value) {
+        updates['$category.$item.status'] = 'Received';
+      });
+
+      await FirebaseFirestore.instance
+          .collection('participantKit')
+          .doc(participantId)
+          .update(updates);
+
+      // Update local state
+      participantKitStatus[category].forEach((item, value) {
+        value['status'] = 'Received';
+      });
+
+      // Refresh the participant kit status
+      await fetchParticipantKitStatus(participantId);
+    } catch (e) {
+      print('Error checking all items: $e');
+    }
+  }
+    Future<void> submitParticipantKit(String participantId) async {
+    try {
+      // Here you can implement the logic to submit the entire participant kit
+      // For example, you might want to set a flag in Firestore to indicate the kit is submitted
+      await FirebaseFirestore.instance
+          .collection('participantKit')
+          .doc(participantId)
+          .update({
+        'isSubmitted': true,
+        'submittedAt': FieldValue.serverTimestamp(),
+      });
+
+      print('Participant kit submitted successfully');
+    } catch (e) {
+      print('Error submitting participant kit: $e');
+    }
+  }
+    void setSelectedParticipant(Participant participant) {
+    selectedParticipant.value = participant;
+    fetchParticipantKitStatus(participant.uid);
+  }
+    Future<void> updateParticipantRole(String participantId, String newRole) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(participantId)
+          .update({'role': newRole});
+
+      // Update local state
+      int index = allParticipants.indexWhere((p) => p.uid == participantId);
+      if (index != -1) {
+        Participant updatedParticipant = Participant(
+          name: allParticipants[index].name,
+          role: newRole,
+          selfieUrl: allParticipants[index].selfieUrl,
+          uid: participantId,
+        );
+        allParticipants[index] = updatedParticipant;
+        if (selectedParticipant.value?.uid == participantId) {
+          selectedParticipant.value = updatedParticipant;
+        }
+      }
+    } catch (e) {
+      print('Error updating participant role: $e');
+    }
+  }
 }
 
 class Participant {
@@ -254,4 +349,5 @@ class Participant {
       uid: doc.id,
     );
   }
+  
 }
