@@ -191,41 +191,32 @@ class ScanController extends GetxController {
     return status['$category.$item'] ?? 'Pending';
   }
 
-void updateParticipantRole(String newRole) async {
-  try {
-    String userId = Get.arguments['userId'];
-    Map<String, dynamic> updateData = {'role': newRole};
+  void updateParticipantRole(String newRole) async {
+    try {
+      String userId = Get.arguments['userId'];
+      Map<String, dynamic> updateData = {'role': newRole};
 
-    // Selalu mencoba menghapus field 'was*' ketika mengubah peran
-    updateData['wasCommittee'] = FieldValue.delete();
-    updateData['wasEventOrganizer'] = FieldValue.delete();
-    updateData['wasSuperEO'] = FieldValue.delete();
+      // Selalu mencoba menghapus field 'was*' ketika mengubah peran
+      updateData['wasCommittee'] = FieldValue.delete();
+      updateData['wasEventOrganizer'] = FieldValue.delete();
+      updateData['wasSuperEO'] = FieldValue.delete();
 
-    // Jika peran baru bukan 'participant', tambahkan field 'was*' yang sesuai
-    if (newRole != 'participant') {
-      String wasField = 'was${newRole.replaceAll(' ', '')}';
-      updateData[wasField] = true;
+      // Jika peran baru bukan 'participant', tambahkan field 'was*' yang sesuai
+
+      await _firestore.collection('users').doc(userId).update(updateData);
+
+      // Memperbarui participantData lokal
+      participantData['role'] = newRole;
+      participantData.remove('wasCommittee');
+      participantData.remove('wasEventOrganizer');
+      participantData.remove('wasSuperEO');
+
+      Get.snackbar("Success", "Participant role updated successfully.");
+    } catch (e) {
+      print('Error updating participant role: $e');
+      Get.snackbar("Error", "Failed to update participant role.");
     }
-
-    await _firestore.collection('users').doc(userId).update(updateData);
-
-    // Memperbarui participantData lokal
-    participantData['role'] = newRole;
-    participantData.remove('wasCommittee');
-    participantData.remove('wasEventOrganizer');
-    participantData.remove('wasSuperEO');
-
-    if (newRole != 'participant') {
-      String wasField = 'was${newRole.replaceAll(' ', '')}';
-      participantData[wasField] = true;
-    }
-
-    Get.snackbar("Success", "Participant role updated successfully.");
-  } catch (e) {
-    print('Error updating participant role: $e');
-    Get.snackbar("Error", "Failed to update participant role.");
   }
-}
 
   void checkAllItems(String containerName) async {
     try {
