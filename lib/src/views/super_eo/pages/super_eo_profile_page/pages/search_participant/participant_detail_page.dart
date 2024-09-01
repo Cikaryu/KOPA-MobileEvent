@@ -119,7 +119,7 @@ class ParticipantDetailPage extends StatelessWidget {
       'Super Event Organizer'
     ]; // Add more roles as needed
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 63.9),
+      padding: const EdgeInsets.symmetric(horizontal: 61),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -127,7 +127,7 @@ class ParticipantDetailPage extends StatelessWidget {
           SizedBox(width: 8),
           Expanded(
             child: DropdownButtonFormField2<String>(
-              alignment: Alignment.center,
+              alignment: Alignment.centerLeft,
               buttonStyleData: ButtonStyleData(
                   decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -157,8 +157,8 @@ class ParticipantDetailPage extends StatelessWidget {
                   elevation: 5,
                   offset: Offset(0, 40),
                   maxHeight: 160),
-              iconStyleData: IconStyleData(icon: SizedBox.shrink()),
               decoration: InputDecoration(
+                isDense: true,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 0, vertical: 8),
                 border:
