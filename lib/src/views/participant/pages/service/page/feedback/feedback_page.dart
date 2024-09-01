@@ -1,5 +1,6 @@
 import 'package:app_kopabali/src/views/participant/pages/service/page/feedback/feedback_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class FeedbackPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -13,101 +14,99 @@ class FeedbackPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
+        title: Text('Feedback',
+            style: TextStyle(
+              color: Colors.white,
+            )),
         backgroundColor: HexColor('01613B'),
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        title: Text('Feedback', style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Container(
-          width: Get.width,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                Text('Critique',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-                SizedBox(height: 8),
-                TextFormField(
-                  controller: feedbackController.critiqueController,
-                  maxLines: 8,
-                  decoration: InputDecoration(
-                    hintText: 'Write your critique',
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your critique';
-                    }
-                    return null; // Return null if valid
-                  },
-                ),
-                SizedBox(height: 28),
-                Text('Advice',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-                SizedBox(height: 8),
-                TextFormField(
-                  controller: feedbackController.adviceController,
-                  maxLines: 8,
-                  decoration: InputDecoration(
-                    hintText: 'Write your advice',
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your advice';
-                    }
-                    return null; // Return null if valid
-                  },
-                ),
-                SizedBox(height: 40),
                 Center(
-                  child: Container(
-                    width: Get.width * 0.5,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          final critique =
-                              feedbackController.critiqueController.text;
-                          final advice =
-                              feedbackController.adviceController.text;
-
-                          feedbackController.submitFeedback(critique, advice);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor("#72BB65"),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
-                      ),
-                      child: Text('Submit',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: Obx(() => Column(
+                        children: [
+                          RatingBar.builder(
+                            initialRating: feedbackController.rating.value,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            itemSize: 40,
+                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {
+                              feedbackController.setRating(rating);
+                            },
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            feedbackController.getRatingLabel(
+                                feedbackController.rating.value),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      )),
+                ),
+                SizedBox(height: 24),
+                Text('Tell us Your Suggestions!',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                TextFormField(
+                  controller: feedbackController.suggestionController,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText: 'What can we improve for you?',
+                    fillColor: Colors.grey[200],
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your suggestion';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        feedbackController.submitFeedback(
+                          feedbackController.suggestionController.text,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text('Submit Feedback',
+                        style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
                 ),
               ],

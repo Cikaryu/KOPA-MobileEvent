@@ -1,11 +1,11 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/scan_page/pages/scan_fix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ScanController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-
   RxMap<String, dynamic> participantData = <String, dynamic>{}.obs;
   RxMap<String, String> status = <String, String>{}.obs;
   final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
@@ -14,32 +14,28 @@ class ScanController extends GetxController {
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
   var isProcessing = false.obs;
-
   var expandedContainer = RxString('');
+
   @override
   void onInit() {
     super.onInit();
+    // Initialize any necessary data or listeners here
   }
 
   void toggleContainerExpansion(String containerName) {
-    if (expandedContainer.value == containerName) {
-      expandedContainer.value = ''; // Close if it's already open
-    } else {
-      expandedContainer.value =
-          containerName; // Open the new one, closing others
-    }
+    expandedContainer.value = expandedContainer.value == containerName ? '' : containerName;
   }
 
   bool isContainerExpanded(String containerName) {
     return expandedContainer.value == containerName;
   }
 
-  Future<void> fetchParticipantData(String userId) async {
+ Future<void> fetchParticipantData(String userId) async {
     try {
       print('Fetching participant data for userId: $userId');
+      isLoading(true);
 
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(userId).get();
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
 
       if (userDoc.exists) {
         print('User document exists. Data: ${userDoc.data()}');
@@ -47,33 +43,37 @@ class ScanController extends GetxController {
         tShirtSize.value = participantData['tShirtSize'] ?? '';
         poloShirtSize.value = participantData['poloShirtSize'] ?? '';
 
-        await Future.wait(
-            [fetchParticipantImage(userId), fetchParticipantKitStatus(userId)]);
+        await Future.wait([
+          fetchParticipantImage(userId),
+          fetchParticipantKitStatus(userId)
+        ]);
+      } else {
+        print('User document does not exist');
+        throw Exception('User not found');
       }
     } catch (e) {
       print('Error fetching participant data: $e');
-      throw e; // Re-throw the error to be caught in processQRCode
+      throw e;
+    } finally {
+      isLoading(false);
     }
   }
 
   Future<void> fetchParticipantImage(String userId) async {
     try {
-      final ref =
-          _storage.ref().child('/users/participant/$userId/selfie/selfie.jpg');
+      final ref = _storage.ref().child('/users/participant/$userId/selfie/selfie.jpg');
       final data = await ref.getData();
       if (data != null) {
         imageBytes.value = data;
       }
     } catch (e) {
       print('Error fetching participant image: $e');
-      // Don't throw here, just log the error
     }
   }
 
   Future<void> fetchParticipantKitStatus(String userId) async {
     try {
-      DocumentSnapshot kitDoc =
-          await _firestore.collection('participantKit').doc(userId).get();
+      DocumentSnapshot kitDoc = await _firestore.collection('participantKit').doc(userId).get();
 
       if (kitDoc.exists) {
         Map<String, dynamic> kitData = kitDoc.data() as Map<String, dynamic>;
@@ -94,8 +94,7 @@ class ScanController extends GetxController {
           final categoryData = kitData[fieldParts[0]] as Map<String, dynamic>?;
 
           if (categoryData != null && categoryData[fieldParts[1]] != null) {
-            final itemData =
-                categoryData[fieldParts[1]] as Map<String, dynamic>?;
+            final itemData = categoryData[fieldParts[1]] as Map<String, dynamic>?;
             final fieldStatus = itemData?['status'] ?? 'Pending';
             status[field] = fieldStatus;
             await fetchStatusImage(field, fieldStatus);
@@ -110,30 +109,30 @@ class ScanController extends GetxController {
     }
   }
 
-  Future<void> updateStatus(String field, String newStatus) async {
+  Future<void> updateItemStatus(String field, String newStatus) async {
     try {
       String userId = Get.arguments['userId'];
       final fieldParts = field.split('.');
       await _firestore.collection('participantKit').doc(userId).update({
         '${fieldParts[0]}.${fieldParts[1]}.status': newStatus,
-        '${fieldParts[0]}.${fieldParts[1]}.updatedAt':
-            FieldValue.serverTimestamp(),
+        '${fieldParts[0]}.${fieldParts[1]}.updatedAt': FieldValue.serverTimestamp(),
       });
       status[field] = newStatus;
+      await fetchStatusImage(field, newStatus);
     } catch (e) {
-      print('Error updating status: $e');
+      print('Error updating item status: $e');
+      Get.snackbar("Error", "Failed to update item status.");
     }
   }
 
-  Future<void> processQRCode(String qrCode) async {
-    if (isProcessing.value) return; // Prevent multiple simultaneous processes
+Future<void> processQRCode(String qrCode) async {
+    if (isProcessing.value) return;
     try {
       isProcessing(true);
       isLoading(true);
       print('Processing QR Code: $qrCode');
 
-      DocumentSnapshot participantDoc =
-          await _firestore.collection('users').doc(qrCode).get();
+      DocumentSnapshot participantDoc = await _firestore.collection('users').doc(qrCode).get();
 
       if (participantDoc.exists) {
         print('Participant found. Fetching data...');
@@ -153,9 +152,8 @@ class ScanController extends GetxController {
     }
   }
 
-  Future<void> fetchStatusImage(String key, String status) async {
+  Future<String> getStatusImageUrl(String status) async {
     String imageName;
-
     switch (status) {
       case 'Pending':
         imageName = 'pending.png';
@@ -171,13 +169,63 @@ class ScanController extends GetxController {
     }
 
     try {
-      final downloadUrl = await FirebaseStorage.instance
-          .ref('status/$imageName')
-          .getDownloadURL();
-      statusImageUrls[key] = downloadUrl;
+      return await FirebaseStorage.instance.ref('status/$imageName').getDownloadURL();
     } catch (e) {
-      debugPrint('Error fetching status image: $e');
-      statusImageUrls[key] = ''; // Set to empty string if failed
+      print('Error fetching status image: $e');
+      return '';
+    }
+  }
+
+  Future<void> fetchStatusImage(String key, String status) async {
+    statusImageUrls[key] = await getStatusImageUrl(status);
+  }
+
+  String getStatusForItem(String category, String item) {
+    return status['$category.$item'] ?? 'Pending';
+  }
+
+  void updateParticipantRole(String newRole) async {
+    try {
+      String userId = Get.arguments['userId'];
+      await _firestore.collection('users').doc(userId).update({'role': newRole});
+      participantData['role'] = newRole;
+      Get.snackbar("Success", "Participant role updated successfully.");
+    } catch (e) {
+      print('Error updating participant role: $e');
+      Get.snackbar("Error", "Failed to update participant role.");
+    }
+  }
+
+  void checkAllItems(String containerName) async {
+    try {
+      String userId = Get.arguments['userId'];
+      Map<String, dynamic> updateData = {};
+
+      participantData[containerName].forEach((key, value) {
+        updateData['$containerName.$key.status'] = 'Received';
+        updateData['$containerName.$key.updatedAt'] = FieldValue.serverTimestamp();
+        status['$containerName.$key'] = 'Received';
+      });
+
+      await _firestore.collection('participantKit').doc(userId).update(updateData);
+      status.refresh();
+      Get.snackbar("Success", "All items in $containerName marked as received.");
+    } catch (e) {
+      print('Error checking all items: $e');
+      Get.snackbar("Error", "Failed to update all items.");
+    }
+  }
+
+  void submitParticipantKit() async {
+    try {
+      String userId = Get.arguments['userId'];
+      await _firestore.collection('participantKit').doc(userId).update({
+        'submittedAt': FieldValue.serverTimestamp(),
+      });
+      Get.snackbar("Success", "Participant kit submitted successfully.");
+    } catch (e) {
+      print('Error submitting participant kit: $e');
+      Get.snackbar("Error", "Failed to submit participant kit.");
     }
   }
 }

@@ -68,7 +68,12 @@ class ScannerView extends StatelessWidget {
                     final Barcode? barcode = barcodeCapture.barcodes.first;
                     if (barcode?.rawValue != null) {
                       final String qrCode = barcode!.rawValue!;
-                      qrCodeController.processQRCode(qrCode);
+                      qrCodeController.processQRCode(qrCode).then((_) {
+                        // Navigation handled in processQRCode
+                      }).catchError((error) {
+                        print('Error in QR code processing: $error');
+                        Get.snackbar("Error", "Failed to process QR code.");
+                      });
                     } else {
                       Get.snackbar("Error", "Failed to scan QR code.");
                     }

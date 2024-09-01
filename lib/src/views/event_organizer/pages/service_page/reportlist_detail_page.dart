@@ -175,7 +175,7 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 140),
+                            SizedBox(height: 40),
                             ElevatedButton(
                               onPressed: () async {
                                 // Proses Update Laporan
@@ -186,7 +186,7 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: HexColor('72BB65'),
+                                backgroundColor: HexColor('E97717'),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),

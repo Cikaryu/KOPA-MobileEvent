@@ -91,7 +91,7 @@ class ParticipantDetailPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: HexColor('01613B'),
+                    backgroundColor: HexColor('E97717'),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -117,7 +117,9 @@ class ParticipantDetailPage extends StatelessWidget {
       'Committee',
       'Event Organizer',
       'Super Event Organizer'
-    ]; // Add more roles as needed
+    ];
+    // Add more roles as needed
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 61),
       child: Row(
@@ -129,10 +131,17 @@ class ParticipantDetailPage extends StatelessWidget {
             child: DropdownButtonFormField2<String>(
               alignment: Alignment.centerLeft,
               buttonStyleData: ButtonStyleData(
-                  decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-              )),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                padding: EdgeInsets.only(right: 8),
+              ),
+              iconStyleData: IconStyleData(
+                icon: Icon(Icons.arrow_drop_down),
+                iconSize: 24,
+              ),
               isDense: true,
+              isExpanded: true,
               value: participant.role,
               items: roles.map((String role) {
                 return DropdownMenuItem<String>(
@@ -150,17 +159,18 @@ class ParticipantDetailPage extends StatelessWidget {
                 }
               },
               dropdownStyleData: DropdownStyleData(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300],
-                  ),
-                  elevation: 5,
-                  offset: Offset(0, 40),
-                  maxHeight: 160),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300],
+                ),
+                elevation: 5,
+                offset: Offset(0, -4),
+                maxHeight: 160,
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -265,7 +275,7 @@ class ParticipantDetailPage extends StatelessWidget {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
-                                  backgroundColor: HexColor('01613B'),
+                                  backgroundColor: HexColor('E97717'),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),

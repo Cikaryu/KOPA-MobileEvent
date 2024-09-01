@@ -1,14 +1,17 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/event_organizer/pages/profile_page_event_organizer/pages/search_participant/participant_detail_page.dart';
-import 'package:app_kopabali/src/views/event_organizer/pages/profile_page_event_organizer/pages/search_participant/search_participant_controller.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/participant_detail_page.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/search_participant_controller.dart';
+
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchParticipantPage extends StatelessWidget {
   const SearchParticipantPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController searchParticipantController =
-        Get.put(SearchParticipantController());
+    final SearchParticipantController searchParticipantController = Get.put(SearchParticipantController());
 
     return Scaffold(
       appBar: AppBar(

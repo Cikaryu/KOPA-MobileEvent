@@ -250,10 +250,13 @@ class EditProfileView extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: profileController.saveChanges,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: HexColor("#72BB65"),
+                              foregroundColor: Colors.white,
+                              backgroundColor: HexColor('E97717'),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0),
+                                borderRadius: BorderRadius.circular(16),
                               ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 120, vertical: 16),
                             ),
                             child: Text(
                               'Save Changes',

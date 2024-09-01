@@ -1,6 +1,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/service_page/report_controller.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/service_page/reportlist_detail_page.dart';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReportListEventOrganizerPage extends StatelessWidget {
@@ -10,7 +11,6 @@ class ReportListEventOrganizerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ReportEventOrganizerController reportController =
         Get.put(ReportEventOrganizerController());
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -127,7 +127,7 @@ class ReportListEventOrganizerPage extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       Get.to(
-                          () => ReportDetailCommitteePage(reportId: report.id));
+                          () => ReportDetailEventOrganizerPage(reportId: report.id));
                     },
                     child: Column(
                       children: [

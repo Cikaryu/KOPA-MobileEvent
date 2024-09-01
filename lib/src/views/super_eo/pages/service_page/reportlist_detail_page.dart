@@ -11,7 +11,8 @@ class ReportDetailSuperEOPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ReportSuperEOController reportController = Get.put(ReportSuperEOController());
+    final ReportSuperEOController reportController =
+        Get.put(ReportSuperEOController());
     final List<String> categoryOptions = [
       'Resolved',
       'Pending',
@@ -174,7 +175,7 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 140),
+                            SizedBox(height: 40),
                             ElevatedButton(
                               onPressed: () async {
                                 // Proses Update Laporan
@@ -185,7 +186,7 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: HexColor('72BB65'),
+                                backgroundColor: HexColor('E97717'),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),

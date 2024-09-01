@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/participant/participant_view.dart';
+import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,8 +10,10 @@ class ProfileEventOrganizerController extends GetxController {
   var userName = ''.obs;
   var userEmail = ''.obs;
   var userDivisi = ''.obs;
+  var role = ''.obs;
   var isLoading = false.obs;
   var imageUrl = ''.obs;
+  var hasPreviouslyBeenEventOrganizer = false.obs;
   var imageBytes = Rxn<Uint8List>();
 
   @override
@@ -17,6 +21,7 @@ class ProfileEventOrganizerController extends GetxController {
     super.onInit();
     fetchUserData();
     fetchProfileImage;
+    getUserRole();
   }
 
   @override
@@ -49,6 +54,7 @@ class ProfileEventOrganizerController extends GetxController {
           userEmail.value = data['email'] ?? '';
           userDivisi.value = data['division'] ?? '';
           imageUrl.value = data['profileImageUrl'] ?? '';
+          hasPreviouslyBeenEventOrganizer.value = data['wasEventOrganizer'] ?? false;
 
           // Fetch image if imageUrl is available
           if (imageUrl.value.isNotEmpty) {
@@ -112,16 +118,71 @@ class ProfileEventOrganizerController extends GetxController {
     }
   }
 
-Future<void> logout() async {
-  try {
-    debugPrint("Logging out...");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    await FirebaseAuth.instance.signOut();
-    debugPrint("User signed out.");
-    Get.offAllNamed('/signin');
-  } catch (e) {
-    debugPrint("Error during logout: $e");
+  Future<void> logout() async {
+    try {
+      debugPrint("Logging out...");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      await FirebaseAuth.instance.signOut();
+      debugPrint("User signed out.");
+      return Get.offAllNamed('/signin');
+    } catch (e) {
+      debugPrint("Error during logout: $e");
+    }
   }
-}
+
+  Future<void> getUserRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      try {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid) // Menggunakan uid dari pengguna saat ini
+            .get();
+
+        if (userDoc.exists) {
+          role.value = userDoc['role'];
+          hasPreviouslyBeenEventOrganizer.value = userDoc['wasEventOrganizer'] ?? false;
+        } else {
+          print('Document does not exist on the database');
+        }
+      } catch (e) {
+        print('Error getting role: $e');
+      }
+    } else {
+      print('No user is signed in');
+    }
+  }
+
+  void switchRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      if (role.value == 'Event Organizer') {
+        // Switch ke role participant
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'role': 'Participant',
+          'wasEventOrganizer':
+              true, // Indicate that this user was previously a Committee
+        });
+        role.value = 'Participant';
+        Get.offAll(() => ParticipantView());
+      } else if (role.value == 'Participant') {
+        // Switch ke role committee
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'role': 'Event Organizer',
+          'wasEventOrganizer':
+              true, // Indicate that this user was previously a Committee
+        });
+        role.value = 'Event Organizer';
+        Get.offAll(() => SuperEOView());
+      }
+    }
+  }
 }

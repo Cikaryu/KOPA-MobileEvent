@@ -1,8 +1,8 @@
-import 'package:app_kopabali/src/views/event_organizer/pages/profile_page_event_organizer/pages/search_participant/search_participant_controller.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/search_participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
@@ -11,9 +11,8 @@ class ParticipantDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController controller =
-        Get.find<SearchParticipantController>();
-    controller.fetchParticipantKitStatus(participant.uid);
+    final SearchParticipantController controller = Get.put(SearchParticipantController());
+    controller.setSelectedParticipant(participant);
 
     return Scaffold(
       appBar: AppBar(
@@ -91,7 +90,7 @@ class ParticipantDetailPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: HexColor('01613B'),
+                    backgroundColor: HexColor('E97717'),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -117,6 +116,8 @@ class ParticipantDetailPage extends StatelessWidget {
       'Committee',
       'Event Organizer',
     ];
+    // Add more roles as needed
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 61),
       child: Row(
@@ -128,10 +129,17 @@ class ParticipantDetailPage extends StatelessWidget {
             child: DropdownButtonFormField2<String>(
               alignment: Alignment.centerLeft,
               buttonStyleData: ButtonStyleData(
-                  decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-              )),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                padding: EdgeInsets.only(right: 8),
+              ),
+              iconStyleData: IconStyleData(
+                icon: Icon(Icons.arrow_drop_down),
+                iconSize: 24,
+              ),
               isDense: true,
+              isExpanded: true,
               value: participant.role,
               items: roles.map((String role) {
                 return DropdownMenuItem<String>(
@@ -149,17 +157,18 @@ class ParticipantDetailPage extends StatelessWidget {
                 }
               },
               dropdownStyleData: DropdownStyleData(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300],
-                  ),
-                  elevation: 5,
-                  offset: Offset(0, 40),
-                  maxHeight: 160),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[300],
+                ),
+                elevation: 5,
+                offset: Offset(0, -4),
+                maxHeight: 160,
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -264,7 +273,7 @@ class ParticipantDetailPage extends StatelessWidget {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
-                                  backgroundColor: HexColor('01613B'),
+                                  backgroundColor: HexColor('E97717'),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),

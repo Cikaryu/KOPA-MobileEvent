@@ -1,7 +1,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/event_organizer/event_organizer_controller.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/profile_page.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/home_page/home_page.dart';
-import 'package:app_kopabali/src/views/event_organizer/pages/profile_page_event_organizer/profile_page.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/scan_view.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/service_page/reportlist_page.dart';
 

@@ -1,6 +1,7 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/service_page/report_controller.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/service_page/reportlist_detail_page.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReportListSuperEOPage extends StatelessWidget {
@@ -8,7 +9,8 @@ class ReportListSuperEOPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ReportSuperEOController reportController = Get.put(ReportSuperEOController());
+    final ReportSuperEOController reportController =
+        Get.put(ReportSuperEOController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -125,7 +127,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       Get.to(
-                          () => ReportDetailCommitteePage(reportId: report.id));
+                          () => ReportDetailSuperEOPage(reportId: report.id));
                     },
                     child: Column(
                       children: [

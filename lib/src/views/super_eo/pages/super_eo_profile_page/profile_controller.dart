@@ -7,13 +7,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileSuperEOController extends GetxController {
-   var userName = ''.obs;
+  var userName = ''.obs;
   var userEmail = ''.obs;
   var userDivisi = ''.obs;
   var role = ''.obs;
   var isLoading = false.obs;
   var imageUrl = ''.obs;
-  var hasPreviouslyBeenCommittee = false.obs;
+  var hasPreviouslyBeenSuperEO = false.obs;
   var imageBytes = Rxn<Uint8List>();
 
   @override
@@ -54,7 +54,7 @@ class ProfileSuperEOController extends GetxController {
           userEmail.value = data['email'] ?? '';
           userDivisi.value = data['division'] ?? '';
           imageUrl.value = data['profileImageUrl'] ?? '';
-          hasPreviouslyBeenCommittee.value = data['wasCommittee'] ?? false;
+          hasPreviouslyBeenSuperEO.value = data['wasSuperEO'] ?? false;
 
           // Fetch image if imageUrl is available
           if (imageUrl.value.isNotEmpty) {
@@ -143,7 +143,7 @@ class ProfileSuperEOController extends GetxController {
 
         if (userDoc.exists) {
           role.value = userDoc['role'];
-          hasPreviouslyBeenCommittee.value = userDoc['wasSuperEO'] ?? false;
+          hasPreviouslyBeenSuperEO.value = userDoc['wasSuperEO'] ?? false;
         } else {
           print('Document does not exist on the database');
         }

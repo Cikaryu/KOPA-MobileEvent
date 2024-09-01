@@ -26,7 +26,7 @@ class ProfileSuperEOPage extends StatelessWidget {
         () {
           return Container(
             child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
               child: Column(
                 children: [
                   SizedBox(height: 20),
@@ -93,7 +93,7 @@ class ProfileSuperEOPage extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                     )),
                                 Obx(() => Text(
-                                      profileSuperEOController.userDivisi.value,
+                                      profileSuperEOController.role.value,
                                       style: TextStyle(fontSize: 16),
                                       overflow: TextOverflow.ellipsis,
                                     )),
@@ -370,6 +370,9 @@ class ProfileSuperEOPage extends StatelessWidget {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             ),

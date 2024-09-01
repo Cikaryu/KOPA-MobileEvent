@@ -1,15 +1,14 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_page.dart';
-import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_controller.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/search_participant_page.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/profile_controller.dart';
 
-
-class ProfileCommitteePage extends StatelessWidget {
-  const ProfileCommitteePage({super.key});
+class ProfileEventOrganizerPage extends StatelessWidget {
+  const ProfileEventOrganizerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ProfileCommitteeController profileCommitteeController =
-        Get.put(ProfileCommitteeController());
+    final ProfileEventOrganizerController profileSuperEOController =
+        Get.put(ProfileEventOrganizerController());
 
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +26,7 @@ class ProfileCommitteePage extends StatelessWidget {
         () {
           return Container(
             child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
               child: Column(
                 children: [
                   SizedBox(height: 20),
@@ -61,19 +60,19 @@ class ProfileCommitteePage extends StatelessWidget {
                                   width: 82,
                                   height: 82,
                                   decoration: ShapeDecoration(
-                                    image: profileCommitteeController
+                                    image: profileSuperEOController
                                                 .imageBytes.value !=
                                             null
                                         ? DecorationImage(
                                             image: MemoryImage(
-                                                profileCommitteeController
+                                                profileSuperEOController
                                                     .imageBytes.value!),
                                             fit: BoxFit.cover,
                                           )
                                         : null,
                                     shape: OvalBorder(),
                                   ),
-                                  child: profileCommitteeController
+                                  child: profileSuperEOController
                                               .imageBytes.value ==
                                           null
                                       ? Icon(Icons.person,
@@ -82,21 +81,19 @@ class ProfileCommitteePage extends StatelessWidget {
                                 ),
                                 SizedBox(height: 16),
                                 Obx(() => Text(
-                                      profileCommitteeController.userName.value,
+                                      profileSuperEOController.userName.value,
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold),
                                       overflow: TextOverflow.ellipsis,
                                     )),
                                 Obx(() => Text(
-                                      profileCommitteeController
-                                          .userEmail.value,
+                                      profileSuperEOController.userEmail.value,
                                       style: TextStyle(fontSize: 16),
                                       overflow: TextOverflow.ellipsis,
                                     )),
                                 Obx(() => Text(
-                                      profileCommitteeController
-                                          .role.value,
+                                      profileSuperEOController.role.value,
                                       style: TextStyle(fontSize: 16),
                                       overflow: TextOverflow.ellipsis,
                                     )),
@@ -188,23 +185,59 @@ class ProfileCommitteePage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        // SizedBox(height: 12),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     padding: EdgeInsets.symmetric(vertical: 12.0),
+                        //     child: Row(
+                        //       children: [
+                        //         Container(
+                        //           width: 40,
+                        //           height: 40,
+                        //           decoration: BoxDecoration(
+                        //             color: HexColor("E97717"),
+                        //             borderRadius: BorderRadius.circular(10),
+                        //             boxShadow: [
+                        //               BoxShadow(
+                        //                 color: Color(0x3F000000),
+                        //                 spreadRadius: 0,
+                        //                 offset: Offset(0, 0),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           child: Icon(
+                        //             Icons.upload_rounded,
+                        //             color: Colors.white,
+                        //           ),
+                        //         ),
+                        //         SizedBox(width: 16.0),
+                        //         Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.start,
+                        //           children: [
+                        //             Text(
+                        //               'Export Data',
+                        //               style: TextStyle(
+                        //                 fontWeight: FontWeight.bold,
+                        //                 fontSize: 18.0,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //         Spacer(),
+                        //         Icon(
+                        //           Icons.keyboard_arrow_right_rounded,
+                        //           color: Colors.grey,
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                         SizedBox(height: 12),
                         InkWell(
                           onTap: () {},
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12.0),
-                            decoration: BoxDecoration(
-                                // color: HexColor("#F3F3F3"),
-                                // borderRadius: BorderRadius.circular(20),
-                                // boxShadow: [
-                                //   BoxShadow(
-                                //     color: Color(0x3F000000),
-                                //     blurRadius: 4,
-                                //     spreadRadius: 0,
-                                //     offset: Offset(0, 0),
-                                //   ),
-                                // ],
-                                ),
                             child: Row(
                               children: [
                                 Container(
@@ -222,7 +255,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                     ],
                                   ),
                                   child: Icon(
-                                    Icons.upload_rounded,
+                                    Icons.copy,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -231,7 +264,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Export Data',
+                                      'Data Logs',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,
@@ -249,10 +282,10 @@ class ProfileCommitteePage extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 12),
-                        profileCommitteeController.role.value == 'Committee'
+                        profileSuperEOController.role.value == 'Event Organizer'
                             ? InkWell(
                                 onTap: () {
-                                  profileCommitteeController.switchRole();
+                                  profileSuperEOController.switchRole();
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -321,7 +354,7 @@ class ProfileCommitteePage extends StatelessWidget {
                   SizedBox(height: 25),
                   ElevatedButton(
                     onPressed: () async {
-                      await profileCommitteeController.logout();
+                      await profileSuperEOController.logout();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -336,6 +369,9 @@ class ProfileCommitteePage extends StatelessWidget {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
             ),

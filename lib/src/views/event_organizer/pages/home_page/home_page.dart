@@ -2,6 +2,8 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/home_page/home_page_controller.dart';
 
 class HomePageEventOrganizer extends StatefulWidget {
+  const HomePageEventOrganizer({super.key});
+
   @override
   State<HomePageEventOrganizer> createState() => _HomePageParticipantState();
 }
@@ -9,8 +11,7 @@ class HomePageEventOrganizer extends StatefulWidget {
 class _HomePageParticipantState extends State<HomePageEventOrganizer> {
   @override
   Widget build(BuildContext context) {
-    final HomePageEOController homePageController =
-        Get.put(HomePageEOController());
+    final HomePageEventOrganizerController homePageController = Get.put(HomePageEventOrganizerController());
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
