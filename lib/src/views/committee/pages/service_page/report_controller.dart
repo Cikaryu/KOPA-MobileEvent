@@ -1,6 +1,8 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:async';
+
 
 class ReportCommitteeController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -14,6 +16,9 @@ class ReportCommitteeController extends GetxController {
   late Rx<User?> _user;
   RxList<QueryDocumentSnapshot> allReports = <QueryDocumentSnapshot>[].obs;
   RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
+
+ StreamSubscription<QuerySnapshot>? reportSubscription;
+ 
 
   @override
   void onInit() {
@@ -96,10 +101,10 @@ class ReportCommitteeController extends GetxController {
   }
 
   void fetchReports() {
-    _firestore.collection('report').snapshots().listen((snapshot) {
-      allReports.value = snapshot.docs;
-      filterReports();
-    });
+    reportSubscription = _firestore.collection('report').snapshots().listen((snapshot) {
+    allReports.value = snapshot.docs;
+    filterReports();
+  });
   }
 
   Future<bool> updateReport({

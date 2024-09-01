@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/home_page/home_page_controller.dart';
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -119,8 +120,13 @@ class ProfileSuperEOController extends GetxController {
   }
 
   Future<void> logout() async {
+    final HomePageSuperEOController homePageController =
+        Get.find<HomePageSuperEOController>();
     try {
       debugPrint("Logging out...");
+      // Hentikan listener Firestore
+      homePageController.userSubscription?.cancel();
+      homePageController.userSubscription = null;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
       await FirebaseAuth.instance.signOut();

@@ -7,7 +7,7 @@ class HomePageEventOrganizerController extends GetxController {
   var userName = ''.obs;
   var duration = Duration().obs;
   Timer? timer;
-
+  StreamSubscription<DocumentSnapshot>? userSubscription;
   @override
   void onInit() {
     super.onInit();
@@ -24,19 +24,30 @@ class HomePageEventOrganizerController extends GetxController {
   void fetchUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      userSubscription = FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
-          .get();
-      if (userDoc.exists) {
-        var data = userDoc.data() as Map<String, dynamic>;
-        userName.value = data['name'] ?? '';
-      }
+          .snapshots()
+          .listen((DocumentSnapshot userDoc) {
+        if (userDoc.exists) {
+          var data = userDoc.data() as Map<String, dynamic>;
+          String fullName = data['name'] ?? '';
+          List<String> nameParts = fullName.split(' ');
+
+          // Ambil dua kata pertama
+          if (nameParts.length > 1) {
+            userName.value = '${nameParts[0]} ${nameParts[1]}';
+          } else {
+            userName.value = fullName;
+          }
+        }
+      });
     }
   }
 
   Future<DateTime> getServerTime() async {
-    DocumentReference docRef = FirebaseFirestore.instance.collection('serverTime').doc('time');
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('serverTime').doc('time');
     await docRef.set({'timestamp': FieldValue.serverTimestamp()});
     DocumentSnapshot snapshot = await docRef.get();
     Timestamp timestamp = snapshot['timestamp'];
@@ -45,7 +56,8 @@ class HomePageEventOrganizerController extends GetxController {
 
   void startCountdown() async {
     DateTime serverTime = await getServerTime();
-    DateTime eventDate = DateTime(2024, 9, 20, 0, 0, 0); // Set tanggal event (20 September 2024) di zona waktu Bali (GMT+8)
+    DateTime eventDate = DateTime(2024, 9, 20, 0, 0,
+        0); // Set tanggal event (20 September 2024) di zona waktu Bali (GMT+8)
 
     // Hitung perbedaan waktu antara server dan waktu event
     duration.value = eventDate.difference(serverTime);

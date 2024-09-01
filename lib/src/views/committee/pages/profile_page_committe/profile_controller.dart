@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
+import 'package:app_kopabali/src/views/committee/pages/home_page/home_page_controller.dart';
+import 'package:app_kopabali/src/views/committee/pages/service_page/report_controller.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,7 +122,19 @@ class ProfileCommitteeController extends GetxController {
 
   Future<void> logout() async {
     try {
+      final HomePageCommitteeController homePageController =
+          Get.find<HomePageCommitteeController>();
+      final ReportCommitteeController reportCommitteeController =
+          Get.find<ReportCommitteeController>();
+
       debugPrint("Logging out...");
+      // Hentikan listener Firestore
+      homePageController.userSubscription?.cancel();
+      homePageController.userSubscription = null;
+      // Hentikan listener Firestore
+      reportCommitteeController.reportSubscription?.cancel();
+      reportCommitteeController.reportSubscription = null;
+      
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
       await FirebaseAuth.instance.signOut();
