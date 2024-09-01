@@ -196,21 +196,28 @@ void updateParticipantRole(String newRole) async {
     String userId = Get.arguments['userId'];
     Map<String, dynamic> updateData = {'role': newRole};
 
-    if (newRole == 'participant') {
-      // Menghapus field-field yang tidak diperlukan ketika kembali menjadi participant
-      updateData['wasCommittee'] = FieldValue.delete();
-      updateData['wasEventOrganizer'] = FieldValue.delete();
-      updateData['wasSuperEO'] = FieldValue.delete();
+    // Selalu mencoba menghapus field 'was*' ketika mengubah peran
+    updateData['wasCommittee'] = FieldValue.delete();
+    updateData['wasEventOrganizer'] = FieldValue.delete();
+    updateData['wasSuperEO'] = FieldValue.delete();
+
+    // Jika peran baru bukan 'participant', tambahkan field 'was*' yang sesuai
+    if (newRole != 'participant') {
+      String wasField = 'was${newRole.replaceAll(' ', '')}';
+      updateData[wasField] = true;
     }
 
     await _firestore.collection('users').doc(userId).update(updateData);
 
     // Memperbarui participantData lokal
     participantData['role'] = newRole;
-    if (newRole == 'participant') {
-      participantData.remove('wasCommittee');
-      participantData.remove('wasEventOrganizer');
-      participantData.remove('wasSuperEO');
+    participantData.remove('wasCommittee');
+    participantData.remove('wasEventOrganizer');
+    participantData.remove('wasSuperEO');
+
+    if (newRole != 'participant') {
+      String wasField = 'was${newRole.replaceAll(' ', '')}';
+      participantData[wasField] = true;
     }
 
     Get.snackbar("Success", "Participant role updated successfully.");
