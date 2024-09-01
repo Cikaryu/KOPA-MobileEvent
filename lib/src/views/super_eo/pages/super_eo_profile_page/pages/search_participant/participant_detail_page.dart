@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-// TODO : Status CLose ubah jadi Not Received
+//todo : overflow karena status berubah menjadi not received
+
 
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
@@ -306,7 +307,7 @@ class ParticipantDetailPage extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-      List<String> statusOptions = ['Pending', 'Received', 'Close'];
+      List<String> statusOptions = ['Pending', 'Received', 'Not Received'];
 
       // Ensure that status is one of the valid options
       if (!statusOptions.contains(status)) {
@@ -340,8 +341,8 @@ class ParticipantDetailPage extends StatelessWidget {
                               children: [
                                 Text(statusOption),
                                 SizedBox(
-                                    width: statusOption == 'Close'
-                                        ? 36
+                                    width: statusOption == 'Not Received'
+                                        ? 18
                                         : statusOption == 'Pending'
                                             ? 18
                                             : 11),

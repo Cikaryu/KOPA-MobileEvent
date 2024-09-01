@@ -251,7 +251,7 @@ class SearchParticipantPage extends StatelessWidget {
                                 .filteredParticipants.isEmpty
                         ? Center(
                             child: Text(
-                              'No participants with closed kit status found.',
+                              'No participants with not received kit status found.',
                               style: TextStyle(fontSize: 16),
                             ),
                           )

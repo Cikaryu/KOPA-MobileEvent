@@ -1,3 +1,4 @@
+//todo : overflow karena status berubah menjadi not received
 import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/search_participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -302,7 +303,7 @@ class ParticipantDetailPage extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-      List<String> statusOptions = ['Pending', 'Received', 'Close'];
+      List<String> statusOptions = ['Pending', 'Received', 'Not Received'];
 
       // Ensure that status is one of the valid options
       if (!statusOptions.contains(status)) {
@@ -336,7 +337,7 @@ class ParticipantDetailPage extends StatelessWidget {
                               children: [
                                 Text(statusOption),
                                 SizedBox(
-                                    width: statusOption == 'Close'
+                                    width: statusOption == 'Not Received'
                                         ? 36
                                         : statusOption == 'Pending'
                                             ? 18

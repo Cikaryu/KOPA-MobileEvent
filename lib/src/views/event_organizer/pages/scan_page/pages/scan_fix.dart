@@ -3,6 +3,8 @@ import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/scan_cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+//todo : overflow karena status berubah menjadi not received
+
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 
@@ -227,7 +229,7 @@ class ScanProfileView extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-      List<String> statusOptions = ['Pending', 'Received', 'Close'];
+      List<String> statusOptions = ['Pending', 'Received', 'Not Received'];
 
       if (!statusOptions.contains(status)) {
         status = statusOptions[0];
@@ -258,7 +260,7 @@ class ScanProfileView extends StatelessWidget {
                               children: [
                                 Text(statusOption),
                                 SizedBox(
-                                    width: statusOption == 'Close'
+                                    width: statusOption == 'Not Received'
                                         ? 36
                                         : statusOption == 'Pending'
                                             ? 18

@@ -44,7 +44,7 @@ class SearchParticipantController extends GetxController {
 
   void toggleContainerExpansion(String containerName) {
     if (expandedContainer.value == containerName) {
-      expandedContainer.value = ''; // Close if it's already open
+      expandedContainer.value = ''; // close if it's already open
     } else {
       expandedContainer.value =
           containerName; // Open the new one, closing others
@@ -111,7 +111,7 @@ class SearchParticipantController extends GetxController {
       case 'Received':
         imageName = 'received.png';
         break;
-      case 'Close':
+      case 'Not Received':
         imageName = 'close.png';
         break;
       default:
@@ -189,20 +189,20 @@ class SearchParticipantController extends GetxController {
   Future<void> filterParticipantsByKitStatus() async {
     isLoading.value = true;
     try {
-      List<Participant> closedParticipants = [];
+      List<Participant> notReceivedParticipants = [];
       for (var participant in allParticipants) {
         final kitStatus = await getParticipantKitStatus(participant);
         print(
             'Participant ${participant.uid} has kit status: $kitStatus'); // Debugging
-        if (kitStatus == 'Close') {
-          closedParticipants.add(participant);
+        if (kitStatus == 'Not Received') {
+          notReceivedParticipants.add(participant);
         } else if (kitStatus == 'Pending') {
-          closedParticipants.add(participant);
+          notReceivedParticipants.add(participant);
         }
       }
-      filteredParticipants.value = closedParticipants;
+      filteredParticipants.value = notReceivedParticipants;
       print(
-          'Filtered participants with status Close: ${closedParticipants.length}'); // Debugging
+          'Filtered participants with status Not Received: ${notReceivedParticipants.length}'); // Debugging
     } finally {
       isLoading.value = false;
     }
@@ -224,9 +224,9 @@ class SearchParticipantController extends GetxController {
 
         print('All statuses for ${participant.uid}: $allStatuses'); // Debugging
 
-        // Check if there's at least one status that is 'Close'
-        if (allStatuses.contains('Close')) {
-          return 'Close';
+        // Check if there's at least one status that is 'Not Received'
+        if (allStatuses.contains('Not Received')) {
+          return 'Not Received';
         } else if (allStatuses.contains('Pending')) {
           return 'Pending';
         }
@@ -234,7 +234,7 @@ class SearchParticipantController extends GetxController {
     } catch (e) {
       print('Error fetching participant kit status: $e');
     }
-    return 'Pending'; // Default value if 'Close' is not found
+    return 'Pending'; // Default value if 'Not Received' is not found
   }
 }
 

@@ -166,7 +166,7 @@ class ScanController extends GetxController {
       case 'Received':
         imageName = 'received.png';
         break;
-      case 'Close':
+      case 'Not Received':
         imageName = 'close.png';
         break;
       default:
