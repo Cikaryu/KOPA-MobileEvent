@@ -2,6 +2,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/home_page_controller.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/pages/Agenda/participant_agenda_view.dart';
 import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/venue.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'pages/Participant_Benefit/participant_Benefit_view.dart';
@@ -12,7 +13,11 @@ class HomePageParticipant extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomePageParticipantController homePageController =
         Get.put(HomePageParticipantController());
-    return SafeArea(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+      ),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Obx(
@@ -26,35 +31,43 @@ class HomePageParticipant extends StatelessWidget {
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(20.0), // Apply radius here
-                    ),
-                    child: Container(
-                      color: HexColor('#01613B'), // Background color of AppBar
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Hello, ${homePageController.userName.value} !',
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              overflow: TextOverflow.visible,
-                            ),
+                  child: Container(
+                    color: HexColor('#01613B'), // Background color of AppBar
+                    padding: EdgeInsets.only(top: 70, bottom: 20),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Obx(() => Text(
+                                  'Hello, ${homePageController.userName.value}',
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: HexColor("#FFFFFF").withOpacity(0.5),
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                )),
+                            Text(
+                              " !",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: HexColor("#FFFFFF").withOpacity(0.5),
+                                overflow: TextOverflow.visible,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Welcome To Your Homepage',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Welcome To Your Homepage',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

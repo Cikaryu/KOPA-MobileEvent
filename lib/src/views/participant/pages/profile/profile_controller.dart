@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
 import 'package:app_kopabali/src/views/event_organizer/event_organizer_view.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/home_page_controller.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -100,7 +101,8 @@ class ProfileController extends GetxController {
         userWhatsapp.value = data['whatsappNumber'] ?? '';
         numberKtp.value = data['NIK'] ?? '';
         hasPreviouslyBeenCommittee.value = data['wasCommittee'] ?? false;
-        hasPreviouslyBeenEventOrganizer.value = data['wasEventOrganizer'] ?? false;
+        hasPreviouslyBeenEventOrganizer.value =
+            data['wasEventOrganizer'] ?? false;
         hasPreviouslyBeenSuperEO.value = data['wasSuperEO'] ?? false;
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {
@@ -160,8 +162,14 @@ class ProfileController extends GetxController {
   }
 
   Future<void> logout() async {
+    final HomePageParticipantController homePageController =
+        Get.find<HomePageParticipantController>();
     participantKitSubscription?.cancel();
     participantKitSubscription = null;
+
+    // Hentikan listener Firestore
+    homePageController.userSubscription?.cancel();
+    homePageController.userSubscription = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await FirebaseAuth.instance.signOut();
