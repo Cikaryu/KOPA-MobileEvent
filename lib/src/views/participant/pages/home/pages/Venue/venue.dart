@@ -1,18 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Import this for SystemUiOverlayStyle
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/participant/pages/home/pages/participant_kit/participant_kit_controller.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/pages/venue_days_one.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/pages/venue_days_three.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/pages/venue_days_two.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/venue_controler.dart';
 
-import 'participant_kit_days/day_one.dart';
-import 'participant_kit_days/day_three.dart';
-import 'participant_kit_days/day_two.dart';
+class VenueViewPage extends StatelessWidget {
+  VenueViewPage({super.key});
 
-class ParticipantKit extends StatelessWidget {
-  ParticipantKit({Key? key}) : super(key: key);
-
-  final ParticipantKitController controller = ParticipantKitController();
-
+  final VenueControler controller = VenueControler();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +27,10 @@ class ParticipantKit extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  SvgPicture.asset(
-                    'assets/svg/GIft.svg',
-                    width: 54,
-                    height: 54,
-                    color: HexColor("#01613B"),
-                  ),
+                  Icon(Icons.maps_home_work,
+                      color: HexColor("#01613B"), size: 48),
                   const SizedBox(height: 8),
-                  Text("Participant Kit",
+                  Text("Venue",
                       style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -64,17 +55,17 @@ class ParticipantKit extends StatelessWidget {
             ),
             // Konten hari berdasarkan tab yang dipilih
             SizedBox(
-              height: 1000,
+              height: 1400,
               child: ValueListenableBuilder<int>(
                 valueListenable: controller.selectedDay,
                 builder: (context, value, child) {
                   switch (value) {
                     case 0:
-                      return DayOneContent();
+                      return VenuePagedayone();
                     case 1:
-                      return DayTwoContent();
+                      return VenuePagedaytwo();
                     case 2:
-                      return DayThreeContent();
+                      return VenuePagedaythree();
                     default:
                       return Center(child: Text('Invalid Day'));
                   }

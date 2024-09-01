@@ -1,6 +1,7 @@
 import 'package:app_kopabali/src/views/participant/pages/home/pages/Participant_Benefit/Participant_benefit_days/day_one_benefit.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'Participant_benefit_days/day_three_benefit.dart';
 import 'Participant_benefit_days/day_two_benefit.dart';
@@ -31,8 +32,12 @@ class ParticipantBenefitView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Icon(Icons.emoji_events,
-                      color: HexColor("#01613B"), size: 48),
+                  SvgPicture.asset(
+                    'assets/svg/User_add_alt_fill.svg',
+                    width: 54,
+                    height: 54,
+                    color: HexColor("#01613B"),
+                  ),
                   const SizedBox(height: 8),
                   Text("Participant Benefit",
                       style: TextStyle(

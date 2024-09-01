@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
+// TODO : Status CLose ubah jadi Not Received
+
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 

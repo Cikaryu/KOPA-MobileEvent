@@ -1,6 +1,7 @@
 import 'package:app_kopabali/src/views/participant/pages/home/pages/Agenda/participant_agenda_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'agenda_days/day_one_agenda.dart';
 import 'agenda_days/day_three_agenda.dart';
@@ -30,7 +31,12 @@ class ParticipantAgendaView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Icon(Icons.event, color: HexColor("#01613B"), size: 48),
+                  SvgPicture.asset(
+                    'assets/svg/Date_range.svg',
+                    width: 54,
+                    height: 54,
+                    color: HexColor("#01613B"),
+                  ),
                   const SizedBox(height: 8),
                   Text("Agenda",
                       style: TextStyle(
