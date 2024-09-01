@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/home_page/home_page_controller.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -54,7 +55,8 @@ class ProfileEventOrganizerController extends GetxController {
           userEmail.value = data['email'] ?? '';
           userDivisi.value = data['division'] ?? '';
           imageUrl.value = data['profileImageUrl'] ?? '';
-          hasPreviouslyBeenEventOrganizer.value = data['wasEventOrganizer'] ?? false;
+          hasPreviouslyBeenEventOrganizer.value =
+              data['wasEventOrganizer'] ?? false;
 
           // Fetch image if imageUrl is available
           if (imageUrl.value.isNotEmpty) {
@@ -119,8 +121,13 @@ class ProfileEventOrganizerController extends GetxController {
   }
 
   Future<void> logout() async {
+    final HomePageEventOrganizerController homePageController =
+        Get.find<HomePageEventOrganizerController>();
     try {
       debugPrint("Logging out...");
+      // Hentikan listener Firestore
+      homePageController.userSubscription?.cancel();
+      homePageController.userSubscription = null;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
       await FirebaseAuth.instance.signOut();
@@ -143,7 +150,8 @@ class ProfileEventOrganizerController extends GetxController {
 
         if (userDoc.exists) {
           role.value = userDoc['role'];
-          hasPreviouslyBeenEventOrganizer.value = userDoc['wasEventOrganizer'] ?? false;
+          hasPreviouslyBeenEventOrganizer.value =
+              userDoc['wasEventOrganizer'] ?? false;
         } else {
           print('Document does not exist on the database');
         }

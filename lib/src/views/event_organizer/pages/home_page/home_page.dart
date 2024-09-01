@@ -1,5 +1,12 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/home_page/home_page_controller.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+
+import 'pages/Agenda/participant_agenda_view.dart';
+import 'pages/Participant_Benefit/participant_Benefit_view.dart';
+import 'pages/Venue/venue.dart';
+import 'pages/participant_kit/participant_kit.dart';
 
 class HomePageEventOrganizer extends StatefulWidget {
   const HomePageEventOrganizer({super.key});
@@ -11,8 +18,13 @@ class HomePageEventOrganizer extends StatefulWidget {
 class _HomePageParticipantState extends State<HomePageEventOrganizer> {
   @override
   Widget build(BuildContext context) {
-    final HomePageEventOrganizerController homePageController = Get.put(HomePageEventOrganizerController());
-    return SafeArea(
+    final HomePageEventOrganizerController homePageController =
+        Get.put(HomePageEventOrganizerController());
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+      ),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Obx(
@@ -26,129 +38,191 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
             return CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(20.0), // Apply radius here
-                    ),
-                    child: Container(
-                      color: HexColor('#01613B'), // Background color of AppBar
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Hello, ${homePageController.userName.value}!',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
+                  child: Container(
+                    color: HexColor('#01613B'), // Background color of AppBar
+                    padding: EdgeInsets.only(top: 70, bottom: 20),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Obx(() => Text(
+                                  'Hello, ${homePageController.userName.value}',
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: HexColor("#FFFFFF").withOpacity(0.5),
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                )),
+                            Text(
+                              " !",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: HexColor("#FFFFFF").withOpacity(0.5),
+                                overflow: TextOverflow.visible,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Welcome To Your Homepage',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Welcome To Your Homepage',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 150),
-                        Text(
-                          'Employee Gathering\nElnusa Petrofin 2024',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: HexColor('#01613B'),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: Get.width,
+                        height: 160,
+                        decoration: ShapeDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/evenyt.png'),
+                            fit: BoxFit.fill,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0),
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Event Tagline',
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[800],
-                              fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 22),
+                      Text(
+                        'Employee Gathering\nElnusa Petrofin 2024',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: HexColor('#01613B'),
                         ),
-                        SizedBox(height: 32),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 22, horizontal: 27),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.event,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Agenda',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Event Tagline',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[800],
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 47),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => ParticipantKit()),
+                                );
+                              },
+                              child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 16),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[200],
+                                  color: HexColor("F2F2F2"),
                                   borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
                                 ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.card_giftcard,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
+                                    SvgPicture.asset(
+                                      'assets/svg/GIft.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                    SizedBox(height: 12),
                                     Text(
                                       'Participant\nKit',
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.start,
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Container(
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ParticipantBenefitView()),
+                                );
+                              },
+                              child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 16),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[200],
+                                  color: HexColor("F2F2F2"),
                                   borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.grey[400]!),
                                 ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.emoji_events,
-                                        size: 32, color: HexColor('#E97717')),
-                                    SizedBox(height: 8),
+                                    SvgPicture.asset(
+                                      'assets/svg/User_add_alt_fill.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                    SizedBox(height: 12),
                                     Text(
                                       'Participant\nBenefit',
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.start,
                                       style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ParticipantAgendaView()),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: HexColor("F2F2F2"),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/svg/Date_range.svg',
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      '\nAgenda\t\t\t\t\t',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: Colors.black,
                                       ),
@@ -156,53 +230,67 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                   ],
                                 ),
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 34),
+                      Container(
+                        width: Get.width,
+                        height: 180,
+                        decoration: ShapeDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/bali.png'),
+                            fit: BoxFit.fill,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0),
                           ),
                         ),
-                        SizedBox(height: 34),
-                        Container(
-                          width: 329,
-                          height: 180,
-                          decoration: ShapeDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://d3p0bla3numw14.cloudfront.net/news-content/img/2021/05/03112735/Tempat-Tinggal-Terbaik-di-Bali.jpg"),
-                              fit: BoxFit.fill,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Welcome To Bali",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Welcome To Bali",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold),
+                            SizedBox(height: 12),
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => VenueViewPage()),
+                                );
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 60,
+                                height: 60,
+                                decoration: ShapeDecoration(
+                                  color: Color(0xFFE97717),
+                                  shape: OvalBorder(),
+                                  shadows: [
+                                    BoxShadow(
+                                      color: Color(0x3F000000),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 0),
+                                      spreadRadius: 0,
+                                    )
+                                  ],
+                                ),
+                                child: Icon(Icons.navigate_next_outlined,
+                                    color: Colors.white, size: 43),
                               ),
-                              SizedBox(height: 12),
-                              IconButton(
-                                  onPressed: null,
-                                  icon: Icon(
-                                    Icons.arrow_circle_right_sharp,
-                                    color: HexColor("#01613B"),
-                                    size: 50,
-                                  )),
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                        SizedBox(height: 100),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 60,
-                        ),
-                        SizedBox(height: 16),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 94),
+                    ],
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -222,12 +310,16 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             ),
                             child: Column(
                               children: [
+                                SvgPicture.asset(
+                                  'assets/svg/Calendar_fill.svg',
+                                ),
+                                SizedBox(height: 6),
                                 Text(
                                   'Event Date',
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -247,11 +339,16 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                   ),
                                   child: Column(
                                     children: [
+                                      SvgPicture.asset(
+                                        'assets/svg/time.svg',
+                                      ),
+                                      SizedBox(height: 4),
                                       Text(
                                         'Event Live Countdown',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.white,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       SizedBox(height: 8),
@@ -265,7 +362,6 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                                 '$days',
                                                 style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -285,7 +381,6 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                                 '$hours',
                                                 style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -305,7 +400,6 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                                 '$minutes',
                                                 style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -325,7 +419,6 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                                 '$seconds',
                                                 style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -348,15 +441,9 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 160),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 100,
-                        ),
-                        SizedBox(height: 16),
-
+                        SizedBox(height: 100),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 56.0),
                           child: Column(
                             children: [
                               Text(
@@ -374,18 +461,18 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey[700],
+                                  color: Colors.black,
                                 ),
                               ),
-                              SizedBox(height: 16),
-                              CircleAvatar(
-                                radius: 50,
+                              SizedBox(height: 26),
+                              Image.asset(
+                                'assets/images/headcommittee.png',
                               ),
                               SizedBox(height: 8),
                               Text(
                                 'Martin Siphron',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: HexColor('#01613B'),
                                 ),
@@ -394,18 +481,13 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                 'Head of Committee',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey[600],
+                                  color: Colors.black,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 120),
-                        Divider(
-                          color: Colors.grey[200],
-                          thickness: 90,
-                        ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 84),
                       ],
                     ),
                   ),
