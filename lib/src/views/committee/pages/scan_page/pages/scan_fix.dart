@@ -1,7 +1,5 @@
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
 import 'package:app_kopabali/src/views/committee/pages/scan_page/scan_controller.dart';
-import 'package:app_kopabali/src/views/committee/pages/scan_page/scan_view.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -13,9 +11,17 @@ class ScanProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print('Current participantData: ${scanController.participantData}');
-    }
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scanController.participantData.isEmpty) {
+        String? userId = Get.arguments?['userId'];
+        if (userId != null) {
+          scanController.fetchParticipantData(userId);
+        } else {
+          Get.snackbar("Error", "User ID not provided.");
+          Get.back();
+        }
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,

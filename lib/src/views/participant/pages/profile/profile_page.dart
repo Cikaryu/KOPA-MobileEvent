@@ -91,7 +91,7 @@ class ProfileParticipantPage extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   )),
                               Obx(() => Text(
-                                    profileController.userDivisi.value,
+                                    profileController.role.value,
                                     style: TextStyle(fontSize: 16),
                                     overflow: TextOverflow.ellipsis,
                                   )),

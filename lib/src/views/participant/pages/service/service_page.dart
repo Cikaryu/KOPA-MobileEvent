@@ -207,8 +207,8 @@ class ServicePage extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Center(
-                    child: Container(
-                      width: 140,
+                    child: SizedBox(
+                      width: 200,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(
@@ -217,10 +217,12 @@ class ServicePage extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: HexColor("#72BB65"),
+                          backgroundColor: HexColor('E97717'),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24.0),
+                            borderRadius: BorderRadius.circular(16),
                           ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 16),
                         ),
                         child: Center(
                           child: Text(
@@ -269,8 +271,8 @@ class ServicePage extends StatelessWidget {
                   ),
                   SizedBox(height: 22),
                   Center(
-                    child: Container(
-                      width: 140,
+                    child: SizedBox(
+                      width: 200,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(
@@ -279,10 +281,12 @@ class ServicePage extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: HexColor("#72BB65"),
+                          backgroundColor: HexColor('E97717'),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24.0),
+                            borderRadius: BorderRadius.circular(16),
                           ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 16),
                         ),
                         child: Center(
                           child: Text(

@@ -147,49 +147,114 @@ class ReportPage extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: 28),
-                Text('Attachment',
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(
+                  'Attachment',
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: 12),
-                InkWell(
-                  onTap: () async {
-                    await reportController.pickImage();
-                  },
-                  child: Container(
-                    height: 50,
-                    width: Get.width,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Attach your photo',
+                SingleChildScrollView(
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[300]!),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Attach your photo',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w300)),
-                        Spacer(),
-                        Icon(Icons.add),
-                      ],
+                              color: Colors.grey[400],
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: Obx(() {
+                              var selectedImage =
+                                  reportController.selectedImage.value;
+                              return Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (selectedImage != null) {
+                                        // Show image preview or any other action
+                                      }
+                                    },
+                                    child: Container(
+                                      width: Get.width,
+                                      height: 160,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(12),
+                                        image: selectedImage != null
+                                            ? DecorationImage(
+                                                image: FileImage(
+                                                  File(selectedImage.path),
+                                                ),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                      ),
+                                      child: selectedImage == null
+                                          ? Icon(Icons.add,
+                                              size: 100,
+                                              color: Colors.grey[500])
+                                          : null,
+                                    ),
+                                  ),
+                                  SizedBox(height: 16),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await reportController.pickImage();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: HexColor('E97717'),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.camera_alt,
+                                            color: Colors.white),
+                                        SizedBox(width: 5),
+                                        Flexible(
+                                          child: Text(
+                                            selectedImage == null
+                                                ? "Attach"
+                                                : "Retake",
+                                            textAlign: TextAlign.center,
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Obx(() {
-                  if (reportController.selectedImage.value != null) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Image.file(
-                        File(reportController.selectedImage.value!.path),
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 200,
-                      ),
-                    );
-                  } else {
-                    return SizedBox.shrink();
-                  }
-                }),
                 SizedBox(height: 28),
                 Center(
                   child: Container(
@@ -202,12 +267,12 @@ class ReportPage extends StatelessWidget {
                             title: titleController.text,
                             category: categoryController.text,
                             description: descriptionController.text,
-                            status: 'Pending',
+                            status: 'Unresolved',
                           );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor("#72BB65"),
+                        backgroundColor: HexColor("E97717"),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24.0),
                         ),

@@ -32,10 +32,11 @@ class ReportListPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: HexColor('E97717'),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(16),
                 ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               ),
               onPressed: () {
                 Get.to(() => ReportPage());
@@ -87,7 +88,7 @@ class ReportListPage extends StatelessWidget {
                 },
                 child: Column(
                   children: [
-                    SizedBox(height: 8.0),
+                    SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Container(

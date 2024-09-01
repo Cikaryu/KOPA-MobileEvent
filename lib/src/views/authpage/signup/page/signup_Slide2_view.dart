@@ -298,21 +298,21 @@ class SignupSlide2View extends StatelessWidget {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          if (value == null)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 16.0),
-                                              child: Text(
-                                                'Profile picture is required to proceed.',
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
                                         ],
                                       ),
                                     ),
+                                    if (value == null)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 16.0),
+                                        child: Text(
+                                          'Profile picture is required to proceed.',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                 );
                               },

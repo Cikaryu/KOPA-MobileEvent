@@ -9,6 +9,7 @@ class AttendanceController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final Rx<XFile?> selectedImage = Rx<XFile?>(null);
 
   var isDay1Expanded = false.obs;
   var isDay2Expanded = false.obs;
@@ -223,8 +224,8 @@ class AttendanceController extends GetxController {
   }
 
   Future<void> takePhoto() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (image != null) {
       imageFile.value = File(image.path);
     }

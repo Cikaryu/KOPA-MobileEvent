@@ -119,6 +119,7 @@ class SigninView extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 134),
                         shape: RoundedRectangleBorder(

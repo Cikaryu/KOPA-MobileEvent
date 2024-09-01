@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
@@ -36,47 +38,42 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
-      body: Obx(() => SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 20),
-                        buildStatusDropdown(),
-                        SizedBox(height: 50),
-                        if (selectedStatus == 'Sick' ||
-                            selectedStatus == 'Permit') ...[
-                          buildDescriptionField(),
-                          SizedBox(height: 20),
-                        ],
-                        if (selectedStatus != 'Not Participating' &&
-                            selectedStatus != 'Left Early')
-                          buildAttachmentButton(),
-                        SizedBox(height: 20),
-                        if (controller.imageFile.value != null &&
-                            selectedStatus != 'Not Participating' &&
-                            selectedStatus != 'Left Early')
-                          buildImagePreview(),
-                      ],
-                    ),
-                  ),
+      body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    buildStatusDropdown(),
+                    SizedBox(height: 20),
+                    if (selectedStatus == 'Sick' ||
+                        selectedStatus == 'Permit') ...[
+                      buildDescriptionField(),
+                      SizedBox(height: 20),
+                    ],
+                    if (selectedStatus != 'Not Participating' &&
+                        selectedStatus != 'Left Early')
+                      buildAttachmentButton(),
+                  ],
                 ),
-                SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: buildSubmitButton(),
-                  ),
-                ),
-              ],
+              ),
             ),
-          )),
+            SizedBox(height: 20),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: buildSubmitButton(),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -100,7 +97,7 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
           height: 60,
           child: DropdownButtonFormField2<String>(
             decoration: InputDecoration(
-              hintText: 'Status',
+              hintText: 'Select your status',
               filled: true,
               fillColor: Colors.grey[200],
               border: OutlineInputBorder(
@@ -172,29 +169,96 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Attachment",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          'Attachment',
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        SizedBox(
-          width: Get.width,
-          height: 45,
-          child: ElevatedButton(
-            onPressed: controller.takePhoto,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[200],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: BorderSide(color: Colors.grey[300]!)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Take a picture and submit',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-                Icon(Icons.add),
-              ],
+        SizedBox(height: 12),
+        SingleChildScrollView(
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Attach your photo',
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Obx(() {
+                    var imageFile = controller.imageFile.value;
+                    return Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (imageFile != null) {
+                              // Show image preview or any other action
+                            }
+                          },
+                          child: Container(
+                            width: Get.width,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(12),
+                              image: imageFile != null
+                                  ? DecorationImage(
+                                      image: FileImage(
+                                        File(imageFile.path),
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: imageFile == null
+                                ? Icon(Icons.add,
+                                    size: 100, color: Colors.grey[500])
+                                : null,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await controller.takePhoto();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: HexColor('E97717'),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.camera_alt, color: Colors.white),
+                              SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  imageFile == null ? "Attach" : "Retake",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ),
@@ -202,24 +266,9 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
     );
   }
 
-  Widget buildImagePreview() {
-    return Container(
-      height: 200,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        image: DecorationImage(
-          image: FileImage(controller.imageFile.value!),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
   Widget buildSubmitButton() {
     return SizedBox(
-      width: 177,
-      height: 60,
+      width: 240,
       child: ElevatedButton(
         onPressed: () {
           if (selectedStatus == null) {
@@ -238,7 +287,8 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
+          padding: EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: HexColor('E97717'),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

@@ -33,7 +33,10 @@ class FaqPage extends StatelessWidget {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[200],
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: HexColor('E97717'),
+                ),
                 hintText: 'Search FAQ',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
