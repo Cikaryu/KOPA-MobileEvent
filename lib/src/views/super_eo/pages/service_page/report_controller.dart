@@ -1,21 +1,19 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ReportSuperEOController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<XFile?> selectedImage = Rx<XFile?>(null);
-  var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
-  var statusImageUrls = <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
-  var isLoading = false.obs; // Untuk mengatur status loading
+  var reportStatus = <String, String>{}.obs;
+  var statusImageUrls = <String, String>{}.obs;
+  var isLoading = false.obs;
   RxBool isAscending = true.obs;
-  RxString selectedFilter = ''.obs; // Menyimpan filter yang dipilih
-
+  RxString selectedFilter = ''.obs;
   late Rx<User?> _user;
+  RxList<QueryDocumentSnapshot> allReports = <QueryDocumentSnapshot>[].obs;
+  RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
 
   @override
   void onInit() {
@@ -24,6 +22,7 @@ class ReportSuperEOController extends GetxController {
     _auth.authStateChanges().listen((User? user) {
       _user.value = user;
     });
+    fetchReports();
   }
 
   String get userId => _user.value?.uid ?? '';
@@ -54,56 +53,53 @@ class ReportSuperEOController extends GetxController {
         imageName = 'default.png';
     }
 
-    debugPrint('Image name determined: $imageName'); // Debug statement
-
     try {
       final downloadUrl = await FirebaseStorage.instance
           .ref('status/$imageName')
           .getDownloadURL();
-      debugPrint('Fetched image URL: $downloadUrl'); // Debug statement
-      statusImageUrls[reportId] = downloadUrl; // Menyimpan URL gambar
+      statusImageUrls[reportId] = downloadUrl;
     } catch (e) {
-      debugPrint('Error fetching status image: $e'); // Debug statement
-      statusImageUrls[reportId] = ''; // Set to empty string if failed
+      debugPrint('Error fetching status image: $e');
+      statusImageUrls[reportId] = '';
     }
   }
 
   void toggleSortOrder() {
     isAscending.value = !isAscending.value;
+    sortReports();
   }
 
-  Stream<List<QueryDocumentSnapshot>> getFilteredReports() {
-    return _firestore.collection('report').snapshots().map((snapshot) {
-      var reports = snapshot.docs;
-
-      if (selectedFilter.isNotEmpty) {
-        reports = reports.where((report) {
-          final data = report.data() as Map<String, dynamic>;
-          return data['status'] == selectedFilter.value ||
-              data['title'].contains(selectedFilter.value);
-        }).toList();
-      }
-
-      if (isAscending.value) {
-        reports.sort((a, b) {
-          final dataA = a.data() as Map<String, dynamic>;
-          final dataB = b.data() as Map<String, dynamic>;
-          return (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
-        });
-      } else {
-        reports.sort((a, b) {
-          final dataA = a.data() as Map<String, dynamic>;
-          final dataB = b.data() as Map<String, dynamic>;
-          return (dataB['title'] ?? '').compareTo(dataA['title'] ?? '');
-        });
-      }
-
-      return reports;
+  void sortReports() {
+    filteredReports.sort((a, b) {
+      final dataA = a.data() as Map<String, dynamic>;
+      final dataB = b.data() as Map<String, dynamic>;
+      final comparison = (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
+      return isAscending.value ? comparison : -comparison;
     });
   }
 
   void applyFilter(String filter) {
     selectedFilter.value = filter;
+    filterReports();
+  }
+
+  void filterReports() {
+    if (selectedFilter.isEmpty) {
+      filteredReports.value = List.from(allReports);
+    } else {
+      filteredReports.value = allReports.where((report) {
+        final data = report.data() as Map<String, dynamic>;
+        return data['status'] == selectedFilter.value;
+      }).toList();
+    }
+    sortReports();
+  }
+
+  void fetchReports() {
+    _firestore.collection('report').snapshots().listen((snapshot) {
+      allReports.value = snapshot.docs;
+      filterReports();
+    });
   }
 
   Future<bool> updateReport({
@@ -111,51 +107,27 @@ class ReportSuperEOController extends GetxController {
     required String reply,
     required String status,
   }) async {
-    isLoading.value = true; // Memulai loading
+    isLoading.value = true;
     try {
       await _firestore.collection('report').doc(reportId).update({
         'reply': reply,
         'status': status,
         'updatedAt': Timestamp.now(),
       });
-      _showDialog('Success', 'Report updated successfully.');
+      Get.snackbar('Sukses', 'Laporan berhasil diperbarui.');
+      // Refresh the reports after updating
+      fetchReports();
       return true;
     } catch (e) {
       debugPrint('Error updating report: $e');
-      _showDialog('Error', 'Failed to update report.');
+      Get.snackbar('Error', 'Gagal memperbarui laporan.');
       return false;
     } finally {
-      isLoading.value = false; // Menghentikan loading
+      isLoading.value = false;
     }
-  }
-
-  void _showDialog(String title, String message) {
-    Get.dialog(
-      AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-              Get.back();
-            }, // Close the dialog
-            child: Text('OK'),
-          ),
-        ],
-      ),
-      barrierDismissible: false,
-    );
   }
 
   Stream<QuerySnapshot> getReports() {
-    final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId
-    if (userId != null) {
-      return FirebaseFirestore.instance
-          .collection('report')
-          .where('userId', isEqualTo: userId) // Filter berdasarkan userId
-          .snapshots();
-    }
-    return Stream.empty();
+    return _firestore.collection('report').snapshots();
   }
 }

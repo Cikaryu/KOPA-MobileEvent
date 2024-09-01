@@ -1,7 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/report_controller.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReportListCommitteePage extends StatelessWidget {
