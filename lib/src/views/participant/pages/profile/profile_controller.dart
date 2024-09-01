@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
+import 'package:app_kopabali/src/views/event_organizer/event_organizer_view.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
+import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +46,8 @@ class ProfileController extends GetxController {
   var imageBytes = Rxn<Uint8List>();
   var isLoading = false.obs;
   var hasPreviouslyBeenCommittee = false.obs;
+  var hasPreviouslyBeenSuperEO = false.obs;
+  var hasPreviouslyBeenEventOrganizer = false.obs;
 
   // Call this to load data initially
   @override
@@ -96,6 +100,8 @@ class ProfileController extends GetxController {
         userWhatsapp.value = data['whatsappNumber'] ?? '';
         numberKtp.value = data['NIK'] ?? '';
         hasPreviouslyBeenCommittee.value = data['wasCommittee'] ?? false;
+        hasPreviouslyBeenEventOrganizer.value = data['wasEventOrganizer'] ?? false;
+        hasPreviouslyBeenSuperEO.value = data['wasSuperEO'] ?? false;
         String imageUrl = data['profileImageUrl'] ?? '';
         if (imageUrl.isNotEmpty) {
           var response = await FirebaseStorage.instance.ref(imageUrl).getData();
@@ -660,16 +666,60 @@ class ProfileController extends GetxController {
           role.value = 'Participant';
           Get.offAll(() => ParticipantView());
         } else if (role.value == 'Participant') {
-          // Switch to Committee role
+          // Switch back to Committee, Super Event Organizer, or Event Organizer role
+          if (hasPreviouslyBeenSuperEO.value) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .update({
+              'role': 'Super Event Organizer',
+              'wasSuperEO': true,
+            });
+            role.value = 'Super Event Organizer';
+            Get.offAll(() => SuperEOView());
+          } else if (hasPreviouslyBeenEventOrganizer.value) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .update({
+              'role': 'Event Organizer',
+              'wasEventOrganizer': true,
+            });
+            role.value = 'Event Organizer';
+            Get.offAll(() => EventOrganizerView());
+          } else if (hasPreviouslyBeenCommittee.value) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .update({
+              'role': 'Committee',
+              'wasCommittee': true,
+            });
+            role.value = 'Committee';
+            Get.offAll(() => CommitteeView());
+          }
+        } else if (role.value == 'Super Event Organizer') {
+          // Switch to Participant role
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
               .update({
-            'role': 'Committee',
-            'wasCommittee': true,
+            'role': 'Participant',
+            'wasSuperEO': true,
           });
-          role.value = 'Committee';
-          Get.offAll(() => CommitteeView());
+          role.value = 'Participant';
+          Get.offAll(() => ParticipantView());
+        } else if (role.value == 'Event Organizer') {
+          // Switch to Participant role
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Participant',
+            'wasEventOrganizer': true,
+          });
+          role.value = 'Participant';
+          Get.offAll(() => ParticipantView());
         }
       } catch (e) {
         debugPrint('Error switching role: $e');

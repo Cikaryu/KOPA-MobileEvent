@@ -252,7 +252,11 @@ class ProfileParticipantPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 12),
-                      profileController.hasPreviouslyBeenCommittee.value
+                      (profileController.hasPreviouslyBeenCommittee.value ||
+                              profileController
+                                  .hasPreviouslyBeenSuperEO.value ||
+                              profileController
+                                  .hasPreviouslyBeenEventOrganizer.value)
                           ? InkWell(
                               onTap: () {
                                 profileController.switchRole();
