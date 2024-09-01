@@ -31,41 +31,35 @@ class EventOrganizerView extends StatelessWidget {
           return _pages[index];
         },
       ),
-      bottomNavigationBar: Obx(() => ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            ),
-            child: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  backgroundColor: HexColor('01613B'),
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: HexColor('01613B'),
-                  icon: Icon(Icons.qr_code),
-                  label: 'Scan QR',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: HexColor('01613B'),
-                  icon: Icon(Icons.group),
-                  label: 'Committee',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: HexColor('01613B'),
-                  icon: Icon(Icons.build),
-                  label: 'Profile',
-                ),
-              ],
-              currentIndex: committeeController.selectedIndex.value,
-              selectedItemColor: HexColor('F3F3F3'),
-              unselectedItemColor: HexColor('D4D4D4'),
-              onTap: (index) {
-                committeeController.changeTabIndex(index);
-              },
-            ),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: HexColor('01613B'),
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                backgroundColor: HexColor('01613B'),
+                icon: Icon(Icons.qr_code),
+                label: 'Scan QR',
+              ),
+              BottomNavigationBarItem(
+                backgroundColor: HexColor('01613B'),
+                icon: Icon(Icons.group),
+                label: 'Committee',
+              ),
+              BottomNavigationBarItem(
+                backgroundColor: HexColor('01613B'),
+                icon: Icon(Icons.build),
+                label: 'Profile',
+              ),
+            ],
+            currentIndex: committeeController.selectedIndex.value,
+            selectedItemColor: HexColor('F3F3F3'),
+            unselectedItemColor: HexColor('D4D4D4'),
+            onTap: (index) {
+              committeeController.changeTabIndex(index);
+            },
           )),
     );
   }
