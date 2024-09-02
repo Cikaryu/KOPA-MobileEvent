@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-//todo : overflow karena status berubah menjadi not received
 
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
