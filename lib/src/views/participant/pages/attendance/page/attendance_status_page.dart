@@ -1,13 +1,12 @@
 import 'dart:io';
 
+import 'package:app_kopabali/src/widgets/custom_Popup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_kopabali/src/views/participant/pages/attendance/attedance_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-// TODO : buatkan tombol retake setelah pick foto
-// TODO : Snackbar buat jadi pop up
 
 class AttendanceStatusPage extends StatefulWidget {
   final int day;
@@ -52,7 +51,8 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
                     buildStatusDropdown(),
                     SizedBox(height: 20),
                     if (selectedStatus == 'Sick' ||
-                        selectedStatus == 'Permit') ...[
+                        selectedStatus == 'Permit' ||
+                        selectedStatus == 'Left Early') ...[
                       buildDescriptionField(),
                       SizedBox(height: 20),
                     ],
@@ -272,14 +272,25 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
       child: ElevatedButton(
         onPressed: () {
           if (selectedStatus == null) {
-            Get.snackbar('Error', 'Please select a status');
+            CustomPopup(
+                context: context,
+                title: 'Status Required !',
+                content: 'Please select a status before submitting');
           } else if ((selectedStatus == 'Sick' || selectedStatus == 'Permit') &&
               controller.description.value.isEmpty) {
-            Get.snackbar('Error', 'Please provide a description');
+            CustomPopup(
+                context: context,
+                title: 'Description Required !',
+                content: 'Please provide a description before submitting');
           } else if (selectedStatus != 'Not Participating' &&
+              selectedStatus != 'Sick' &&
+              selectedStatus != 'Permit' &&
               selectedStatus != 'Left Early' &&
               controller.imageFile.value == null) {
-            Get.snackbar('Error', 'Please take a photo');
+            CustomPopup(
+                context: context,
+                title: 'Photo Required !',
+                content: 'Please take a photo before submitting');
           } else {
             controller.submitAttendance(
                 widget.day, widget.event, selectedStatus!);

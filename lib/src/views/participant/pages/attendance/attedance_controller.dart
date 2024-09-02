@@ -1,9 +1,12 @@
+import 'package:app_kopabali/src/widgets/custom_Popup.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+import 'package:path/path.dart';
 
 class AttendanceController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -225,7 +228,8 @@ class AttendanceController extends GetxController {
 
   Future<void> takePhoto() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+    final XFile? image =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (image != null) {
       imageFile.value = File(image.path);
     }
@@ -252,8 +256,13 @@ class AttendanceController extends GetxController {
     if (imageFile.value == null &&
         status != 'Pending' &&
         status != 'Not Participating' &&
+        status != 'Permit' &&
+        status != 'Sick' &&
         status != 'Left Early') {
-      Get.snackbar('Error', 'Please take a photo before submitting');
+      CustomPopup(
+          context: Get.context!,
+          title: 'Failed Submiting',
+          content: 'Please take a photo before submitting');
       return;
     }
 
@@ -293,10 +302,17 @@ class AttendanceController extends GetxController {
       }
 
       Get.back();
-      Get.snackbar('Success', 'Attendance submitted successfully');
+      CustomPopup(
+          context: Get.context!,
+          title: 'Submit Success',
+          content: 'Attendance submitted successfully');
     } catch (e) {
       print('Error submitting attendance: $e');
-      Get.snackbar('Error', 'Failed to submit attendance');
+      CustomPopup(
+        context: Get.context!,
+        title: 'Error',
+        content: 'Failed to submit attendance. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
