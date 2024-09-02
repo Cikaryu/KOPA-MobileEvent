@@ -168,7 +168,7 @@ class ReportPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Attach your photo',
+                            'Attach your photo (Opsional)',
                             style: TextStyle(
                               color: Colors.grey[400],
                               fontSize: 14,
