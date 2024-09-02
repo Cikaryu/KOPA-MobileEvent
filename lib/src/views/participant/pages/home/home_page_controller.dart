@@ -1,8 +1,9 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
-// TODO : Error Pada saat Login
 class HomePageParticipantController extends GetxController {
   var userName = ''.obs;
   var duration = Duration().obs;
@@ -58,6 +59,7 @@ class HomePageParticipantController extends GetxController {
     DateTime serverTime = await getServerTime();
     DateTime eventDate = DateTime(2024, 9, 20, 0, 0,
         0); // Set tanggal event (20 September 2024) di zona waktu Bali (GMT+8)
+
     // Hitung perbedaan waktu antara server dan waktu event
     duration.value = eventDate.difference(serverTime);
 
