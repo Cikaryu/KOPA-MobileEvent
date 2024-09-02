@@ -6,7 +6,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 
 //todo : overflow karena status berubah menjadi not received
 
-
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 
@@ -210,7 +209,7 @@ class ParticipantDetailPage extends StatelessWidget {
             },
             child: Container(
               padding: EdgeInsets.all(8),
-              width: 300,
+              width: 330,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -235,8 +234,8 @@ class ParticipantDetailPage extends StatelessWidget {
                   SizedBox(height: 8),
                   Obx(() {
                     return AnimatedContainer(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      width: 300,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      width: 330,
                       duration: Duration(milliseconds: 300),
                       height: controller.isContainerExpanded(containerName)
                           ? (children.length * 60 + 90)
@@ -330,7 +329,7 @@ class ParticipantDetailPage extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 134,
+                      width: 157,
                       child: DropdownButtonFormField2<String>(
                         value: status,
                         items: statusOptions.map((String statusOption) {
@@ -342,10 +341,10 @@ class ParticipantDetailPage extends StatelessWidget {
                                 Text(statusOption),
                                 SizedBox(
                                     width: statusOption == 'Not Received'
-                                        ? 18
+                                        ? 4
                                         : statusOption == 'Pending'
-                                            ? 18
-                                            : 11),
+                                            ? 40
+                                            : 33),
                                 FutureBuilder<String>(
                                   future: controller
                                       .getStatusImageUrl(statusOption),
