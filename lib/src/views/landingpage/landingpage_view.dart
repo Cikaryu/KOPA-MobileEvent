@@ -1,16 +1,20 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_view.dart';
 import 'package:app_kopabali/src/views/landingpage/landingpage_controller.dart';
 
 class LandingPageView extends StatelessWidget {
-  LandingPageView({super.key});
+  const LandingPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final LandingPageController landingPageController =
-        Get.put(LandingPageController());
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    final SigninController signinController = Get.put(SigninController());
+
+    // Memeriksa status login di build method
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      signinController.checkLoginStatus(context);
+    });
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

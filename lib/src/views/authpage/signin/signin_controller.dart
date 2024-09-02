@@ -186,13 +186,15 @@ class SigninController extends GetxController {
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isLoggedIn) {
-      String role = prefs.getString('role') ?? 'participant';
-      if (role == 'participant') {
+      String role = prefs.getString('role') ?? '';
+      if (role == 'Participant') {
         Navigator.of(context).pushReplacementNamed('/participant');
-      } else if (role == 'committee') {
+      } else if (role == 'Committee') {
         Navigator.of(context).pushReplacementNamed('/committee');
-      } else if (role == 'admin') {
-        Navigator.of(context).pushReplacementNamed('/admin_view');
+      } else if (role == 'Event Organizer') {
+        Navigator.of(context).pushReplacementNamed('/eventorganizer');
+      } else if (role == 'Super Event Organizer') {
+        Navigator.of(context).pushReplacementNamed('/supereo');
       }
     }
   }
