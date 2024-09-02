@@ -1,4 +1,3 @@
-//todo : overflow karena status berubah menjadi not received
 import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/search_participant_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +11,8 @@ class ParticipantDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController controller = Get.put(SearchParticipantController());
+    final SearchParticipantController controller =
+        Get.put(SearchParticipantController());
     controller.setSelectedParticipant(participant);
 
     return Scaffold(
@@ -206,7 +206,7 @@ class ParticipantDetailPage extends StatelessWidget {
             },
             child: Container(
               padding: EdgeInsets.all(8),
-              width: 300,
+              width: 330,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -231,8 +231,8 @@ class ParticipantDetailPage extends StatelessWidget {
                   SizedBox(height: 8),
                   Obx(() {
                     return AnimatedContainer(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      width: 300,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      width: 320,
                       duration: Duration(milliseconds: 300),
                       height: controller.isContainerExpanded(containerName)
                           ? (children.length * 60 + 90)
@@ -326,7 +326,7 @@ class ParticipantDetailPage extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 134,
+                      width: 157,
                       child: DropdownButtonFormField2<String>(
                         value: status,
                         items: statusOptions.map((String statusOption) {
@@ -338,10 +338,10 @@ class ParticipantDetailPage extends StatelessWidget {
                                 Text(statusOption),
                                 SizedBox(
                                     width: statusOption == 'Not Received'
-                                        ? 36
+                                        ? 4
                                         : statusOption == 'Pending'
-                                            ? 18
-                                            : 11),
+                                            ? 40
+                                            : 33),
                                 FutureBuilder<String>(
                                   future: controller
                                       .getStatusImageUrl(statusOption),

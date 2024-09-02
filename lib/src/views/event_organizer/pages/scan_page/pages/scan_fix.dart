@@ -3,8 +3,6 @@ import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/scan_cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-//todo : overflow karena status berubah menjadi not received
-
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 
@@ -15,7 +13,7 @@ class ScanProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scanController.participantData.isEmpty) {
         String? userId = Get.arguments?['userId'];
         if (userId != null) {
@@ -35,8 +33,8 @@ class ScanProfileView extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => EventOrganizerView())),
+          onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => EventOrganizerView())),
         ),
       ),
       backgroundColor: Colors.white,
@@ -142,7 +140,7 @@ class ScanProfileView extends StatelessWidget {
             onTap: () => controller.toggleContainerExpansion(containerName),
             child: Container(
               padding: EdgeInsets.all(8),
-              width: 300,
+              width: 330,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -162,9 +160,8 @@ class ScanProfileView extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Obx(() => AnimatedContainer(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        width: 300,
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        width: 330,
                         duration: Duration(milliseconds: 300),
                         height: controller.isContainerExpanded(containerName)
                             ? (children.length * 60 + 90)
@@ -249,7 +246,7 @@ class ScanProfileView extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 134,
+                      width: 157,
                       child: DropdownButtonFormField2<String>(
                         value: status,
                         items: statusOptions.map((String statusOption) {
@@ -261,10 +258,10 @@ class ScanProfileView extends StatelessWidget {
                                 Text(statusOption),
                                 SizedBox(
                                     width: statusOption == 'Not Received'
-                                        ? 36
+                                        ? 4
                                         : statusOption == 'Pending'
-                                            ? 18
-                                            : 11),
+                                            ? 40
+                                            : 33),
                                 FutureBuilder<String>(
                                   future: controller
                                       .getStatusImageUrl(statusOption),
