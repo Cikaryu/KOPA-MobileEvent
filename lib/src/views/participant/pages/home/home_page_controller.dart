@@ -2,6 +2,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
+// TODO : Error Pada saat Login
 class HomePageParticipantController extends GetxController {
   var userName = ''.obs;
   var duration = Duration().obs;

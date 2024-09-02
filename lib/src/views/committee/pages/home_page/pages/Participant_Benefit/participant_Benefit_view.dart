@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -17,6 +16,12 @@ class ParticipantBenefitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text("Participant Benefit",
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
         scrolledUnderElevation: 0,
         backgroundColor: HexColor('01613B'),
         leading: IconButton(
@@ -32,18 +37,7 @@ class ParticipantBenefitView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  SvgPicture.asset(
-                    'assets/svg/User_add_alt_fill.svg',
-                    width: 54,
-                    height: 54,
-                    color: HexColor("#01613B"),
-                  ),
-                  const SizedBox(height: 8),
-                  Text("Participant Benefit",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: HexColor("#01613B"))),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

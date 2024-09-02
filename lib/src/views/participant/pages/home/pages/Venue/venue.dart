@@ -1,8 +1,9 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/pages/venue_days_one.dart';
-import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/pages/venue_days_three.dart';
-import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/pages/venue_days_two.dart';
-import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/venue_controler.dart';
+
+import 'pages/venue_days_one.dart';
+import 'pages/venue_days_three.dart';
+import 'pages/venue_days_two.dart';
+import 'venue_controler.dart';
 
 class VenueViewPage extends StatelessWidget {
   VenueViewPage({super.key});
@@ -12,6 +13,12 @@ class VenueViewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text("Venue",
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
         scrolledUnderElevation: 0,
         backgroundColor: HexColor('01613B'),
         leading: IconButton(
@@ -27,14 +34,7 @@ class VenueViewPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Icon(Icons.maps_home_work,
-                      color: HexColor("#01613B"), size: 48),
-                  const SizedBox(height: 8),
-                  Text("Venue",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: HexColor("#01613B"))),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

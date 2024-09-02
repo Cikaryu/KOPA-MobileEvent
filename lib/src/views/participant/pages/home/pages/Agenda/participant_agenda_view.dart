@@ -1,11 +1,9 @@
-import 'package:app_kopabali/src/views/participant/pages/home/pages/Agenda/participant_agenda_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'agenda_days/day_one_agenda.dart';
 import 'agenda_days/day_three_agenda.dart';
 import 'agenda_days/day_two_agenda.dart';
+import 'participant_agenda_controller.dart';
 
 class ParticipantAgendaView extends StatelessWidget {
   ParticipantAgendaView({Key? key}) : super(key: key);
@@ -16,6 +14,12 @@ class ParticipantAgendaView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text("Agenda Kegiatan",
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white)),
         scrolledUnderElevation: 0,
         backgroundColor: HexColor('01613B'),
         leading: IconButton(
@@ -31,18 +35,7 @@ class ParticipantAgendaView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  SvgPicture.asset(
-                    'assets/svg/Date_range.svg',
-                    width: 54,
-                    height: 54,
-                    color: HexColor("#01613B"),
-                  ),
-                  const SizedBox(height: 8),
-                  Text("Agenda",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: HexColor("#01613B"))),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
