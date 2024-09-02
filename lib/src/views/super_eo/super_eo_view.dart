@@ -44,12 +44,12 @@ class SuperEOView extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 backgroundColor: HexColor('01613B'),
-                icon: Icon(Icons.group),
-                label: 'Committee',
+                icon: Icon(Icons.receipt_long_rounded),
+                label: 'Report List',
               ),
               BottomNavigationBarItem(
                 backgroundColor: HexColor('01613B'),
-                icon: Icon(Icons.build),
+                icon: Icon(Icons.person),
                 label: 'Profile',
               ),
             ],

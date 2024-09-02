@@ -17,6 +17,10 @@ class ProfileCommitteeController extends GetxController {
   var imageUrl = ''.obs;
   var hasPreviouslyBeenCommittee = false.obs;
   var imageBytes = Rxn<Uint8List>();
+  final HomePageCommitteeController homePageController =
+      Get.put<HomePageCommitteeController>(HomePageCommitteeController());
+  final ReportCommitteeController reportCommitteeController =
+      Get.put<ReportCommitteeController>(ReportCommitteeController());
 
   @override
   void onInit() {
@@ -122,11 +126,6 @@ class ProfileCommitteeController extends GetxController {
 
   Future<void> logout() async {
     try {
-      final HomePageCommitteeController homePageController =
-          Get.find<HomePageCommitteeController>();
-      final ReportCommitteeController reportCommitteeController =
-          Get.find<ReportCommitteeController>();
-
       debugPrint("Logging out...");
       // Hentikan listener Firestore
       homePageController.userSubscription?.cancel();
@@ -134,7 +133,7 @@ class ProfileCommitteeController extends GetxController {
       // Hentikan listener Firestore
       reportCommitteeController.reportSubscription?.cancel();
       reportCommitteeController.reportSubscription = null;
-      
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
       await FirebaseAuth.instance.signOut();

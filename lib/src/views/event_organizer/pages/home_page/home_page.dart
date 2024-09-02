@@ -219,7 +219,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                     ),
                                     SizedBox(height: 12),
                                     Text(
-                                      '\nAgenda\t\t\t\t\t',
+                                      'Agenda\nKegiatan\t\t\t\t',
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,

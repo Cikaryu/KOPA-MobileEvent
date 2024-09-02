@@ -57,7 +57,6 @@ class HomePageParticipantController extends GetxController {
     DateTime serverTime = await getServerTime();
     DateTime eventDate = DateTime(2024, 9, 20, 0, 0,
         0); // Set tanggal event (20 September 2024) di zona waktu Bali (GMT+8)
-
     // Hitung perbedaan waktu antara server dan waktu event
     duration.value = eventDate.difference(serverTime);
 
