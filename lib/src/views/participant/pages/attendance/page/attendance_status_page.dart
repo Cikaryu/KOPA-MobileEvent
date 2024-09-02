@@ -188,13 +188,22 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Attach your photo',
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 14,
+                  if (selectedStatus == 'Sick' || selectedStatus == 'Permit')
+                    Text(
+                      'Attach your photo (optional)',
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 14,
+                      ),
+                    )
+                  else
+                    Text(
+                      'Attach your photo',
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
                   SizedBox(height: 16),
                   Obx(() {
                     var imageFile = controller.imageFile.value;
