@@ -45,7 +45,7 @@ class SuperEOView extends StatelessWidget {
               BottomNavigationBarItem(
                 backgroundColor: HexColor('01613B'),
                 icon: Icon(Icons.receipt_long_rounded),
-                label: 'Report List',
+                label: 'Reports List',
               ),
               BottomNavigationBarItem(
                 backgroundColor: HexColor('01613B'),
