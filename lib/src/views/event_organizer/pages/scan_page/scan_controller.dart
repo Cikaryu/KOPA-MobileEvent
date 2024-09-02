@@ -9,6 +9,7 @@ class ScanController extends GetxController {
   RxMap<String, dynamic> participantData = <String, dynamic>{}.obs;
   RxMap<String, String> status = <String, String>{}.obs;
   final RxMap<String, String> statusImageUrls = <String, String>{}.obs;
+  final RxMap<String, String> statusColors = <String, String>{}.obs;
   var imageBytes = Rxn<Uint8List>();
   var isLoading = true.obs;
   var tShirtSize = ''.obs;
@@ -154,6 +155,20 @@ class ScanController extends GetxController {
     } finally {
       isLoading(false);
       isProcessing(false);
+    }
+  }
+
+  Color getStatusColor(String status) {
+    switch (status) {
+      case 'Received':
+        return Colors.green;
+      case 'Pending':
+        return HexColor('F0B811');
+      case 'Not Received':
+        return Colors.red;
+      default:
+        print('Unhandled status: $status'); // Debugging statement
+        return Colors.grey; // Default color for unknown status
     }
   }
 

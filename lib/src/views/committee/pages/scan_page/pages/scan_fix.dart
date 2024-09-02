@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+// todo revisi bagian participant detail
 class ScanProfileView extends StatelessWidget {
   ScanProfileView({super.key});
 

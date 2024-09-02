@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
+// TODO revisi  samakan dengan scan fix
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 
@@ -206,7 +207,7 @@ class ParticipantDetailPage extends StatelessWidget {
             },
             child: Container(
               padding: EdgeInsets.all(8),
-              width: 330,
+              width: 300,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -232,7 +233,7 @@ class ParticipantDetailPage extends StatelessWidget {
                   Obx(() {
                     return AnimatedContainer(
                       padding: EdgeInsets.symmetric(vertical: 8),
-                      width: 320,
+                      width: 300,
                       duration: Duration(milliseconds: 300),
                       height: controller.isContainerExpanded(containerName)
                           ? (children.length * 60 + 90)
@@ -326,7 +327,7 @@ class ParticipantDetailPage extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 157,
+                      width: 142,
                       child: DropdownButtonFormField2<String>(
                         value: status,
                         items: statusOptions.map((String statusOption) {
@@ -335,10 +336,12 @@ class ParticipantDetailPage extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text(statusOption),
+                                Text(statusOption,
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.black)),
                                 SizedBox(
                                     width: statusOption == 'Not Received'
-                                        ? 4
+                                        ? 12
                                         : statusOption == 'Pending'
                                             ? 40
                                             : 33),

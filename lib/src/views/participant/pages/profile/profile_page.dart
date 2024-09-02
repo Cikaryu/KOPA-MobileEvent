@@ -2,7 +2,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/change_password_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
-
+// todo ubah participant kit ui
 class ProfileParticipantPage extends StatelessWidget {
   const ProfileParticipantPage({super.key});
 
