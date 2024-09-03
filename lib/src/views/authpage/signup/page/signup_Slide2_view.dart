@@ -3,7 +3,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:flutter/services.dart';
 
-// TODO : Back button
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -31,7 +30,12 @@ class SignupSlide2View extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
-          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              signupController.backPage();
+            },
+          ),
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -51,6 +55,7 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _nameController,
                   decoration: InputDecoration(
                     hintText: 'Your name',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -70,6 +75,7 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _areaController,
                   decoration: InputDecoration(
                     hintText: 'Your Area',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -89,6 +95,7 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _divisionController,
                   decoration: InputDecoration(
                     hintText: 'Your Division',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -109,6 +116,7 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _departmentController,
                   decoration: InputDecoration(
                     hintText: 'Your Department',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -128,6 +136,7 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _addressController,
                   decoration: InputDecoration(
                     hintText: 'Your Address',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -149,7 +158,8 @@ class SignupSlide2View extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   maxLength: 13,
                   decoration: InputDecoration(
-                    hintText: 'Your Whatsapp number',
+                    hintText: 'Example : 08123xxxxxxx',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -177,6 +187,7 @@ class SignupSlide2View extends StatelessWidget {
                   maxLength: 16,
                   decoration: InputDecoration(
                     hintText: 'Your NIK',
+                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),

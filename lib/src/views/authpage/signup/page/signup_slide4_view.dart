@@ -3,7 +3,6 @@ import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 
-// TODO : Back button
 
 class SignupSlide4View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -30,8 +29,12 @@ class SignupSlide4View extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           scrolledUnderElevation: 0,
-          automaticallyImplyLeading: false,
-        ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              signupController.backPage();
+            },
+          ),        ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
           child: Form(
@@ -49,7 +52,11 @@ class SignupSlide4View extends StatelessWidget {
                 SizedBox(height: 5),
                 DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
-                    hintText: 'Your E - Wallet Type',
+
+                    hintText: 'Choose E - Wallet Type',
+
+                    hintStyle: TextStyle(
+                        fontSize: 16, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -88,6 +95,8 @@ class SignupSlide4View extends StatelessWidget {
                   maxLength: 13,
                   decoration: InputDecoration(
                     hintText: 'Your E-Wallet Number',
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),

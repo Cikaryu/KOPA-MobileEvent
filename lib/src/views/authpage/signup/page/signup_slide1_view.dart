@@ -50,7 +50,8 @@ class SignupSlide1View extends StatelessWidget {
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
-                          hintText: 'Your email',
+                          hintText: 'Example@mail.com',
+                          hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Colors.grey),
@@ -85,6 +86,7 @@ class SignupSlide1View extends StatelessWidget {
                                 : true,
                             decoration: InputDecoration(
                               hintText: 'Password',
+                              hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
                               suffixIcon: IconButton(
                                 icon: Icon(signupController.showPassword.value
                                     ? Icons.visibility

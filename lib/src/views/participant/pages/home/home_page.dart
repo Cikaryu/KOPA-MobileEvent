@@ -13,6 +13,7 @@ class HomePageParticipant extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomePageParticipantController homePageController =
         Get.put(HomePageParticipantController());
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.white,
@@ -22,6 +23,7 @@ class HomePageParticipant extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Obx(
           () {
+
             int days = homePageController.duration.value.inDays;
             int hours = homePageController.duration.value.inHours.remainder(24);
             int minutes =
@@ -32,10 +34,14 @@ class HomePageParticipant extends StatelessWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
+                    height: MediaQuery.of(context).size.height * 0.1810, // Set height according to your need
                     color: HexColor('#01613B'), // Background color of AppBar
-                    padding: EdgeInsets.only(top: 70, bottom: 20),
+                    padding: EdgeInsets.fromLTRB(16.0, MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
+                    width: Get.width,
+                    alignment: Alignment.center,
                     child: Column(
                       children: [
+                        // SizedBox(height: 44),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -58,7 +64,7 @@ class HomePageParticipant extends StatelessWidget {
                             )
                           ],
                         ),
-                        SizedBox(height: 8),
+                        // SizedBox(height: 8),
                         Text(
                           'Welcome To Your Homepage',
                           style: TextStyle(
@@ -67,6 +73,7 @@ class HomePageParticipant extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
+                        SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -76,7 +83,7 @@ class HomePageParticipant extends StatelessWidget {
                     children: [
                       Container(
                         width: Get.width,
-                        height: 160,
+                        height: MediaQuery.of(context).size.height * 0.2,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/evenyt.png'),
@@ -89,7 +96,7 @@ class HomePageParticipant extends StatelessWidget {
                       ),
                       SizedBox(height: 22),
                       Text(
-                        'Employee Gathering\nElnusa Petrofin 2024',
+                        'Your - Event - Title',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 22,
@@ -105,132 +112,131 @@ class HomePageParticipant extends StatelessWidget {
                             color: Colors.grey[800],
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 47),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => ParticipantKit()),
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: HexColor("F2F2F2"),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/GIft.svg',
-                                      width: 30,
-                                      height: 30,
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width: 10),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => ParticipantKit()),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: HexColor("F2F2F2"),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/GIft.svg',
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    'Participant\nKit',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    SizedBox(height: 12),
-                                    Text(
-                                      'Participant\nKit',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ParticipantBenefitView()),
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: HexColor("F2F2F2"),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/User_add_alt_fill.svg',
-                                      width: 30,
-                                      height: 30,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ParticipantBenefitView()),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: HexColor("F2F2F2"),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/User_add_alt_fill.svg',
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    'Participant\nBenefit',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    SizedBox(height: 12),
-                                    Text(
-                                      'Participant\nBenefit',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ParticipantAgendaView()),
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: HexColor("F2F2F2"),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/Date_range.svg',
-                                      width: 30,
-                                      height: 30,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ParticipantAgendaView()),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: HexColor("F2F2F2"),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/svg/Date_range.svg',
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    'Agenda\nKegiatan\t\t\t\t',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.black,
                                     ),
-                                    SizedBox(height: 12),
-                                    Text(
-                                      'Agenda\nKegiatan\t\t\t\t',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 10),
+                        ],
                       ),
                       SizedBox(height: 34),
                       Container(
                         width: Get.width,
-                        height: 180,
+                        height: MediaQuery.of(context).size.height * 0.2,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/bali.png'),

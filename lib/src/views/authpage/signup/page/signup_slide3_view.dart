@@ -1,9 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-
-// TODO : Back button
 
 
 class SignupSlide3View extends StatelessWidget {
@@ -35,9 +32,14 @@ class SignupSlide3View extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              signupController.backPage();
+            },
+          ),
           backgroundColor: Colors.white,
           elevation: 0,
-          automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -56,8 +58,9 @@ class SignupSlide3View extends StatelessWidget {
                 SizedBox(height: 5),
                 DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
-                    hintText: 'Your T-Shirt Size',
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Choose T-Shirt Size',
+                    hintStyle: TextStyle(
+                        fontSize: 16, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -91,8 +94,9 @@ class SignupSlide3View extends StatelessWidget {
                 SizedBox(height: 5),
                 DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
-                    hintText: 'Your Polo Shirt size',
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintText: 'Choose Polo Shirt size',
+                    hintStyle: TextStyle(
+                        fontSize: 16, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -130,7 +134,7 @@ class SignupSlide3View extends StatelessWidget {
                             _tShirtSizeController.text;
                         signupController.poloShirtSizeController.text =
                             _poloShirtSizeController.text;
-                            signupController.nextPage();
+                        signupController.nextPage();
                       }
                     },
                     style: ElevatedButton.styleFrom(
