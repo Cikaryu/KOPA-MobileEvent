@@ -9,11 +9,11 @@ class ReportSuperEOController extends GetxController {
   var reportStatus = <String, String>{}.obs;
   var statusImageUrls = <String, String>{}.obs;
   var isLoading = false.obs;
-  RxBool isAscending = true.obs;
   RxString selectedFilter = ''.obs;
   late Rx<User?> _user;
   RxList<QueryDocumentSnapshot> allReports = <QueryDocumentSnapshot>[].obs;
   RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
+  RxString selectedSortOption = 'Newest'.obs;
 
   @override
   void onInit() {
@@ -64,36 +64,39 @@ class ReportSuperEOController extends GetxController {
     }
   }
 
-  void toggleSortOrder() {
-    isAscending.value = !isAscending.value;
-    sortReports();
-  }
 
-  void sortReports() {
-    filteredReports.sort((a, b) {
-      final dataA = a.data() as Map<String, dynamic>;
-      final dataB = b.data() as Map<String, dynamic>;
-      final comparison = (dataA['title'] ?? '').compareTo(dataB['title'] ?? '');
-      return isAscending.value ? comparison : -comparison;
-    });
-  }
 
-  void applyFilter(String filter) {
-    selectedFilter.value = filter;
-    filterReports();
-  }
+  void sortReportsByDate() {
+  filteredReports.sort((a, b) {
+    final dataA = a.data() as Map<String, dynamic>;
+    final dataB = b.data() as Map<String, dynamic>;
+    final Timestamp timestampA = dataA['createdAt'];
+    final Timestamp timestampB = dataB['createdAt'];
 
-  void filterReports() {
-    if (selectedFilter.isEmpty) {
-      filteredReports.value = List.from(allReports);
+    if (selectedSortOption.value == 'Oldest') {
+      return timestampA.compareTo(timestampB);
     } else {
-      filteredReports.value = allReports.where((report) {
-        final data = report.data() as Map<String, dynamic>;
-        return data['status'] == selectedFilter.value;
-      }).toList();
+      return timestampB.compareTo(timestampA);
     }
-    sortReports();
+  });
+}
+
+void applyFilter(String filter) {
+  selectedFilter.value = filter;
+  filterReports();
+}
+
+void filterReports() {
+  if (selectedFilter.isEmpty) {
+    filteredReports.value = List.from(allReports);
+  } else {
+    filteredReports.value = allReports.where((report) {
+      final data = report.data() as Map<String, dynamic>;
+      return data['status'] == selectedFilter.value;
+    }).toList();
   }
+  sortReportsByDate();
+}
 
   void fetchReports() {
     _firestore.collection('report').snapshots().listen((snapshot) {
