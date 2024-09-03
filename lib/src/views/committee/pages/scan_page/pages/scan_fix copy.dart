@@ -1,11 +1,11 @@
+import 'package:app_kopabali/src/views/event_organizer/event_organizer_view.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/scan_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:app_kopabali/src/views/super_eo/pages/scan_page/scan_controller.dart';
-import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-// TODO revisi participant detail
 class ScanProfileView extends StatelessWidget {
   ScanProfileView({super.key});
 
@@ -33,8 +33,8 @@ class ScanProfileView extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => SuperEOView())),
+          onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => EventOrganizerView())),
         ),
       ),
       backgroundColor: Colors.white,
@@ -67,8 +67,6 @@ class ScanProfileView extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 8),
-                buildRoleDropdown(scanController),
                 SizedBox(height: 16),
                 buildDropdownContainer(
                     scanController, 'Merchandise', 'merchandise', [
@@ -118,83 +116,6 @@ class ScanProfileView extends StatelessWidget {
           ),
         );
       }),
-    );
-  }
-
-  Widget buildRoleDropdown(ScanController controller) {
-    List<String> roles = [
-      'Participant',
-      'Committee',
-      'Event Organizer',
-      'Super Event Organizer'
-    ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 61),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text('Promote', style: TextStyle(fontSize: 16)),
-          SizedBox(width: 8),
-          Expanded(
-            child: DropdownButtonFormField2<String>(
-              value: controller.participantData['role'],
-              items: roles.map((String role) {
-                return DropdownMenuItem<String>(
-                  value: role,
-                  child:
-                      Text(role, maxLines: 1, overflow: TextOverflow.ellipsis),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  controller.updateParticipantRole(newValue);
-                }
-              },
-              dropdownStyleData: DropdownStyleData(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[300],
-                ),
-                elevation: 5,
-                offset: const Offset(0, -10),
-                maxHeight: 200,
-              ),
-              iconStyleData: IconStyleData(
-                icon: Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-                iconEnabledColor: Colors.grey[700],
-                iconDisabledColor: Colors.grey[400],
-              ),
-              buttonStyleData: ButtonStyleData(
-                height: 40,
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 10, right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey),
-                  color: Colors.white,
-                ),
-              ),
-              menuItemStyleData: MenuItemStyleData(
-                height: 40,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-              ),
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

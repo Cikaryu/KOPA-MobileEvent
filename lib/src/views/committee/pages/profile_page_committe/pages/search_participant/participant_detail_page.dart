@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_controller.dart';
 
+// todo participant detail
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 
