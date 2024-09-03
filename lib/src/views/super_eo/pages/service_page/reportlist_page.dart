@@ -35,7 +35,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                       fontSize: 16.0,
                     )),
                 SizedBox(
-                  width: 180,
+                  width: 150,
                   child: Obx(
                     () => DropdownButtonFormField2<String>(
                       isDense: true,
@@ -72,7 +72,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.grey[300],
                         ),
-                        width: 180,
+                        width: 140,
                         offset: Offset(5, 50),
                         elevation: 5,
                         padding: EdgeInsets.all(10),
@@ -199,7 +199,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Date/Time\t: ',
+                                                  'Date/Time\t:\t',
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                   ),
@@ -216,7 +216,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'From\t\t\t\t\t\t\t\t\t\t: ',
+                                                  'From\t\t\t\t\t\t\t\t\t\t:\t',
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                   ),
@@ -233,7 +233,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Category\t\t\t: ',
+                                                  'Category\t\t\t:\t',
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                   ),
@@ -249,7 +249,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Status\t\t\t\t\t\t\t\t: ',
+                                                  'Status\t\t\t\t\t\t\t\t:\t',
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                   ),
