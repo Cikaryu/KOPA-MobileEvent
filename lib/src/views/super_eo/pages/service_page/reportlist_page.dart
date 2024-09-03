@@ -85,26 +85,29 @@ class ReportListSuperEOPage extends StatelessWidget {
                 ),
                 Spacer(),
                 SizedBox(
-                  width: 120,
+                  width: 80,
                   child: Obx(
-                    () => DropdownButton<String>(
-                      value: reportController.selectedSortOption.value,
-                      items: [
-                        DropdownMenuItem(
-                          value: 'Newest',
-                          child: Text('Newest'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Oldest',
-                          child: Text('Oldest'),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          reportController.selectedSortOption.value = value;
-                          reportController.sortReportsByDate();
-                        }
-                      },
+                    () => DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isDense: true,
+                        value: reportController.selectedSortOption.value,
+                        items: [
+                          DropdownMenuItem(
+                            value: 'Newest',
+                            child: Text('Newest'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Oldest',
+                            child: Text('Oldest'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            reportController.selectedSortOption.value = value;
+                            reportController.sortReportsByDate();
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -125,12 +128,10 @@ class ReportListSuperEOPage extends StatelessWidget {
                   final reportData = report.data() as Map<String, dynamic>;
                   reportController.fetchStatusImage(
                       report.id, reportData['status']);
-
-                  // Mengonversi timestamp `createdAt` ke format yang diinginkan
                   Timestamp createdAtTimestamp = reportData['createdAt'];
                   DateTime createdAt = createdAtTimestamp.toDate();
                   String formattedDate =
-                      DateFormat('EEE, d-MM-yyyy / HH:mm:ss').format(createdAt);
+                      DateFormat('EEE, dd-MM-yyyy / HH:mm').format(createdAt);
 
                   return GestureDetector(
                     onTap: () {
