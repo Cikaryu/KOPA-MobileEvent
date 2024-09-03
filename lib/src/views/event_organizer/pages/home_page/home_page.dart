@@ -311,7 +311,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             child: Column(
                               children: [
                                 SvgPicture.asset(
-                                  'assets/icons/Calendar_fill.svg',
+                                  'assets/icons/ic_calendar_fill.svg',
                                 ),
                                 SizedBox(height: 6),
                                 Text(
@@ -340,7 +340,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                   child: Column(
                                     children: [
                                       SvgPicture.asset(
-                                        'assets/icons/time.svg',
+                                        'assets/icons/ic_time.svg',
                                       ),
                                       SizedBox(height: 4),
                                       Text(

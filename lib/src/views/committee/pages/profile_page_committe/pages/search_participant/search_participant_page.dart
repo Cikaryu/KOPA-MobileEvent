@@ -2,13 +2,16 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/participant_detail_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_controller.dart';
 
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 class SearchParticipantPage extends StatelessWidget {
   const SearchParticipantPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController searchParticipantController =
-        Get.put(SearchParticipantController());
+    final SearchParticipantController searchParticipantController = Get.put(SearchParticipantController());
 
     return Scaffold(
       appBar: AppBar(
@@ -334,12 +337,12 @@ class SearchParticipantPage extends StatelessWidget {
                                         child: Row(
                                           children: [
                                             Icon(
-                                              Icons.remove_red_eye,
+                                              Icons.edit,
                                               color: Colors.white,
                                             ),
                                             SizedBox(width: 10),
                                             Text(
-                                              'View',
+                                              'Edit',
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),

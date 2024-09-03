@@ -134,7 +134,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SvgPicture.asset(
-                                      'assets/svg/GIft.svg',
+                                      'assets/icons/ic_gift.svg',
                                       width: 30,
                                       height: 30,
                                     ),
@@ -172,7 +172,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SvgPicture.asset(
-                                      'assets/svg/User_add_alt_fill.svg',
+                                      'assets/icons/ic_user_add.svg',
                                       width: 30,
                                       height: 30,
                                     ),
@@ -210,7 +210,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SvgPicture.asset(
-                                      'assets/svg/Date_range.svg',
+                                      'assets/icons/ic_calendar_range.svg',
                                       width: 30,
                                       height: 30,
                                     ),
@@ -308,7 +308,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                             child: Column(
                               children: [
                                 SvgPicture.asset(
-                                  'assets/svg/Calendar_fill.svg',
+                                  'assets/icons/ic_calendar_fill.svg',
                                 ),
                                 SizedBox(height: 6),
                                 Text(
@@ -337,7 +337,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                                   child: Column(
                                     children: [
                                       SvgPicture.asset(
-                                        'assets/svg/time.svg',
+                                        'assets/icons/ic_time.svg',
                                       ),
                                       SizedBox(height: 4),
                                       Text(

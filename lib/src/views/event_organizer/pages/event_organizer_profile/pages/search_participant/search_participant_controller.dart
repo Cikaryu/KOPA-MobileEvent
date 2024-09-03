@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class SearchParticipantController extends GetxController {
   RxList<Participant> allParticipants = <Participant>[].obs;
@@ -19,7 +20,6 @@ class SearchParticipantController extends GetxController {
   var isLoading = false.obs;
   Rx<Stream<DocumentSnapshot>>? participantKitStream;
   RxBool isKitStatusFiltered = false.obs;
-  Rx<Participant?> selectedParticipant = Rx<Participant?>(null);
 
   @override
   void onInit() {
@@ -45,7 +45,7 @@ class SearchParticipantController extends GetxController {
 
   void toggleContainerExpansion(String containerName) {
     if (expandedContainer.value == containerName) {
-      expandedContainer.value = ''; // Not Received if it's already open
+      expandedContainer.value = ''; // close if it's already open
     } else {
       expandedContainer.value =
           containerName; // Open the new one, closing others
@@ -101,6 +101,33 @@ class SearchParticipantController extends GetxController {
       return participantKitStatus[category][item]['status'] ?? 'Unknown';
     }
     return 'Unknown';
+  }
+
+  Color getStatusColor(String status) {
+    switch (status) {
+      case 'Received':
+        return Colors.green;
+      case 'Pending':
+        return HexColor('F0B811');
+      case 'Not Received':
+        return Colors.red;
+      default:
+        print('Unhandled status: $status'); // Debugging statement
+        return Colors.grey; // Default color for unknown status
+    }
+  }
+
+  String getStatusImagePath(String status) {
+    switch (status) {
+      case 'Pending':
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Received':
+        return 'assets/icons/status/ic_received.svg';
+      case 'Not Received':
+        return 'assets/icons/status/ic_not_received.svg';
+      default:
+        return 'assets/icons/status/ic_default.svg';
+    }
   }
 
   Future<String> getStatusImageUrl(String status) async {
@@ -237,117 +264,38 @@ class SearchParticipantController extends GetxController {
     }
     return 'Pending'; // Default value if 'Not Received' is not found
   }
-  Future<void> updateItemStatus(String participantId, String field, String newStatus) async {
-    try {
-      List<String> fieldParts = field.split('.');
-      String category = fieldParts[0];
-      String item = fieldParts[1];
-
-      await FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(participantId)
-          .update({
-        '$category.$item.status': newStatus
-      });
-
-      // Update local state
-      if (participantKitStatus.containsKey(category) &&
-          participantKitStatus[category].containsKey(item)) {
-        participantKitStatus[category][item]['status'] = newStatus;
-      }
-
-      // Refresh the participant kit status
-      await fetchParticipantKitStatus(participantId);
-    } catch (e) {
-      print('Error updating item status: $e');
-    }
-  }
-  Future<void> checkAllItems(String participantId, String category) async {
-    try {
-      Map<String, dynamic> updates = {};
-      participantKitStatus[category].forEach((item, value) {
-        updates['$category.$item.status'] = 'Received';
-      });
-
-      await FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(participantId)
-          .update(updates);
-
-      // Update local state
-      participantKitStatus[category].forEach((item, value) {
-        value['status'] = 'Received';
-      });
-
-      // Refresh the participant kit status
-      await fetchParticipantKitStatus(participantId);
-    } catch (e) {
-      print('Error checking all items: $e');
-    }
-  }
-    Future<void> submitParticipantKit(String participantId) async {
-    try {
-      // Here you can implement the logic to submit the entire participant kit
-      // For example, you might want to set a flag in Firestore to indicate the kit is submitted
-      await FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(participantId)
-          .update({
-        'isSubmitted': true,
-        'submittedAt': FieldValue.serverTimestamp(),
-      });
-
-      print('Participant kit submitted successfully');
-    } catch (e) {
-      print('Error submitting participant kit: $e');
-    }
-  }
-    void setSelectedParticipant(Participant participant) {
-    selectedParticipant.value = participant;
-    fetchParticipantKitStatus(participant.uid);
-  }
-    Future<void> updateParticipantRole(String participantId, String newRole) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(participantId)
-          .update({'role': newRole});
-
-      // Update local state
-      int index = allParticipants.indexWhere((p) => p.uid == participantId);
-      if (index != -1) {
-        Participant updatedParticipant = Participant(
-          name: allParticipants[index].name,
-          role: newRole,
-          selfieUrl: allParticipants[index].selfieUrl,
-          uid: participantId,
-        );
-        allParticipants[index] = updatedParticipant;
-        if (selectedParticipant.value?.uid == participantId) {
-          selectedParticipant.value = updatedParticipant;
-        }
-      }
-    } catch (e) {
-      print('Error updating participant role: $e');
-    }
-  }
 }
 
 class Participant {
+  final String? department;
   final String? name;
+  final String? email;
+  final String? division;
+  final String? area;
   final String? role;
   final String? selfieUrl;
   final String uid;
 
-  Participant({this.name, this.role, this.selfieUrl, required this.uid});
+  Participant(
+      {this.email,
+      this.division,
+      this.department,
+      this.area,
+      this.name,
+      this.role,
+      this.selfieUrl,
+      required this.uid});
 
   factory Participant.fromDocument(DocumentSnapshot doc) {
     return Participant(
+      division: doc['division'] as String?,
+      email: doc['email'] as String?,
+      area: doc['area'] as String?,
+      department: doc['department'] as String?,
       name: doc['name'] as String?,
       role: doc['role'] as String?,
       selfieUrl: doc['selfieUrl'] as String?,
       uid: doc.id,
     );
   }
-  
 }

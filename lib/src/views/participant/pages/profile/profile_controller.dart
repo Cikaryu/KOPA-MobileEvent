@@ -37,9 +37,7 @@ class ProfileController extends GetxController {
   var userAlamat = ''.obs;
   var userWhatsapp = ''.obs;
   var numberKtp = ''.obs; // Tambahkan field status
-  var isMerchExpanded = false.obs;
-  var isSouvenirExpanded = false.obs;
-  var isBenefitExpanded = false.obs;
+  var expandedContainer = RxString('');
   var isLoadingStatusImage = true.obs;
   var statusImageUrl = ''.obs; // Tambahkan field untuk URL gambar status
   var selfieImage = Rxn<File>();
@@ -59,28 +57,13 @@ class ProfileController extends GetxController {
     getUserRole();
   }
 
-  void toggleMerchExpanded() {
-    isMerchExpanded.value = !isMerchExpanded.value;
-    if (isMerchExpanded.value) {
-      isSouvenirExpanded.value = false;
-      isBenefitExpanded.value = false;
-    }
+  void toggleContainerExpansion(String containerName) {
+    expandedContainer.value =
+        expandedContainer.value == containerName ? '' : containerName;
   }
 
-  void toggleSouvenirExpanded() {
-    isSouvenirExpanded.value = !isSouvenirExpanded.value;
-    if (isSouvenirExpanded.value) {
-      isMerchExpanded.value = false;
-      isBenefitExpanded.value = false;
-    }
-  }
-
-  void toggleBenefitExpanded() {
-    isBenefitExpanded.value = !isBenefitExpanded.value;
-    if (isBenefitExpanded.value) {
-      isMerchExpanded.value = false;
-      isSouvenirExpanded.value = false;
-    }
+  bool isContainerExpanded(String containerName) {
+    return expandedContainer.value == containerName;
   }
 
   void fetchUserData() async {
@@ -235,58 +218,93 @@ class ProfileController extends GetxController {
         status.clear();
         statusImageUrls.clear();
 
-        // Add merchandise status and fetch images
+        // Add merchandise status and map to local image paths
         merchandise.forEach((key, value) {
-          status[key] = value['status'];
-          fetchStatusImage(key, value['status']);
+          String compositeKey = 'merchandise.$key';
+          status[compositeKey] = value['status'];
+          statusImageUrls[compositeKey] = getStatusImagePath(value['status']);
         });
 
-        // Add souvenirs status and fetch images
+        // Add souvenirs status and map to local image paths
         souvenirs.forEach((key, value) {
-          status[key] = value['status'];
-          fetchStatusImage(key, value['status']);
+          String compositeKey = 'souvenir.$key';
+          status[compositeKey] = value['status'];
+          statusImageUrls[compositeKey] = getStatusImagePath(value['status']);
         });
 
-        // Add benefits status and fetch images
+        // Add benefits status and map to local image paths
         benefits.forEach((key, value) {
-          status[key] = value['status'];
-          fetchStatusImage(key, value['status']);
+          String compositeKey = 'benefit.$key';
+          status[compositeKey] = value['status'];
+          statusImageUrls[compositeKey] = getStatusImagePath(value['status']);
         });
 
-        // Call update() on the controller to refresh the UI if needed
+        // Update the UI
+        update();
       } else {
         debugPrint('No participantKit data found');
       }
     });
   }
 
-  Future<void> fetchStatusImage(String key, String status) async {
-    String imageName;
-
+  Color getStatusColor(String status) {
     switch (status) {
-      case 'Pending':
-        imageName = 'pending.png';
-        break;
       case 'Received':
-        imageName = 'received.png';
-        break;
+        return Colors.green;
+      case 'Pending':
+        return HexColor('F0B811');
       case 'Not Received':
-        imageName = 'close.png';
-        break;
+        return Colors.red;
       default:
-        imageName = 'default.png';
-    }
-
-    try {
-      final downloadUrl = await FirebaseStorage.instance
-          .ref('status/$imageName')
-          .getDownloadURL();
-      statusImageUrls[key] = downloadUrl;
-    } catch (e) {
-      debugPrint('Error fetching status image: $e');
-      statusImageUrls[key] = ''; // Set to empty string if failed
+        print('Unhandled status: $status'); // Debugging statement
+        return Colors.grey; // Default color for unknown status
     }
   }
+
+  String getStatusForItem(String category, String item) {
+    return status['$category.$item'] ?? 'Pending';
+  }
+
+  String getStatusImagePath(String status) {
+    switch (status) {
+      case 'Pending':
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Received':
+        return 'assets/icons/status/ic_received.svg';
+      case 'Not Received':
+        return 'assets/icons/status/ic_not_received.svg';
+      default:
+        return 'assets/icons/status/ic_default.svg'; // Fallback image
+    }
+  }
+
+  // Future<void> fetchStatusImage(String key, String status) async {
+  //   String imageName;
+
+  //   switch (status) {
+  //     case 'Pending':
+  //       imageName = 'pending.png';
+  //       break;
+  //     case 'Received':
+  //       imageName = 'received.png';
+  //       break;
+  //     case 'Not Received':
+  //       imageName = 'close.png';
+  //       break;
+  //     default:
+  //       imageName = 'default.png';
+  //   }
+
+  //   try {
+  //     final downloadUrl = await FirebaseStorage.instance
+  //         .ref('status/$imageName')
+  //         .getDownloadURL();
+  //     statusImageUrls[key] = downloadUrl;
+  //   } catch (e) {
+  //     debugPrint('Error fetching status image: $e');
+  //     statusImageUrls[key] = ''; // Set to empty string if failed
+  //   }
+  // }
 
   Future<void> fetchQrCodeUrl() async {
     try {

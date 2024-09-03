@@ -171,6 +171,19 @@ class ScanController extends GetxController {
         return Colors.grey; // Default color for unknown status
     }
   }
+  
+  String getStatusImagePath(String status) {
+    switch (status) {
+      case 'Pending':
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Received':
+        return 'assets/icons/status/ic_received.svg';
+      case 'Not Received':
+        return 'assets/icons/status/ic_not_received.svg';
+      default:
+        return 'default.png';
+    }
+  }
 
   Future<String> getStatusImageUrl(String status) async {
     String imageName;

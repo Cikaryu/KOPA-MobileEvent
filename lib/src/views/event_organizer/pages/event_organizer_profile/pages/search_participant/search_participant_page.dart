@@ -3,15 +3,13 @@ import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_pro
 import 'package:app_kopabali/src/views/event_organizer/pages/event_organizer_profile/pages/search_participant/search_participant_controller.dart';
 
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 class SearchParticipantPage extends StatelessWidget {
   const SearchParticipantPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController searchParticipantController = Get.put(SearchParticipantController());
+    final SearchParticipantController searchParticipantController =
+        Get.put(SearchParticipantController());
 
     return Scaffold(
       appBar: AppBar(
@@ -337,12 +335,12 @@ class SearchParticipantPage extends StatelessWidget {
                                         child: Row(
                                           children: [
                                             Icon(
-                                              Icons.edit,
+                                              Icons.remove_red_eye,
                                               color: Colors.white,
                                             ),
                                             SizedBox(width: 10),
                                             Text(
-                                              'Edit',
+                                              'View',
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),

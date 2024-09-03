@@ -1,6 +1,7 @@
 import 'package:app_kopabali/src/views/event_organizer/event_organizer_view.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/scan_page/scan_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -238,7 +239,7 @@ class ScanProfileView extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Name',
+                                    'Items',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
@@ -369,15 +370,8 @@ class ScanProfileView extends StatelessWidget {
   Widget buildStatusRow(
       ScanController controller, String itemName, String field) {
     return Obx(() {
-      // Retrieve the status associated with the field
-      String status = controller.status[field] ??
-          'Unknown'; // Use 'Unknown' if status is not found
-
-      // Fetch the image URL if not already fetched
-      if (controller.statusImageUrls[field] == null ||
-          controller.statusImageUrls[field]!.isEmpty) {
-        controller.fetchStatusImage(field, status);
-      }
+      String status =
+          controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
 
       return Column(
         children: [
@@ -408,16 +402,12 @@ class ScanProfileView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 8),
-                    // Display status image if available
-                    controller.statusImageUrls[field] != null &&
-                            controller.statusImageUrls[field]!.isNotEmpty
-                        ? Image.network(
-                            controller.statusImageUrls[field]!,
-                            width: 24,
-                            height: 24,
-                            fit: BoxFit.contain,
-                          )
-                        : SizedBox(width: 24, height: 24), // Empty placeholder
+                    SvgPicture.asset(
+                      controller.getStatusImagePath(status),
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
                   ],
                 ),
               ),
