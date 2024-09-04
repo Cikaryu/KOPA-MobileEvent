@@ -11,28 +11,26 @@ class VenuePagedaytwo extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 2),
-          child: Text("Friday, 20th September", style: TextStyle(fontSize: 16)),
+          child: Text("Friday, 21th September", style: TextStyle(fontSize: 16)),
         ),
         SizedBox(height: 8),
         VenueCard(
-          youtubeUrl: 'https://www.youtube.com/watch?v=KQ-StN4-WPE',
+          youtubeUrl: 'https://www.youtube.com/watch?v=6h8t79wbX9U',
           title: 'Venue 1',
           description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
         ),
         SizedBox(height: 16),
         VenueCard(
           youtubeUrl: 'https://www.youtube.com/watch?v=ov6tinrcsdI',
           title: 'Venue 2',
           description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
         ),
       ],
     );
   }
 }
-
-
 
 class VenueCard extends StatefulWidget {
   final String youtubeUrl;
@@ -86,12 +84,14 @@ class _VenueCardState extends State<VenueCard> {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
     ]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky); // Hide system UI for full immersive experience
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode
+        .immersiveSticky); // Hide system UI for full immersive experience
   }
 
   void _exitFullScreenLandscape() {
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge); // Restore system UI
+    SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.edgeToEdge); // Restore system UI
   }
 
   @override
