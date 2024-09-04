@@ -1,16 +1,16 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/report_controller.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:intl/intl.dart';
 
 class ReportListCommitteePage extends StatelessWidget {
   const ReportListCommitteePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ReportCommitteeController reportController =
-        Get.put(ReportCommitteeController());
-
+    final ReportCommitteeController reportController = Get.put(ReportCommitteeController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -34,7 +34,7 @@ class ReportListCommitteePage extends StatelessWidget {
                       fontSize: 16.0,
                     )),
                 SizedBox(
-                  width: 180,
+                  width: 150,
                   child: Obx(
                     () => DropdownButtonFormField2<String>(
                       isDense: true,
@@ -71,7 +71,7 @@ class ReportListCommitteePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.grey[300],
                         ),
-                        width: 180,
+                        width: 140,
                         offset: Offset(5, 50),
                         elevation: 5,
                         padding: EdgeInsets.all(10),
@@ -83,29 +83,32 @@ class ReportListCommitteePage extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-                Stack(
-                  children: [
-                    Obx(
-                      () => IconButton(
-                        icon: Icon(reportController.isAscending.value
-                            ? Icons.arrow_downward
-                            : Icons.arrow_upward),
-                        onPressed: () {
-                          reportController.toggleSortOrder();
+                SizedBox(
+                  width: 80,
+                  child: Obx(
+                    () => DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isDense: true,
+                        value: reportController.selectedSortOption.value,
+                        items: [
+                          DropdownMenuItem(
+                            value: 'Newest',
+                            child: Text('Newest'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Oldest',
+                            child: Text('Oldest'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            reportController.selectedSortOption.value = value;
+                            reportController.sortReportsByDate();
+                          }
                         },
                       ),
                     ),
-                    Positioned(
-                      left: 37,
-                      top: 10,
-                      child: Obx(() => Text(
-                          reportController.isAscending.value ? "A\nZ" : "Z\nA",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 10,
-                          ))),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -124,6 +127,11 @@ class ReportListCommitteePage extends StatelessWidget {
                   final reportData = report.data() as Map<String, dynamic>;
                   reportController.fetchStatusImage(
                       report.id, reportData['status']);
+                  Timestamp createdAtTimestamp = reportData['createdAt'];
+                  DateTime createdAt = createdAtTimestamp.toDate();
+                  String formattedDate =
+                      DateFormat('EEE, dd-MM-yyyy / HH:mm').format(createdAt);
+
                   return GestureDetector(
                     onTap: () {
                       Get.to(
@@ -190,7 +198,24 @@ class ReportListCommitteePage extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'From : ',
+                                                  'Date/Time\t:\t',
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  formattedDate,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'From\t\t\t\t\t\t\t\t\t\t:\t',
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                   ),
@@ -207,7 +232,7 @@ class ReportListCommitteePage extends StatelessWidget {
                                             // Row(
                                             //   children: [
                                             //     Text(
-                                            //       'Category : ',
+                                            //       'Category\t\t\t:\t',
                                             //       style: TextStyle(
                                             //         color: Colors.grey,
                                             //       ),
@@ -223,7 +248,7 @@ class ReportListCommitteePage extends StatelessWidget {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Status: ',
+                                                  'Status\t\t\t\t\t\t\t\t:\t',
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                   ),

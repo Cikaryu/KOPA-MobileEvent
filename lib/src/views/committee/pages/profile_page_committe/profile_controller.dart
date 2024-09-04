@@ -130,9 +130,7 @@ class ProfileCommitteeController extends GetxController {
       // Hentikan listener Firestore
       homePageController.userSubscription?.cancel();
       homePageController.userSubscription = null;
-      // Hentikan listener Firestore
-      reportCommitteeController.reportSubscription?.cancel();
-      reportCommitteeController.reportSubscription = null;
+    
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
