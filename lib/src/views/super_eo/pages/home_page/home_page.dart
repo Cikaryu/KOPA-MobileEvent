@@ -94,7 +94,7 @@ class _HomePageParticipantState extends State<HomePageSuperEO> {
                       ),
                       SizedBox(height: 22),
                       Text(
-                        'Employee Gathering\nElnusa Petrofin 2024',
+                        'Your - Event - Title',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 22,
