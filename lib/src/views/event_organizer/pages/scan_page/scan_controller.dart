@@ -181,7 +181,7 @@ class ScanController extends GetxController {
       case 'Not Received':
         return 'assets/icons/status/ic_not_received.svg';
       default:
-        return 'default.png';
+        return 'assets/icons/status/ic_default.svg';
     }
   }
 

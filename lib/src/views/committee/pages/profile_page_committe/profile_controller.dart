@@ -169,33 +169,57 @@ class ProfileCommitteeController extends GetxController {
   }
 
   void switchRole() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    try {
       if (role.value == 'Committee') {
-        // Switch ke role participant
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({
+        // Switch ke role Participant
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'role': 'Participant',
-          'wasCommittee':
-              true, // Indicate that this user was previously a Committee
+          'wasCommittee': true, // Indicate that this user was previously a Committee
         });
         role.value = 'Participant';
+        
+        // Tampilkan snackbar
+        Get.snackbar(
+          "Role Changed",
+          "You have switched to the Participant role.",
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+        );
+
         Get.offAll(() => ParticipantView());
       } else if (role.value == 'Participant') {
-        // Switch ke role committee
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({
+        // Switch ke role Committee
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
           'role': 'Committee',
-          'wasCommittee':
-              true, // Indicate that this user was previously a Committee
+          'wasCommittee': true, // Indicate that this user was previously a Committee
         });
         role.value = 'Committee';
+        
+        // Tampilkan snackbar
+        Get.snackbar(
+          "Role Changed",
+          "You have switched to the Committee role.",
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+        );
+
         Get.offAll(() => CommitteeView());
       }
+    } catch (e) {
+      debugPrint('Error switching role: $e');
+      
+      // Tampilkan snackbar untuk error
+      Get.snackbar(
+        "Error",
+        "Failed to switch role. Please try again.",
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
+}
 }

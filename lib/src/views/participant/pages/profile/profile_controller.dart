@@ -690,6 +690,15 @@ class ProfileController extends GetxController {
             'wasCommittee': true,
           });
           role.value = 'Participant';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Participant role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+          );
+
           Get.offAll(() => ParticipantView());
         } else if (role.value == 'Participant') {
           // Switch back to Committee, Super Event Organizer, or Event Organizer role
@@ -702,6 +711,15 @@ class ProfileController extends GetxController {
               'wasSuperEO': true,
             });
             role.value = 'Super Event Organizer';
+
+            // Tampilkan snackbar
+            Get.snackbar(
+              "Role Changed",
+              "You have switched to the Super Event Organizer role.",
+              snackPosition: SnackPosition.TOP,
+              duration: Duration(seconds: 3),
+            );
+
             Get.offAll(() => SuperEOView());
           } else if (hasPreviouslyBeenEventOrganizer.value) {
             await FirebaseFirestore.instance
@@ -712,6 +730,15 @@ class ProfileController extends GetxController {
               'wasEventOrganizer': true,
             });
             role.value = 'Event Organizer';
+
+            // Tampilkan snackbar
+            Get.snackbar(
+              "Role Changed",
+              "You have switched to the Event Organizer role.",
+              snackPosition: SnackPosition.TOP,
+              duration: Duration(seconds: 3),
+            );
+
             Get.offAll(() => EventOrganizerView());
           } else if (hasPreviouslyBeenCommittee.value) {
             await FirebaseFirestore.instance
@@ -722,6 +749,15 @@ class ProfileController extends GetxController {
               'wasCommittee': true,
             });
             role.value = 'Committee';
+
+            // Tampilkan snackbar
+            Get.snackbar(
+              "Role Changed",
+              "You have switched to the Committee role.",
+              snackPosition: SnackPosition.TOP,
+              duration: Duration(seconds: 3),
+            );
+
             Get.offAll(() => CommitteeView());
           }
         } else if (role.value == 'Super Event Organizer') {
@@ -734,6 +770,15 @@ class ProfileController extends GetxController {
             'wasSuperEO': true,
           });
           role.value = 'Participant';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Participant role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+          );
+
           Get.offAll(() => ParticipantView());
         } else if (role.value == 'Event Organizer') {
           // Switch to Participant role
@@ -745,10 +790,28 @@ class ProfileController extends GetxController {
             'wasEventOrganizer': true,
           });
           role.value = 'Participant';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Participant role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+          );
+
           Get.offAll(() => ParticipantView());
         }
       } catch (e) {
         debugPrint('Error switching role: $e');
+        // Tampilkan snackbar untuk error
+        Get.snackbar(
+          "Error",
+          "Failed to switch role. Please try again.",
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     }
   }

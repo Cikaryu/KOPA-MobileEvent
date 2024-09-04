@@ -165,28 +165,46 @@ class ProfileSuperEOController extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       if (role.value == 'Super Event Organizer') {
-        // Switch ke role participant
+        // Switch ke role Participant
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
           'role': 'Participant',
           'wasSuperEO':
-              true, // Indicate that this user was previously a Committee
+              true, // Indicate that this user was previously a Super Event Organizer
         });
         role.value = 'Participant';
+
+        // Tampilkan pemberitahuan
+        Get.snackbar(
+          "Role Changed",
+          "You have switched to the Participant role.",
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+        );
+
         Get.offAll(() => ParticipantView());
       } else if (role.value == 'Participant') {
-        // Switch ke role committee
+        // Switch ke role Super Event Organizer
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
           'role': 'Super Event Organizer',
           'wasSuperEO':
-              true, // Indicate that this user was previously a Committee
+              true, // Indicate that this user was previously a Super Event Organizer
         });
         role.value = 'Super Event Organizer';
+
+        // Tampilkan pemberitahuan
+        Get.snackbar(
+          "Role Changed",
+          "You have switched to the Super Event Organizer role.",
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+        );
+
         Get.offAll(() => SuperEOView());
       }
     }

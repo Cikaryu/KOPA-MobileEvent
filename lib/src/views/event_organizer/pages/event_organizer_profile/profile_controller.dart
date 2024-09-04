@@ -166,30 +166,62 @@ class ProfileEventOrganizerController extends GetxController {
   void switchRole() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      if (role.value == 'Event Organizer') {
-        // Switch ke role participant
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({
-          'role': 'Participant',
-          'wasEventOrganizer':
-              true, // Indicate that this user was previously a Committee
-        });
-        role.value = 'Participant';
-        Get.offAll(() => ParticipantView());
-      } else if (role.value == 'Participant') {
-        // Switch ke role committee
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({
-          'role': 'Event Organizer',
-          'wasEventOrganizer':
-              true, // Indicate that this user was previously a Committee
-        });
-        role.value = 'Event Organizer';
-        Get.offAll(() => SuperEOView());
+      try {
+        if (role.value == 'Event Organizer') {
+          // Switch ke role Participant
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Participant',
+            'wasEventOrganizer':
+                true, // Indicate that this user was previously an Event Organizer
+          });
+          role.value = 'Participant';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Participant role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+          );
+
+          Get.offAll(() => ParticipantView());
+        } else if (role.value == 'Participant') {
+          // Switch ke role Event Organizer
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Event Organizer',
+            'wasEventOrganizer':
+                true, // Indicate that this user was previously an Event Organizer
+          });
+          role.value = 'Event Organizer';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Event Organizer role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+          );
+
+          Get.offAll(() => SuperEOView());
+        }
+      } catch (e) {
+        debugPrint('Error switching role: $e');
+
+        // Tampilkan snackbar untuk error
+        Get.snackbar(
+          "Error",
+          "Failed to switch role. Please try again.",
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     }
   }

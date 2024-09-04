@@ -103,6 +103,19 @@ class SearchParticipantController extends GetxController {
     return 'Unknown';
   }
 
+  String getStatusImagePath(String status) {
+    switch (status) {
+      case 'Pending':
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Received':
+        return 'assets/icons/status/ic_received.svg';
+      case 'Not Received':
+        return 'assets/icons/status/ic_not_received.svg';
+      default:
+        return 'assets/icons/status/ic_default.svg';
+    }
+  }
+
   Future<String> getStatusImageUrl(String status) async {
     String imageName;
     switch (status) {
@@ -237,7 +250,9 @@ class SearchParticipantController extends GetxController {
     }
     return 'Pending'; // Default value if 'Not Received' is not found
   }
-  Future<void> updateItemStatus(String participantId, String field, String newStatus) async {
+
+  Future<void> updateItemStatus(
+      String participantId, String field, String newStatus) async {
     try {
       List<String> fieldParts = field.split('.');
       String category = fieldParts[0];
@@ -246,9 +261,7 @@ class SearchParticipantController extends GetxController {
       await FirebaseFirestore.instance
           .collection('participantKit')
           .doc(participantId)
-          .update({
-        '$category.$item.status': newStatus
-      });
+          .update({'$category.$item.status': newStatus});
 
       // Update local state
       if (participantKitStatus.containsKey(category) &&
@@ -262,6 +275,7 @@ class SearchParticipantController extends GetxController {
       print('Error updating item status: $e');
     }
   }
+
   Future<void> checkAllItems(String participantId, String category) async {
     try {
       Map<String, dynamic> updates = {};
@@ -285,7 +299,8 @@ class SearchParticipantController extends GetxController {
       print('Error checking all items: $e');
     }
   }
-    Future<void> submitParticipantKit(String participantId) async {
+
+  Future<void> submitParticipantKit(String participantId) async {
     try {
       // Here you can implement the logic to submit the entire participant kit
       // For example, you might want to set a flag in Firestore to indicate the kit is submitted
@@ -302,11 +317,14 @@ class SearchParticipantController extends GetxController {
       print('Error submitting participant kit: $e');
     }
   }
-    void setSelectedParticipant(Participant participant) {
+
+  void setSelectedParticipant(Participant participant) {
     selectedParticipant.value = participant;
     fetchParticipantKitStatus(participant.uid);
   }
-    Future<void> updateParticipantRole(String participantId, String newRole) async {
+
+  Future<void> updateParticipantRole(
+      String participantId, String newRole) async {
     try {
       await FirebaseFirestore.instance
           .collection('users')
@@ -334,20 +352,35 @@ class SearchParticipantController extends GetxController {
 }
 
 class Participant {
+  final String? department;
   final String? name;
+  final String? email;
+  final String? division;
+  final String? area;
   final String? role;
   final String? selfieUrl;
   final String uid;
 
-  Participant({this.name, this.role, this.selfieUrl, required this.uid});
+  Participant(
+      {this.email,
+      this.division,
+      this.department,
+      this.area,
+      this.name,
+      this.role,
+      this.selfieUrl,
+      required this.uid});
 
   factory Participant.fromDocument(DocumentSnapshot doc) {
     return Participant(
+      division: doc['division'] as String?,
+      email: doc['email'] as String?,
+      area: doc['area'] as String?,
+      department: doc['department'] as String?,
       name: doc['name'] as String?,
       role: doc['role'] as String?,
       selfieUrl: doc['selfieUrl'] as String?,
       uid: doc.id,
     );
   }
-  
 }

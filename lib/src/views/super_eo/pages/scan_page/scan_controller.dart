@@ -157,6 +157,19 @@ class ScanController extends GetxController {
     }
   }
 
+  String getStatusImagePath(String status) {
+    switch (status) {
+      case 'Pending':
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Received':
+        return 'assets/icons/status/ic_received.svg';
+      case 'Not Received':
+        return 'assets/icons/status/ic_not_received.svg';
+      default:
+        return 'assets/icons/status/ic_default.svg';
+    }
+  }
+
   Future<String> getStatusImageUrl(String status) async {
     String imageName;
     switch (status) {
