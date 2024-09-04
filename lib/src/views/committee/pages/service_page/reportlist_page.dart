@@ -203,23 +203,23 @@ class ReportListCommitteePage extends StatelessWidget {
                                                             FontWeight.bold)),
                                               ],
                                             ),
-                                            SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  'Category : ',
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                Text(
-                                                    reportData['category'] ??
-                                                        'No category',
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
-                                            ),
+                                            // SizedBox(height: 8),
+                                            // Row(
+                                            //   children: [
+                                            //     Text(
+                                            //       'Category : ',
+                                            //       style: TextStyle(
+                                            //         color: Colors.grey,
+                                            //       ),
+                                            //     ),
+                                            //     Text(
+                                            //         reportData['category'] ??
+                                            //             'No category',
+                                            //         style: TextStyle(
+                                            //             fontWeight:
+                                            //                 FontWeight.bold)),
+                                            //   ],
+                                            // ),
                                             Row(
                                               children: [
                                                 Text(

@@ -8,17 +8,17 @@ class ReportPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController categoryController = TextEditingController();
+  // final TextEditingController categoryController = TextEditingController();
   ReportPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ReportController reportController = Get.put(ReportController());
-    final List<String> categoryOptions = [
-      'Participant Merchandise',
-      'Participant Souvenir',
-      'Participant Benefit',
-    ];
+    // final List<String> categoryOptions = [
+    //   'Participant Merchandise',
+    //   'Participant Souvenir',
+    //   'Participant Benefit',
+    // ];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -76,50 +76,50 @@ class ReportPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Text('Category',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: DropdownButtonFormField2<String>(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 16),
-                          filled: true,
-                          hintText: 'Select Category Report',
-                          fillColor: Colors.grey[200],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey[300],
-                            ),
-                            width: 280,
-                            elevation: 5,
-                            padding: EdgeInsets.all(10),
-                            maxHeight: 240),
-                        items: categoryOptions.map((String category) {
-                          return DropdownMenuItem<String>(
-                            value: category,
-                            child: Text(category),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          categoryController.text = newValue!;
-                        },
-                        validator: (value) =>
-                            value == null ? 'Please select a category' : null,
-                      ),
-                    ),
-                  ],
-                ),
+                // SizedBox(height: 16),
+                // Row(
+                //   children: [
+                //     Text('Category',
+                //         style: TextStyle(
+                //             fontSize: 24, fontWeight: FontWeight.bold)),
+                //     SizedBox(width: 8),
+                //     Expanded(
+                //       child: DropdownButtonFormField2<String>(
+                //         decoration: InputDecoration(
+                //           contentPadding: EdgeInsets.symmetric(
+                //               vertical: 12, horizontal: 16),
+                //           filled: true,
+                //           hintText: 'Select Category Report',
+                //           fillColor: Colors.grey[200],
+                //           border: OutlineInputBorder(
+                //             borderRadius: BorderRadius.circular(10),
+                //             borderSide: BorderSide.none,
+                //           ),
+                //         ),
+                //         dropdownStyleData: DropdownStyleData(
+                //             decoration: BoxDecoration(
+                //               borderRadius: BorderRadius.circular(10),
+                //               color: Colors.grey[300],
+                //             ),
+                //             width: 280,
+                //             elevation: 5,
+                //             padding: EdgeInsets.all(10),
+                //             maxHeight: 240),
+                //         items: categoryOptions.map((String category) {
+                //           return DropdownMenuItem<String>(
+                //             value: category,
+                //             child: Text(category),
+                //           );
+                //         }).toList(),
+                //         onChanged: (String? newValue) {
+                //           categoryController.text = newValue!;
+                //         },
+                //         validator: (value) =>
+                //             value == null ? 'Please select a category' : null,
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: 28),
                 Text('Description',
                     style:
@@ -265,7 +265,7 @@ class ReportPage extends StatelessWidget {
                         if (_formKey.currentState!.validate()) {
                           reportController.submitReport(
                             title: titleController.text,
-                            category: categoryController.text,
+                            // category: categoryController.text,
                             description: descriptionController.text,
                             status: 'Unresolved',
                           );

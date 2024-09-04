@@ -119,7 +119,7 @@ class ReportController extends GetxController {
 
   Future<void> submitReport({
     required String title,
-    required String category,
+    // required String category,
     required String description,
     required String status,
   }) async {
@@ -141,7 +141,7 @@ class ReportController extends GetxController {
         'userId': userId,
         'name': userName,
         'title': title,
-        'category': category,
+        // 'category': category,
         'description': description,
         'image': imageUrl,
         'status': status,

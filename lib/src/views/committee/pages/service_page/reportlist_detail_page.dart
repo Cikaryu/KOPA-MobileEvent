@@ -81,21 +81,21 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                 height: 200,
                               ),
                             SizedBox(height: 16),
-                            Text('Category', style: TextStyle(fontSize: 18)),
-                            SizedBox(height: 8),
-                            TextFormField(
-                              initialValue: reportData['category'],
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8),
+                            // Text('Category', style: TextStyle(fontSize: 18)),
+                            // SizedBox(height: 8),
+                            // TextFormField(
+                            //   initialValue: reportData['category'],
+                            //   readOnly: true,
+                            //   decoration: InputDecoration(
+                            //     filled: true,
+                            //     fillColor: Colors.grey[200],
+                            //     border: OutlineInputBorder(
+                            //       borderRadius: BorderRadius.circular(10),
+                            //       borderSide: BorderSide.none,
+                            //     ),
+                            //   ),
+                            // ),
+                            // SizedBox(height: 8),
                             Text('Description:',
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
@@ -183,7 +183,7 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 140),
+                            SizedBox(height: 80),
                             ElevatedButton(
                               onPressed: () async {
                                 // Proses Update Laporan
@@ -194,7 +194,7 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: HexColor('72BB65'),
+                                backgroundColor: HexColor('E97717'),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
