@@ -28,7 +28,7 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
@@ -198,7 +198,7 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
                     )
                   else
                     Text(
-                      'Attach your photo',
+                      'Attach your photo (Required)',
                       style: TextStyle(
                         color: Colors.grey[400],
                         fontSize: 14,

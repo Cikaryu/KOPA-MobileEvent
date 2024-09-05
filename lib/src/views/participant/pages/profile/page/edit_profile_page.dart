@@ -19,7 +19,7 @@ class EditProfileView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           scrolledUnderElevation: 0,
-          backgroundColor: HexColor('01613B'),
+          backgroundColor: HexColor('727578'),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,

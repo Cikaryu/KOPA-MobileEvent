@@ -20,7 +20,7 @@ class VenueViewPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white)),
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
@@ -89,7 +89,7 @@ class VenueViewPage extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: isSelected ? HexColor("#01613B") : Colors.transparent,
+                color: isSelected ? HexColor("#727578") : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

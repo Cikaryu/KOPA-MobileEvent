@@ -18,7 +18,7 @@ class ProfileEventOrganizerPage extends StatelessWidget {
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('#727578'),
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,

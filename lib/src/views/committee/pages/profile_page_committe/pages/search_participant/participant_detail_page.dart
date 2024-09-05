@@ -19,7 +19,7 @@ class ParticipantDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         title:
             Text('Participant Detail', style: TextStyle(color: Colors.white)),
         centerTitle: true,

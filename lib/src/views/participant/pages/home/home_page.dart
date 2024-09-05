@@ -35,7 +35,7 @@ class HomePageParticipant extends StatelessWidget {
                 SliverToBoxAdapter(
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1810, // Set height according to your need
-                    color: HexColor('#01613B'), // Background color of AppBar
+                    color: HexColor('#727578'), // Background color of AppBar
                     padding: EdgeInsets.fromLTRB(16.0, MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
                     width: Get.width,
                     alignment: Alignment.center,
@@ -101,7 +101,7 @@ class HomePageParticipant extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: HexColor('#01613B'),
+                          color: HexColor('#E97717'),
                         ),
                       ),
                       SizedBox(height: 2),
@@ -333,7 +333,7 @@ class HomePageParticipant extends StatelessWidget {
                                 Container(
                                   padding: EdgeInsets.all(16.0),
                                   decoration: BoxDecoration(
-                                    color: HexColor('#01613B'),
+                                    color: HexColor('#727578'),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Column(

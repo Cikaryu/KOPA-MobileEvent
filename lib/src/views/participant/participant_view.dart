@@ -37,23 +37,23 @@ class ParticipantView extends StatelessWidget {
       bottomNavigationBar: Obx(() => BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.checklist_rtl_rounded),
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 label: 'Attendance',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.receipt_long_rounded),
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 label: 'Service',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 label: 'Profile',
               ),
             ],

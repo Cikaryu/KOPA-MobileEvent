@@ -18,7 +18,7 @@ class SearchParticipantPage extends StatelessWidget {
           'Search Participant',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: true,
         centerTitle: true,

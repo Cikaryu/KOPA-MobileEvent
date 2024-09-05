@@ -28,7 +28,7 @@ class ScanProfileView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         title:
             Text('Participant Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
@@ -162,7 +162,7 @@ class ScanProfileView extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: HexColor('01613B'),
+                      backgroundColor: HexColor('E97717'),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

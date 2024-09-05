@@ -1,3 +1,4 @@
+import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/scan_page/scan_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class ScannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: HexColor("#727578"),
         title: Text('Scan QR Code'),
         automaticallyImplyLeading: false,
         centerTitle: true,

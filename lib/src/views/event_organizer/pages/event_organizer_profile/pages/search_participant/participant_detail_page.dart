@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+//Todo : ukuran baju
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 
@@ -18,7 +18,7 @@ class ParticipantDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         title:
             Text('Participant Detail', style: TextStyle(color: Colors.white)),
         centerTitle: true,

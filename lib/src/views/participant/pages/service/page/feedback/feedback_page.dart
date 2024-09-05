@@ -18,7 +18,7 @@ class FeedbackPage extends StatelessWidget {
             style: TextStyle(
               color: Colors.white,
             )),
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),

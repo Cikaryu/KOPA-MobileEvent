@@ -73,21 +73,21 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                 height: 200,
                               ),
                             SizedBox(height: 16),
-                            Text('Category', style: TextStyle(fontSize: 18)),
-                            SizedBox(height: 8),
-                            TextFormField(
-                              initialValue: reportData['category'],
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8),
+                            // Text('Category', style: TextStyle(fontSize: 18)),
+                            // SizedBox(height: 8),
+                            // TextFormField(
+                            //   initialValue: reportData['category'],
+                            //   readOnly: true,
+                            //   decoration: InputDecoration(
+                            //     filled: true,
+                            //     fillColor: Colors.grey[200],
+                            //     border: OutlineInputBorder(
+                            //       borderRadius: BorderRadius.circular(10),
+                            //       borderSide: BorderSide.none,
+                            //     ),
+                            //   ),
+                            // ),
+                            // SizedBox(height: 8),
                             Text('Description:',
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),

@@ -13,12 +13,13 @@ class ProfileSuperEOPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
+
         title: Center(
           child: Text('My Profile',
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('727578'),
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,

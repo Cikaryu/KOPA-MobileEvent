@@ -33,22 +33,22 @@ class SuperEOView extends StatelessWidget {
       bottomNavigationBar: Obx(() => BottomNavigationBar(
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 icon: Icon(Icons.qr_code),
                 label: 'Scan QR',
               ),
               BottomNavigationBarItem(
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 icon: Icon(Icons.receipt_long_rounded),
                 label: 'Reports List',
               ),
               BottomNavigationBarItem(
-                backgroundColor: HexColor('01613B'),
+                backgroundColor: HexColor('727578'),
                 icon: Icon(Icons.person),
                 label: 'Profile',
               ),
