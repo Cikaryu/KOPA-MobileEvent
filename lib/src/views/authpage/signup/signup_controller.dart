@@ -1,6 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signup/page/signup_Slide2_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide1_view.dart';
-import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide2_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide3_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';

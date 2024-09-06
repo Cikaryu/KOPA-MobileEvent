@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,9 +102,12 @@ Future<bool> _isLandingPageShown() async {
 // Initialize notifications firebase messaging
 Future<void> _initNotifications() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
   await messaging.requestPermission();
 
   final token = await messaging.getToken();
+  analytics.setAnalyticsCollectionEnabled(true);
   print('Token: $token');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
