@@ -3,17 +3,19 @@ import 'package:app_kopabali/src/routes/app_pages.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
 import 'package:app_kopabali/src/views/landingpage/landingpage_view.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await _initNotifications();
 
   // Check if landing page has been shown before
   final bool isLandingPageShown = await _isLandingPageShown();
-  
+
   if (!isLandingPageShown) {
     await _setLandingPageShown(); // Mark landing page as shown
 
@@ -94,4 +96,24 @@ Future<void> _setLandingPageShown() async {
 Future<bool> _isLandingPageShown() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getBool('isLandingPageShown') ?? false;
+}
+
+// Initialize notifications firebase messaging
+Future<void> _initNotifications() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission();
+
+  final token = await messaging.getToken();
+  print('Token: $token');
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message ${message.messageId}');
+  Get.snackbar(
+    message.notification!.title!,
+    message.notification!.body!,
+    snackPosition: SnackPosition.BOTTOM,
+    duration: Duration(seconds: 5),
+  );
 }
