@@ -45,13 +45,17 @@ class HomePageCommitteeController extends GetxController {
     }
   }
 
-  Future<DateTime> getServerTime() async {
+ Future<DateTime> getServerTime() async {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('serverTime').doc('time');
     await docRef.set({'timestamp': FieldValue.serverTimestamp()});
     DocumentSnapshot snapshot = await docRef.get();
-    Timestamp timestamp = snapshot['timestamp'];
-    return timestamp.toDate();
+    Timestamp? timestamp = snapshot['timestamp'] as Timestamp?;
+    if (timestamp != null) {
+      return timestamp.toDate();
+    } else {
+      throw Exception('Timestamp value is null');
+    }
   }
 
   void startCountdown() async {

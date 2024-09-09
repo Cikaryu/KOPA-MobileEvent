@@ -391,6 +391,7 @@ class ScanProfileView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                width: 126,
                 child: Row(
                   children: [
                     // Display status text with the status color
@@ -401,7 +402,7 @@ class ScanProfileView extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    Spacer(),
                     SvgPicture.asset(
                       controller.getStatusImagePath(status),
                       width: 24,
