@@ -38,8 +38,9 @@ class ExportDataPage extends StatelessWidget {
               child: DropdownButton2(
                 hint: Text('Select export type'),
                 items: [
-                  DropdownMenuItem(value: 'participant_kit', child: Text('Participant Data')),
-                  DropdownMenuItem(value: 'participant_data', child: Text('Participant Attendance')),
+                  DropdownMenuItem(value: 'participant_data', child: Text('Participant Data')),
+                  DropdownMenuItem(value: 'participant_attendance', child: Text('Participant Attendance')),
+                  DropdownMenuItem(value: 'participant_kit', child: Text('Participant Kit')),
                 ],
                 value: controller.selectedExportType.value,
                 onChanged: (value) {
