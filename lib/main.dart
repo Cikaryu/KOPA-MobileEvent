@@ -2,12 +2,12 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/routes/app_pages.dart';
 import 'package:app_kopabali/src/views/authpage/signin/signin_controller.dart';
 import 'package:app_kopabali/src/views/landingpage/landingpage_view.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,20 +104,16 @@ Future<void> _initNotifications() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
-  await messaging.requestPermission();
+  await analytics.setAnalyticsCollectionEnabled(true);
 
-  final token = await messaging.getToken();
-  analytics.setAnalyticsCollectionEnabled(true);
+  await messaging.requestPermission();
+  await messaging.subscribeToTopic('kopaevent-testing');
+  await messaging.setAutoInitEnabled(true);
+  final String token = await messaging.getToken() ?? '';
   print('Token: $token');
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message ${message.messageId}');
-  Get.snackbar(
-    message.notification!.title!,
-    message.notification!.body!,
-    snackPosition: SnackPosition.BOTTOM,
-    duration: Duration(seconds: 5),
-  );
 }
