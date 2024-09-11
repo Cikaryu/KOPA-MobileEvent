@@ -23,7 +23,12 @@ class ExportDataController extends GetxController {
       }
 
       var excel = Excel.createExcel();
-      Sheet sheetObject = excel[selectedExportType.value];
+
+      // Rename the default sheet
+      String sheetName = _getSheetName(selectedExportType.value);
+      excel.rename('Sheet1', sheetName);
+
+      Sheet sheetObject = excel[sheetName];
 
       List<CellValue> headers;
       List<Map<String, dynamic>> data = [];
@@ -33,11 +38,11 @@ class ExportDataController extends GetxController {
           headers = _getParticipantDataHeaders();
           data = await _getParticipantData();
           break;
-        case 'attendance':
+        case 'participant_attendance':
           headers = _getAttendanceHeaders();
           data = await _getAttendanceData();
           break;
-        case 'merchandise':
+        case 'participant_kit':
           headers = _getMerchandiseHeaders();
           data = await _getMerchandiseData();
           break;
@@ -47,12 +52,26 @@ class ExportDataController extends GetxController {
 
       _writeHeadersToSheet(sheetObject, headers);
       _writeDataToSheet(sheetObject, data, 1);
+      _autoSizeColumns(sheetObject, headers.length);
 
       var fileBytes = excel.save();
       await _saveExcelFile(fileBytes!, selectedExportType.value);
     } catch (e) {
       Get.snackbar('Error', 'Failed to download file: $e');
       print('Error details: $e');
+    }
+  }
+
+  String _getSheetName(String exportType) {
+    switch (exportType) {
+      case 'participant_data':
+        return 'Participant Data';
+      case 'participant_attendance':
+        return 'Participant Attendance';
+      case 'participant_kit':
+        return 'Participant Kit';
+      default:
+        return 'Data';
     }
   }
 
@@ -92,7 +111,10 @@ class ExportDataController extends GetxController {
       TextCellValue('Day 2 Gala Dinner'),
       TextCellValue('Day 2 Lunch'),
       TextCellValue('Day 2 Team Building'),
-      TextCellValue('Day 3 Arrival Jakarta')
+      TextCellValue('Day 3 Arrival Jakarta'),
+      TextCellValue('Day 3 Departure'),
+      TextCellValue('Day 3 Lugagge Drop'),
+      TextCellValue('Day 3 Room Checkout'),
     ];
   }
 
@@ -107,7 +129,7 @@ class ExportDataController extends GetxController {
       TextCellValue('Polo Shirt'),
       TextCellValue('T-Shirt'),
       TextCellValue('Gelang Tridatu'),
-      TextCellValue('Selendang Udeng')
+      TextCellValue('Selendang/Udeng')
     ];
   }
 
@@ -184,6 +206,11 @@ class ExportDataController extends GetxController {
             _getStatusString(attendanceMap['day2']?['teamBuilding']),
         'day3ArrivalJakarta':
             _getStatusString(attendanceMap['day3']?['arrivalJakarta']),
+        'day3Departure': _getStatusString(attendanceMap['day3']?['departure']),
+        'day3LugaggeDrop':
+            _getStatusString(attendanceMap['day3']?['lugaggeDrop']),
+        'day3RoomCheckout':
+            _getStatusString(attendanceMap['day3']?['roomCheckOut']),
       });
     }
 
@@ -265,6 +292,12 @@ class ExportDataController extends GetxController {
             .value = TextCellValue(value.toString());
         columnIndex++;
       });
+    }
+  }
+
+  void _autoSizeColumns(Sheet sheet, int columnCount) {
+    for (int i = 0; i < columnCount; i++) {
+      sheet.setColumnAutoFit(i);
     }
   }
 

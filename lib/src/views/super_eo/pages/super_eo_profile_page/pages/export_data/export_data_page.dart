@@ -26,7 +26,8 @@ class ExportDataPage extends StatelessWidget {
             SizedBox(height: 20),
             Center(
                 child: Text('Export Excel',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
             SizedBox(height: 16),
             Center(
                 child: Text(
@@ -35,21 +36,35 @@ class ExportDataPage extends StatelessWidget {
                     style: TextStyle(fontSize: 16))),
             SizedBox(height: 20),
             Obx(() => DropdownButtonHideUnderline(
-              child: DropdownButton2(
-                hint: Text('Select export type'),
-                items: [
-                  DropdownMenuItem(value: 'participant_data', child: Text('Participant Data')),
-                  DropdownMenuItem(value: 'participant_attendance', child: Text('Participant Attendance')),
-                  DropdownMenuItem(value: 'participant_kit', child: Text('Participant Kit')),
-                ],
-                value: controller.selectedExportType.value,
-                onChanged: (value) {
-                  controller.selectedExportType.value = value as String;
-                },
-              ),
-            )),
+                  child: DropdownButton2(
+                    hint: Text('Select export type'),
+                    items: [
+                      DropdownMenuItem(
+                          value: 'participant_data',
+                          child: Text('Participant Data')),
+                      DropdownMenuItem(
+                          value: 'participant_attendance',
+                          child: Text('Participant Attendance')),
+                      DropdownMenuItem(
+                          value: 'participant_kit',
+                          child: Text('Participant Kit')),
+                    ],
+                    value: controller.selectedExportType.value,
+                    onChanged: (value) {
+                      controller.selectedExportType.value = value as String;
+                    },
+                  ),
+                )),
             SizedBox(height: 20),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: HexColor('E97717'),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 120, vertical: 16),
+              ),
               onPressed: () => controller.downloadData(),
               child: Text('Download Data'),
             ),
