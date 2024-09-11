@@ -115,6 +115,18 @@ class ScanProfileView extends StatelessWidget {
                       'Division',
                       scanController.participantData['division'] ?? '',
                     ),
+                    buildProfileRow(
+                      'Address',
+                      scanController.participantData['address'] ?? '',
+                    ),
+                    buildProfileRow(
+                      'Whatsapp',
+                      scanController.participantData['whatsappNumber'] ?? '',
+                    ),
+                    buildProfileRow(
+                      'NIK',
+                      scanController.participantData['NIK'] ?? '',
+                    ),
                   ],
                 ),
                 SizedBox(height: 16),

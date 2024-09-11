@@ -359,6 +359,9 @@ class Participant {
   final String? area;
   final String? role;
   final String? selfieUrl;
+  final String? address;
+  final String? whatsappNumber;
+  final String? nik;
   final String uid;
 
   Participant(
@@ -369,6 +372,9 @@ class Participant {
       this.name,
       this.role,
       this.selfieUrl,
+      this.address,
+      this.whatsappNumber,
+      this.nik,
       required this.uid});
 
   factory Participant.fromDocument(DocumentSnapshot doc) {
@@ -379,6 +385,9 @@ class Participant {
       department: doc['department'] as String?,
       name: doc['name'] as String?,
       role: doc['role'] as String?,
+      address: doc['address'] as String?,
+      whatsappNumber: doc['whatsappNumber'] as String?,
+      nik: doc['NIK'] as String?,
       selfieUrl: doc['selfieUrl'] as String?,
       uid: doc.id,
     );

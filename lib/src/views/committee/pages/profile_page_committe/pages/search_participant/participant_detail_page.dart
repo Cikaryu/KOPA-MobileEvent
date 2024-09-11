@@ -101,6 +101,18 @@ class ParticipantDetailPage extends StatelessWidget {
                       'Division',
                       participant.division ?? 'unknown',
                     ),
+                    buildProfileRow(
+                      'Address',
+                      participant.address ?? 'unknown',
+                    ),
+                    buildProfileRow(
+                      'Whatsapp',
+                      participant.whatsappNumber ?? 'unknown',
+                    ),
+                    buildProfileRow(
+                      'NIK',
+                      participant.nik ?? 'unknown',
+                    ),
                   ],
                 ),
                 SizedBox(height: 16),
