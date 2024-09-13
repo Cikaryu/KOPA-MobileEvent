@@ -64,39 +64,37 @@ class ReportSuperEOController extends GetxController {
     }
   }
 
-
-
   void sortReportsByDate() {
-  filteredReports.sort((a, b) {
-    final dataA = a.data() as Map<String, dynamic>;
-    final dataB = b.data() as Map<String, dynamic>;
-    final Timestamp timestampA = dataA['createdAt'];
-    final Timestamp timestampB = dataB['createdAt'];
+    filteredReports.sort((a, b) {
+      final dataA = a.data() as Map<String, dynamic>;
+      final dataB = b.data() as Map<String, dynamic>;
+      final Timestamp timestampA = dataA['createdAt'];
+      final Timestamp timestampB = dataB['createdAt'];
 
-    if (selectedSortOption.value == 'Oldest') {
-      return timestampA.compareTo(timestampB);
-    } else {
-      return timestampB.compareTo(timestampA);
-    }
-  });
-}
-
-void applyFilter(String filter) {
-  selectedFilter.value = filter;
-  filterReports();
-}
-
-void filterReports() {
-  if (selectedFilter.isEmpty) {
-    filteredReports.value = List.from(allReports);
-  } else {
-    filteredReports.value = allReports.where((report) {
-      final data = report.data() as Map<String, dynamic>;
-      return data['status'] == selectedFilter.value;
-    }).toList();
+      if (selectedSortOption.value == 'Oldest') {
+        return timestampA.compareTo(timestampB);
+      } else {
+        return timestampB.compareTo(timestampA);
+      }
+    });
   }
-  sortReportsByDate();
-}
+
+  void applyFilter(String filter) {
+    selectedFilter.value = filter;
+    filterReports();
+  }
+
+  void filterReports() {
+    if (selectedFilter.isEmpty) {
+      filteredReports.value = List.from(allReports);
+    } else {
+      filteredReports.value = allReports.where((report) {
+        final data = report.data() as Map<String, dynamic>;
+        return data['status'] == selectedFilter.value;
+      }).toList();
+    }
+    sortReportsByDate();
+  }
 
   void fetchReports() {
     _firestore.collection('report').snapshots().listen((snapshot) {
@@ -111,14 +109,37 @@ void filterReports() {
     required String status,
   }) async {
     isLoading.value = true;
+
     try {
       await _firestore.collection('report').doc(reportId).update({
         'reply': reply,
         'status': status,
         'updatedAt': Timestamp.now(),
       });
+
+      // Ambil judul laporan
+      DocumentSnapshot reportDoc =
+          await _firestore.collection('report').doc(reportId).get();
+      String reportTitle = reportDoc.get('title');
+      String reportName = reportDoc.get('name');
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+
+      // Buat log aktivitas
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'report_reply',
+          'reportName': reportName,
+          'reportTitle': reportTitle,
+          'repliedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
       Get.snackbar('Sukses', 'Laporan berhasil diperbarui.');
-      // Refresh the reports after updating
       fetchReports();
       return true;
     } catch (e) {
@@ -128,9 +149,5 @@ void filterReports() {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  Stream<QuerySnapshot> getReports() {
-    return _firestore.collection('report').snapshots();
   }
 }

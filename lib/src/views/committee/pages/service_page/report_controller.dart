@@ -119,6 +119,29 @@ void filterReports() {
         'status': status,
         'updatedAt': Timestamp.now(),
       });
+
+      // Ambil judul laporan
+      DocumentSnapshot reportDoc =
+          await _firestore.collection('report').doc(reportId).get();
+      String reportTitle = reportDoc.get('title');
+      String reportName = reportDoc.get('name');
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+
+      // Buat log aktivitas
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'report_reply',
+          'reportName': reportName,
+          'reportTitle': reportTitle,
+          'repliedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+      
       Get.snackbar('Sukses', 'Laporan berhasil diperbarui.');
       // Refresh the reports after updating
       fetchReports();

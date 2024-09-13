@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchParticipantController extends GetxController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   RxList<Participant> allParticipants = <Participant>[].obs;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   RxList<Participant> filteredParticipants = <Participant>[].obs;
   TextEditingController searchController = TextEditingController();
   RxMap<String, dynamic> participantKitStatus = <String, dynamic>{}.obs;
@@ -252,7 +254,10 @@ class SearchParticipantController extends GetxController {
   }
 
   Future<void> updateItemStatus(
-      String participantId, String field, String newStatus) async {
+    String participantId,
+    String field,
+    String newStatus,
+  ) async {
     try {
       List<String> fieldParts = field.split('.');
       String category = fieldParts[0];
@@ -262,6 +267,24 @@ class SearchParticipantController extends GetxController {
           .collection('participantKit')
           .doc(participantId)
           .update({'$category.$item.status': newStatus});
+
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+      // add logs activity
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'participantkit_changed', // Set type as a simple string
+          'participantName': selectedParticipant.value?.name ?? '',
+          'itemName': '$category.$item',
+          'newStatus': newStatus,
+          'changedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
 
       // Update local state
       if (participantKitStatus.containsKey(category) &&
@@ -287,6 +310,24 @@ class SearchParticipantController extends GetxController {
           .collection('participantKit')
           .doc(participantId)
           .update(updates);
+
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+      // add logs activity
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'participantkit_changed_all', // Set type as a simple string
+          'participantName': selectedParticipant.value?.name ?? '',
+          'itemName': '$category.',
+          'newstatusAll': 'Received',
+          'changedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
 
       // Update local state
       participantKitStatus[category].forEach((item, value) {
@@ -324,13 +365,32 @@ class SearchParticipantController extends GetxController {
   }
 
   Future<void> updateParticipantRole(
-      String participantId, String newRole) async {
+    String participantId,
+    String newRole,
+  ) async {
     try {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(participantId)
           .update({'role': newRole});
 
+      // Buat log aktivitas
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+
+      // Buat log aktivitas
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'user_promotion',
+          'ParticipantName': selectedParticipant.value?.name ?? '',
+          'newRole': newRole,
+          'ChangedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
       // Update local state
       int index = allParticipants.indexWhere((p) => p.uid == participantId);
       if (index != -1) {
