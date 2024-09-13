@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'agenda_days/day_one_agenda.dart';
@@ -57,7 +56,7 @@ class ParticipantAgendaView extends StatelessWidget {
             ),
             // Konten hari berdasarkan tab yang dipilih
             SizedBox(
-              height: 1000,
+              height: 1150,
               child: ValueListenableBuilder<int>(
                 valueListenable: controller.selectedDay,
                 builder: (context, value, child) {

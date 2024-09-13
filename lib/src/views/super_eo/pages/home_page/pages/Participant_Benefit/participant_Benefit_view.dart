@@ -58,7 +58,7 @@ class ParticipantBenefitView extends StatelessWidget {
             ),
             // Konten hari berdasarkan tab yang dipilih
             SizedBox(
-              height: 1000,
+              height: 600,
               child: ValueListenableBuilder<int>(
                 valueListenable: controller.selectedDay,
                 builder: (context, value, child) {
