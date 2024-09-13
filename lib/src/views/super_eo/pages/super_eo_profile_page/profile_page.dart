@@ -1,4 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/pages/data_logs/data_logs.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/pages/export_data/export_data_page.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/pages/search_participant/search_participant_page.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/profile_controller.dart';
@@ -241,7 +242,12 @@ class ProfileSuperEOPage extends StatelessWidget {
                         ),
                         SizedBox(height: 12),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => DataLogsPageView()),
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12.0),
                             child: Row(

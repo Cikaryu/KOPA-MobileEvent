@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchParticipantController extends GetxController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   RxList<Participant> allParticipants = <Participant>[].obs;
   RxList<Participant> filteredParticipants = <Participant>[].obs;
   TextEditingController searchController = TextEditingController();
@@ -263,6 +266,24 @@ class SearchParticipantController extends GetxController {
           .doc(participantId)
           .update({'$category.$item.status': newStatus});
 
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+      // add logs activity
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'participantkit_changed', // Set type as a simple string
+          'participantName': selectedParticipant.value?.name ?? '',
+          'itemName': '$category.$item',
+          'newStatus': newStatus,
+          'changedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
       // Update local state
       if (participantKitStatus.containsKey(category) &&
           participantKitStatus[category].containsKey(item)) {
@@ -287,6 +308,24 @@ class SearchParticipantController extends GetxController {
           .collection('participantKit')
           .doc(participantId)
           .update(updates);
+
+      final String Activityid = _firestore.collection('activityLogs').doc().id;
+      // add logs activity
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(Activityid).set({
+          'type': 'participantkit_changed_all', // Set type as a simple string
+          'participantName': selectedParticipant.value?.name ?? '',
+          'itemName': '$category.',
+          'newstatusAll': 'Received',
+          'changedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
 
       // Update local state
       participantKitStatus[category].forEach((item, value) {
