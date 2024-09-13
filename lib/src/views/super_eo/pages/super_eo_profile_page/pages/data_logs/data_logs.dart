@@ -59,7 +59,7 @@ class DataLogsPageView extends StatelessWidget {
                     width: 20,
                   ),
                   SizedBox(
-                    width: 310,
+                    width: Get.width / 1.5,
                     child: Obx(() => DropdownButtonFormField2<String>(
                           decoration: InputDecoration(
                             isDense: true,
