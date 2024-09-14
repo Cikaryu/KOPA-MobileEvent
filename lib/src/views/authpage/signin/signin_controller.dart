@@ -1,5 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -101,6 +102,8 @@ class SigninController extends GetxController {
     await prefs.setString('userId', user.uid);
     await prefs.setString('role', role);
 
+    await _storeFCMToken(user.uid);
+
     if (role == 'Participant') {
       Navigator.of(context).pushReplacementNamed('/participant');
     } else if (role == 'Committee') {
@@ -109,6 +112,21 @@ class SigninController extends GetxController {
       Navigator.of(context).pushReplacementNamed('/eventorganizer');
     } else if (role == 'Super Event Organizer') {
       Navigator.of(context).pushReplacementNamed('/supereo');
+    }
+  }
+
+  Future<void> _storeFCMToken(String userId) async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'fcmToken': token});
+        print('FCM Token stored successfully');
+      }
+    } catch (e) {
+      print('Error storing FCM token: $e');
     }
   }
 
@@ -195,6 +213,8 @@ class SigninController extends GetxController {
         Navigator.of(context).pushReplacementNamed('/eventorganizer');
       } else if (role == 'Super Event Organizer') {
         Navigator.of(context).pushReplacementNamed('/supereo');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/signin');
       }
     }
   }

@@ -6,7 +6,7 @@ import 'package:app_kopabali/src/views/super_eo/pages/scan_page/scan_controller.
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-// TODO revisi participant detail
+// TODO check if all received
 class ScanProfileView extends StatelessWidget {
   ScanProfileView({super.key});
 
@@ -142,9 +142,13 @@ class ScanProfileView extends StatelessWidget {
                 buildDropdownContainer(
                     scanController, 'Merchandise', 'merchandise', [
                   buildStatusRow(
-                      scanController, 'Polo Shirt', 'merchandise.poloShirt'),
+                      scanController,
+                      'Polo Shirt (${scanController.poloShirtSize})',
+                      'merchandise.poloShirt'),
                   buildStatusRow(
-                      scanController, 'T-Shirt', 'merchandise.tShirt'),
+                      scanController,
+                      'T-Shirt (${scanController.tShirtSize})',
+                      'merchandise.tShirt'),
                   buildStatusRow(
                       scanController, 'Luggage Tag', 'merchandise.luggageTag'),
                   buildStatusRow(
@@ -325,7 +329,7 @@ class ScanProfileView extends StatelessWidget {
                         duration: Duration(milliseconds: 300),
                         height:
                             scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 60)
+                                ? (children.length * 40.0 + 10)
                                 : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -425,7 +429,7 @@ class ScanProfileView extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Name',
+                                    Text('Items',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold)),
@@ -444,7 +448,10 @@ class ScanProfileView extends StatelessWidget {
                                 Center(
                                   child: ElevatedButton(
                                     onPressed: () =>
-                                        controller.checkAllItems(containerName),
+                                        controller.showConfirmCheckAllItems(
+                                      Get.context!, // Provide the current context
+                                      containerName,
+                                    ),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.white,
                                       backgroundColor: HexColor('01613B'),
@@ -454,7 +461,7 @@ class ScanProfileView extends StatelessWidget {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 24, vertical: 6),
                                     ),
-                                    child: Text('Check All (Received)'),
+                                    child: Text('Click If All Received'),
                                   ),
                                 ),
                               ],

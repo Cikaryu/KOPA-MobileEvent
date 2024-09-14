@@ -28,9 +28,7 @@ class SearchParticipantController extends GetxController {
     super.onInit();
     fetchParticipants();
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      getUserData(user);
-    }
+    if (user != null) {}
   }
 
   @override
@@ -38,7 +36,6 @@ class SearchParticipantController extends GetxController {
     super.onReady();
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await getUserData(user);
     } else {
       debugPrint("User not logged in");
     }
@@ -62,22 +59,6 @@ class SearchParticipantController extends GetxController {
     isLoading.value = value;
   }
 
-  Future<void> getUserData(User user) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      if (doc.exists) {
-        tShirtSize.value = doc['tShirtSize'];
-        poloShirtSize.value = doc['poloShirtSize'];
-      } else {
-        debugPrint('No user data found');
-      }
-    } catch (e) {
-      debugPrint('Error fetching user data: $e');
-    }
-  }
 
   Future<void> fetchParticipantKitStatus(String participantId) async {
     try {
@@ -423,6 +404,8 @@ class Participant {
   final String? whatsappNumber;
   final String? nik;
   final String uid;
+  final String? tShirtSize;
+  final String? poloShirtSize;
 
   Participant(
       {this.email,
@@ -435,6 +418,8 @@ class Participant {
       this.address,
       this.whatsappNumber,
       this.nik,
+      this.tShirtSize,
+      this.poloShirtSize,
       required this.uid});
 
   factory Participant.fromDocument(DocumentSnapshot doc) {
@@ -449,6 +434,8 @@ class Participant {
       whatsappNumber: doc['whatsappNumber'] as String?,
       nik: doc['NIK'] as String?,
       selfieUrl: doc['selfieUrl'] as String?,
+      tShirtSize: doc['tShirtSize'] as String?,
+      poloShirtSize: doc['poloShirtSize'] as String?,
       uid: doc.id,
     );
   }

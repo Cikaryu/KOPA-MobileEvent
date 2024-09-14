@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-//Todo revisi bagian participant detail
+//Todo revisi Check if All Received
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
 
@@ -129,8 +129,13 @@ class ParticipantDetailPage extends StatelessWidget {
                 buildDropdownContainer(
                     controller, 'Merchandise', 'merchandise', [
                   buildStatusRow(
-                      controller, 'Polo Shirt', 'merchandise.poloShirt'),
-                  buildStatusRow(controller, 'T-Shirt', 'merchandise.tShirt'),
+                      controller,
+                      'Polo Shirt (${participant.poloShirtSize})',
+                      'merchandise.poloShirt'),
+                  buildStatusRow(
+                      controller,
+                      'T-Shirt (${participant.tShirtSize})',
+                      'merchandise.tShirt'),
                   buildStatusRow(
                       controller, 'Luggage Tag', 'merchandise.luggageTag'),
                   buildStatusRow(
@@ -305,7 +310,7 @@ class ParticipantDetailPage extends StatelessWidget {
                         width: 420,
                         duration: Duration(milliseconds: 300),
                         height: controller.isContainerExpanded(containerName)
-                            ? (children.length * 40.0 + 60)
+                            ? (children.length * 40.0 + 20)
                             : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -415,7 +420,7 @@ class ParticipantDetailPage extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Name',
+                                    'Items',
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
@@ -449,7 +454,7 @@ class ParticipantDetailPage extends StatelessWidget {
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 24, vertical: 6),
                                   ),
-                                  child: Text('Check All (Received)'),
+                                  child: Text('Click If All Received'),
                                 ),
                               ),
                             ],

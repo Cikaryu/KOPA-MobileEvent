@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
+// Todo : dropdown mengikuti status report yang ada di database
+// Todo : status Ditambah menjadi 4 yaitu Not Started, In Progress, Pending, Solved
 class ReportDetailSuperEOPage extends StatelessWidget {
   final String reportId;
 
@@ -127,7 +129,7 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Mark As',
+                                Text('Status:',
                                     style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold)),

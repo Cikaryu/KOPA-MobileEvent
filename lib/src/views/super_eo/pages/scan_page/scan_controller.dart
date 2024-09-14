@@ -231,6 +231,8 @@ class ScanController extends GetxController {
     }
   }
 
+
+
   void checkAllItems(String containerName) async {
     try {
       String userId = Get.arguments?['userId'];
@@ -272,6 +274,37 @@ class ScanController extends GetxController {
       print('Error checking all items: $e');
       Get.snackbar("Error", "Failed to update all items: $e");
     }
+  }
+
+ void showConfirmCheckAllItems(BuildContext context, String containerName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Confirm Action',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Text('Are you sure you want to mark all items as received?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                checkAllItems(containerName); // Mark all items as received
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void submitParticipantKit() async {

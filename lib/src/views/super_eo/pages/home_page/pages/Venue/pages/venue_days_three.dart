@@ -1,8 +1,9 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VenuePagedaythree extends StatelessWidget {
+  const VenuePagedaythree({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -11,28 +12,26 @@ class VenuePagedaythree extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 2),
-          child: Text("Friday, 22th September", style: TextStyle(fontSize: 16)),
+          child: Text("Friday, 20th September", style: TextStyle(fontSize: 16)),
         ),
         SizedBox(height: 8),
         VenueCard(
-          youtubeUrl: 'https://www.youtube.com/watch?v=KQ-StN4-WPE',
+          youtubeUrl: 'https://www.youtube.com/watch?v=6h8t79wbX9U',
           title: 'Venue 1',
           description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
         ),
         SizedBox(height: 16),
         VenueCard(
           youtubeUrl: 'https://www.youtube.com/watch?v=ov6tinrcsdI',
           title: 'Venue 2',
           description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin imperdiet id sapien quis suscipit. Etiam ultrices libero purus, at accumsan dolor condimentum sit amet.',
         ),
       ],
     );
   }
 }
-
-
 
 class VenueCard extends StatefulWidget {
   final String youtubeUrl;
@@ -52,51 +51,28 @@ class VenueCard extends StatefulWidget {
 
 class _VenueCardState extends State<VenueCard> {
   late YoutubePlayerController _controller;
-  late bool _isFullScreen;
 
   @override
   void initState() {
     super.initState();
-    _isFullScreen = false;
     final videoId = YoutubePlayer.convertUrlToId(widget.youtubeUrl);
     _controller = YoutubePlayerController(
       initialVideoId: videoId!,
       flags: YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
-        forceHD: true,
         disableDragSeek: true,
-        showLiveFullscreenButton: false,
+        enableCaption: false,
+        hideControls: false,
+        hideThumbnail: false,
+        showLiveFullscreenButton: false, // Menghilangkan tombol fullscreen
+        useHybridComposition: true,
       ),
-    )..addListener(_onPlayerStateChange);
-  }
-
-  void _onPlayerStateChange() {
-    if (_controller.value.isFullScreen && !_isFullScreen) {
-      _isFullScreen = true;
-      _enterFullScreenLandscape();
-    } else if (!_controller.value.isFullScreen && _isFullScreen) {
-      _isFullScreen = false;
-      _exitFullScreenLandscape();
-    }
-  }
-
-  void _enterFullScreenLandscape() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky); // Hide system UI for full immersive experience
-  }
-
-  void _exitFullScreenLandscape() {
-    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge); // Restore system UI
+    );
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onPlayerStateChange);
     _controller.dispose();
     super.dispose();
   }
@@ -108,17 +84,26 @@ class _VenueCardState extends State<VenueCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
-            aspectRatio: 16 / 9, // Maintain a 16:9 aspect ratio
+            aspectRatio: 16 / 9,
             child: YoutubePlayer(
               controller: _controller,
               showVideoProgressIndicator: true,
               progressIndicatorColor: Colors.red,
+              progressColors: ProgressBarColors(
+                playedColor: Colors.red,
+                handleColor: Colors.redAccent,
+              ),
               onReady: () {
-                print('Player is ready.');
+                print('Player siap.');
               },
               onEnded: (YoutubeMetaData metaData) {
-                _controller.pause(); // Ensure video stops when it ends
+                _controller.pause();
               },
+              bottomActions: [
+                CurrentPosition(),
+                ProgressBar(isExpanded: true),
+                RemainingDuration(),
+              ],
             ),
           ),
           Column(
