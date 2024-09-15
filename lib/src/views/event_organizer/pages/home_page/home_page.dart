@@ -39,9 +39,11 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1810, // Set height according to your need
+                    height: MediaQuery.of(context).size.height *
+                        0.1810, // Set height according to your need
                     color: HexColor('#727578'), // Background color of AppBar
-                    padding: EdgeInsets.fromLTRB(16.0, MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
+                    padding: EdgeInsets.fromLTRB(16.0,
+                        MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
                     child: Column(
                       children: [
                         Row(
@@ -66,7 +68,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             )
                           ],
                         ),
-                        SizedBox(height: 8),
+                   
                         Text(
                           'Welcome To Your Homepage',
                           style: TextStyle(
@@ -113,7 +115,10 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             color: Colors.grey[800],
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 47),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height *
+                            0.06, // 6% of the screen height
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         child: Row(
@@ -238,7 +243,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                       SizedBox(height: 34),
                       Container(
                         width: Get.width,
-                        height: 180,
+                        height: MediaQuery.of(context).size.height * 0.225, // 22.5% of the screen height
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/bali.png'),
@@ -290,7 +295,10 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 94),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height *
+                            0.1175, // 11.75% of the screen height
+                      ),
                     ],
                   ),
                 ),

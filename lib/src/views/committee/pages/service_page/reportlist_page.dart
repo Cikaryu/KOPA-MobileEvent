@@ -10,7 +10,8 @@ class ReportListCommitteePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ReportCommitteeController reportController = Get.put(ReportCommitteeController());
+    final ReportCommitteeController reportController =
+        Get.put(ReportCommitteeController());
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -84,7 +85,7 @@ class ReportListCommitteePage extends StatelessWidget {
                 ),
                 Spacer(),
                 SizedBox(
-                  width: 80,
+                  width: MediaQuery.of(context).size.width * 0.2,
                   child: Obx(
                     () => DropdownButtonHideUnderline(
                       child: DropdownButton<String>(

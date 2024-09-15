@@ -7,8 +7,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:intl/intl.dart';
 
 class ReportListEventOrganizerPage extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     final ReportEventOrganizerController reportController =
@@ -86,7 +84,7 @@ class ReportListEventOrganizerPage extends StatelessWidget {
                 ),
                 Spacer(),
                 SizedBox(
-                  width: 80,
+                  width: MediaQuery.of(context).size.width * 0.2,
                   child: Obx(
                     () => DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
@@ -136,8 +134,8 @@ class ReportListEventOrganizerPage extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () {
-                      Get.to(
-                          () => ReportDetailEventOrganizerPage(reportId: report.id));
+                      Get.to(() =>
+                          ReportDetailEventOrganizerPage(reportId: report.id));
                     },
                     child: Column(
                       children: [

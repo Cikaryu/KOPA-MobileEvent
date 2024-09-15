@@ -23,7 +23,6 @@ class HomePageParticipant extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Obx(
           () {
-
             int days = homePageController.duration.value.inDays;
             int hours = homePageController.duration.value.inHours.remainder(24);
             int minutes =
@@ -34,9 +33,11 @@ class HomePageParticipant extends StatelessWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1810, // Set height according to your need
+                    height: MediaQuery.of(context).size.height *
+                        0.1810, // Set height according to your need
                     color: HexColor('#727578'), // Background color of AppBar
-                    padding: EdgeInsets.fromLTRB(16.0, MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
+                    padding: EdgeInsets.fromLTRB(16.0,
+                        MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
                     width: Get.width,
                     alignment: Alignment.center,
                     child: Column(
@@ -64,7 +65,7 @@ class HomePageParticipant extends StatelessWidget {
                             )
                           ],
                         ),
-                        // SizedBox(height: 8),
+                      
                         Text(
                           'Welcome To Your Homepage',
                           style: TextStyle(
@@ -112,7 +113,10 @@ class HomePageParticipant extends StatelessWidget {
                             color: Colors.grey[800],
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height *
+                            0.06, // 6% of the screen height
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -236,7 +240,8 @@ class HomePageParticipant extends StatelessWidget {
                       SizedBox(height: 34),
                       Container(
                         width: Get.width,
-                        height: MediaQuery.of(context).size.height * 0.2,
+                        height: MediaQuery.of(context).size.height *
+                            0.225, // 22.5% of the screen height|
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/bali.png'),
@@ -288,7 +293,10 @@ class HomePageParticipant extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 94),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height *
+                            0.1175, // 11.75% of the screen height
+                      ),
                     ],
                   ),
                 ),
