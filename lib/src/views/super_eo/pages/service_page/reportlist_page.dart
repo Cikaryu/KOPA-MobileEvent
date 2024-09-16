@@ -85,7 +85,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                 ),
                 Spacer(),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.25,
                   child: Obx(
                     () => DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
