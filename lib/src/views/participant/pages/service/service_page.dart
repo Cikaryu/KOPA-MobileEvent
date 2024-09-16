@@ -175,8 +175,8 @@ class ServicePage extends StatelessWidget {
                                   Text(
                                     reportData['status'] ?? 'No Status',
                                     style: TextStyle(
-                                      color: serviceController
-                                          .getStatusColor(reportData['status']),
+                                      // color: serviceController
+                                      //     .getStatusColor(reportData['status']),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
