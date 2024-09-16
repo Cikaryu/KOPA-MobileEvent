@@ -1,4 +1,13 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/authpage/signin/signin_view.dart';
+import 'package:app_kopabali/src/views/committee/committee_view.dart';
+import 'package:app_kopabali/src/views/committee/pages/home_page/home_page.dart';
+import 'package:app_kopabali/src/views/event_organizer/event_organizer_view.dart';
+import 'package:app_kopabali/src/views/event_organizer/pages/home_page/home_page.dart';
+import 'package:app_kopabali/src/views/participant/pages/home/home_page.dart';
+import 'package:app_kopabali/src/views/participant/participant_view.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/home_page/home_page.dart';
+import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -206,15 +215,15 @@ class SigninController extends GetxController {
     if (isLoggedIn) {
       String role = prefs.getString('role') ?? '';
       if (role == 'Participant') {
-        Navigator.of(context).pushReplacementNamed('/participant');
+        Get.offAll(() => ParticipantView());
       } else if (role == 'Committee') {
-        Navigator.of(context).pushReplacementNamed('/committee');
+        Get.offAll(() => CommitteeView());
       } else if (role == 'Event Organizer') {
-        Navigator.of(context).pushReplacementNamed('/eventorganizer');
+        Get.offAll(() => EventOrganizerView());
       } else if (role == 'Super Event Organizer') {
-        Navigator.of(context).pushReplacementNamed('/supereo');
+        Get.offAll(() => SuperEOView());
       } else {
-        Navigator.of(context).pushReplacementNamed('/signin');
+        Get.offAll(() => SigninView());
       }
     }
   }

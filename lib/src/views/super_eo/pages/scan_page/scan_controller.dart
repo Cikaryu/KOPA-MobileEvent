@@ -15,11 +15,22 @@ class ScanController extends GetxController {
   var poloShirtSize = ''.obs;
   var isProcessing = false.obs;
   var expandedContainer = RxString('');
+  final Rx<String?> userId = Rx<String?>(null);
 
   @override
   void onInit() {
     super.onInit();
-    // Initialize any necessary data or listeners here
+    // Try to get userId from arguments when the controller is initialized
+    _initializeUserId();
+  }
+
+  void _initializeUserId() {
+    if (Get.arguments != null && Get.arguments is Map) {
+      userId.value = Get.arguments['userId'] as String?;
+      print('UserId initialized: ${userId.value}');
+    } else {
+      print('Get.arguments is null or not a Map');
+    }
   }
 
   void toggleContainerExpansion(String containerName) {
@@ -231,12 +242,14 @@ class ScanController extends GetxController {
     }
   }
 
-
-
   void checkAllItems(String containerName) async {
-    try {
-      String userId = Get.arguments?['userId'];
+    if (userId.value == null) {
+      print('Error: userId is null');
+      Get.snackbar("Error", "User ID not found. Please try again.");
+      return;
+    }
 
+    try {
       Map<String, dynamic> updateData = {};
       List<String> fieldsToUpdate = [];
 
@@ -264,19 +277,20 @@ class ScanController extends GetxController {
 
       await _firestore
           .collection('participantKit')
-          .doc(userId)
+          .doc(userId.value)
           .update(updateData);
       status.refresh();
 
       Get.snackbar(
           "Success", "All items in $containerName marked as received.");
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error checking all items: $e');
-      Get.snackbar("Error", "Failed to update all items: $e");
+      print('Stack trace: $stackTrace');
+      Get.snackbar("Error", "Failed to update all items: ${e.toString()}");
     }
   }
 
- void showConfirmCheckAllItems(BuildContext context, String containerName) {
+  void showConfirmCheckAllItems(BuildContext context, String containerName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

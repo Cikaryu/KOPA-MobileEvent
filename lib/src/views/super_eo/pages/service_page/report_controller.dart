@@ -36,6 +36,21 @@ class ReportSuperEOController extends GetxController {
     return '';
   }
 
+  String getStatusImagePath(String status) {
+    switch (status) {
+      case 'Not Started':
+        return 'assets/icons/status/ic_not_started.svg';
+      case 'In Progress':
+        return 'assets/icons/status/ic_in_progress.svg';
+      case 'Pending':
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Resolved':
+        return 'assets/icons/status/ic_received.svg';
+      default:
+        return 'assets/icons/status/ic_default.svg'; // Fallback image
+    }
+  }
+
   Future<void> fetchStatusImage(String reportId, String status) async {
     String imageName;
 

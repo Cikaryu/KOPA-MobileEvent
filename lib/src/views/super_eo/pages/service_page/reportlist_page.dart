@@ -3,6 +3,7 @@ import 'package:app_kopabali/src/views/super_eo/pages/service_page/report_contro
 import 'package:app_kopabali/src/views/super_eo/pages/service_page/reportlist_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 class ReportListSuperEOPage extends StatelessWidget {
@@ -56,8 +57,12 @@ class ReportListSuperEOPage extends StatelessWidget {
                           child: Text('Resolved'),
                         ),
                         DropdownMenuItem(
-                          value: 'Unresolved',
-                          child: Text('Unresolved'),
+                          value: 'Not Started',
+                          child: Text('Not Started'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'In Progress',
+                          child: Text('In Progress'),
                         ),
                         DropdownMenuItem(
                           value: 'Pending',
@@ -246,6 +251,7 @@ class ReportListSuperEOPage extends StatelessWidget {
                                             //                 FontWeight.bold)),
                                             //   ],
                                             // ),
+                                            SizedBox(height: 8),
                                             Row(
                                               children: [
                                                 Text(
@@ -262,29 +268,16 @@ class ReportListSuperEOPage extends StatelessWidget {
                                                           FontWeight.bold),
                                                 ),
                                                 SizedBox(width: 4),
-                                                Obx(() {
-                                                  final imageUrl = reportController
-                                                              .statusImageUrls[
-                                                          report.id] ??
-                                                      '';
-
-                                                  if (imageUrl.isEmpty) {
-                                                    return Icon(Icons
-                                                        .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                  }
-                                                  return Image.network(
-                                                    imageUrl,
-                                                    width: 40,
-                                                    height: 40,
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      debugPrint(
-                                                          'Error loading image: $error');
-                                                      return Icon(Icons
-                                                          .error); // Menampilkan ikon error jika gambar gagal dimuat
-                                                    },
-                                                  );
-                                                }),
+                                                SvgPicture.asset(
+                                                  reportController
+                                                      .getStatusImagePath(
+                                                          reportData['status']),
+                                                  width: 24,
+                                                  height: 24,
+                                                  placeholderBuilder:
+                                                      (BuildContext context) =>
+                                                          Icon(Icons.error),
+                                                ),
                                               ],
                                             ),
                                           ],

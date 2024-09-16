@@ -267,7 +267,7 @@ class ReportPage extends StatelessWidget {
                             title: titleController.text,
                             // category: categoryController.text,
                             description: descriptionController.text,
-                            status: 'Unresolved',
+                            status: 'Not Started',
                           );
                         }
                       },

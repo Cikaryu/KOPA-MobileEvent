@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/scan_page/scan_controller.dart';
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
@@ -18,6 +19,8 @@ class ScanProfileView extends StatelessWidget {
       if (scanController.participantData.isEmpty) {
         String? userId = Get.arguments?['userId'];
         if (userId != null) {
+          scanController.userId.value =
+              userId; // Set the userId in the controller
           scanController.fetchParticipantData(userId);
         } else {
           Get.snackbar("Error", "User ID not provided.");
@@ -155,7 +158,7 @@ class ScanProfileView extends StatelessWidget {
                       scanController, 'Jas Hujan', 'merchandise.jasHujan'),
                 ]),
                 SizedBox(height: 16),
-                buildDropdownContainer(scanController, 'Souvenir', 'souvenir', [
+                buildDropdownContainer(scanController, 'Souvenir Program', 'souvenir', [
                   buildStatusRow(scanController, 'Gelang Tridatu',
                       'souvenir.gelangTridatu'),
                   buildStatusRow(scanController, 'Selendang Udeng',
@@ -329,7 +332,7 @@ class ScanProfileView extends StatelessWidget {
                         duration: Duration(milliseconds: 300),
                         height:
                             scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 10)
+                                ? (children.length * 40.0 + 88)
                                 : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -354,16 +357,18 @@ class ScanProfileView extends StatelessWidget {
   Widget buildProfileRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+          SizedBox(height: 4),
           Text(
+            overflow: TextOverflow.ellipsis,
             value,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 14),
           ),
         ],
       ),
@@ -454,7 +459,7 @@ class ScanProfileView extends StatelessWidget {
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      backgroundColor: HexColor('01613B'),
+                                      backgroundColor: Colors.red,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10)),

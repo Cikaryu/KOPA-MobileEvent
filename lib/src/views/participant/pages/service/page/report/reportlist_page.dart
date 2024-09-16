@@ -3,6 +3,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/reportlist_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ReportListPage extends StatelessWidget {
   const ReportListPage({super.key});
@@ -12,7 +13,6 @@ class ReportListPage extends StatelessWidget {
     final ReportController reportController = Get.put(ReportController());
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
-    // Cek apakah pengguna terautentikasi
     if (userId == null) {
       return Scaffold(
         backgroundColor: Colors.white,
@@ -31,18 +31,19 @@ class ReportListPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: HexColor('E97717'),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: HexColor('E97717'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-              onPressed: () {
-                Get.to(() => ReportPage());
-              },
-              child: Text('Add Report',
-                  style: TextStyle(fontSize: 16, color: Colors.white))),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            ),
+            onPressed: () {
+              Get.to(() => ReportPage());
+            },
+            child: Text('Add Report',
+                style: TextStyle(fontSize: 16, color: Colors.white)),
+          ),
         ),
       ),
       backgroundColor: Colors.white,
@@ -57,10 +58,7 @@ class ReportListPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('report')
-            .where('userId', isEqualTo: userId) // Filter berdasarkan userId
-            .snapshots(),
+        stream: reportController.getReports(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -78,10 +76,6 @@ class ReportListPage extends StatelessWidget {
               final report = reports[index];
               final reportData = report.data() as Map<String, dynamic>;
 
-              // Memanggil fetchStatusImage untuk memastikan gambar diambil
-              reportController.fetchStatusImage(
-                  report.id, reportData['status']);
-
               return GestureDetector(
                 onTap: () {
                   Get.to(() => ReportDetailPage(reportId: report.id));
@@ -94,7 +88,6 @@ class ReportListPage extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 12.0),
-                        margin: EdgeInsets.only(bottom: 16.0),
                         decoration: BoxDecoration(
                           color: HexColor("F3F3F3"),
                           borderRadius: BorderRadius.circular(20),
@@ -110,7 +103,9 @@ class ReportListPage extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: 16.0),
+                            SvgPicture.asset('assets/icons/ic_report_list.svg',
+                                width: 32, height: 32),
+                            SizedBox(width: 12.0),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,28 +127,12 @@ class ReportListPage extends StatelessWidget {
                                       ),
                                       Text(reportData['status'] ?? 'No Status'),
                                       SizedBox(width: 4),
-                                      Obx(() {
-                                        final imageUrl = reportController
-                                                .statusImageUrls[report.id] ??
-                                            '';
-
-                                        if (imageUrl.isEmpty) {
-                                          return Icon(Icons
-                                              .error); // Menampilkan ikon error jika gambar gagal diambil
-                                        }
-                                        return Image.network(
-                                          imageUrl,
-                                          width: 40,
-                                          height: 40,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            debugPrint(
-                                                'Error loading image: $error');
-                                            return Icon(Icons
-                                                .error); // Menampilkan ikon error jika gambar gagal dimuat
-                                          },
-                                        );
-                                      }),
+                                      SvgPicture.asset(
+                                        reportController.getStatusImagePath(
+                                            reportData['status']),
+                                        width: 24,
+                                        height: 24,
+                                      ),
                                     ],
                                   ),
                                 ],

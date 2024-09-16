@@ -5,6 +5,7 @@ import 'package:app_kopabali/src/views/participant/pages/service/page/report/rep
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/reportlist_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/service/service_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ServicePage extends StatelessWidget {
   const ServicePage({super.key});
@@ -125,7 +126,6 @@ class ServicePage extends StatelessWidget {
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        // Jika tidak ada laporan, kembalikan widget kosong
                         return Center(
                           child: Text(
                             'No reports available.',
@@ -139,68 +139,61 @@ class ServicePage extends StatelessWidget {
 
                       final reports = snapshot.data!.docs
                           .take(4)
-                          .toList(); // Ambil hanya 4 laporan
+                          .toList(); // Take only 4 reports
 
                       return Column(
                         children: reports.map((report) {
                           final reportData =
                               report.data() as Map<String, dynamic>;
-                          final reportId = report.id; // Dapatkan ID laporan
+                          final reportId = report.id;
+                          final status = reportData['status'] as String;
 
-                          // Panggil fetchStatusImage untuk memastikan gambar diambil
-                          serviceController.fetchStatusImage(
-                              reportId, reportData['status']);
-
-                          return Obx(() {
-                            final statusImageUrl =
-                                serviceController.statusImageUrls[reportId] ??
-                                    '';
-
-                            return InkWell(
-                              onTap: () {
-                                Get.to(() => ReportListPage());
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: HexColor("#F3F3F3"),
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                    width: 0.5,
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(16.0),
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        reportData['title'] ?? 'No Title',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    // Tampilkan gambar
-                                    Image.network(
-                                      statusImageUrl,
-                                      width: 24,
-                                      height: 24,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Icon(Icons
-                                            .error); // Tampilkan ikon kesalahan atau placeholder
-                                      },
-                                    ),
-                                  ],
+                          return InkWell(
+                            onTap: () {
+                              Get.to(() => ReportListPage());
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: HexColor("#F3F3F3"),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 0.5,
                                 ),
                               ),
-                            );
-                          });
+                              padding: const EdgeInsets.all(16.0),
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    reportData['title'] ?? 'No Title',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    reportData['status'] ?? 'No Status',
+                                    style: TextStyle(
+                                      color: serviceController
+                                          .getStatusColor(reportData['status']),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  // Display SVG icon
+                                  SvgPicture.asset(
+                                    serviceController
+                                        .getStatusImagePath(status),
+                                    width: 24,
+                                    height: 24,
+                                    placeholderBuilder:
+                                        (BuildContext context) =>
+                                            Icon(Icons.error),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
                         }).toList(),
                       );
                     },

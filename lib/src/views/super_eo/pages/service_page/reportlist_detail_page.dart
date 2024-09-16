@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
-// Todo : dropdown mengikuti status report yang ada di database
-// Todo : status Ditambah menjadi 4 yaitu Not Started, In Progress, Pending, Solved
 class ReportDetailSuperEOPage extends StatelessWidget {
   final String reportId;
 
@@ -15,13 +13,14 @@ class ReportDetailSuperEOPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ReportSuperEOController reportController =
         Get.put(ReportSuperEOController());
-    final List<String> categoryOptions = [
-      'Resolved',
+    final List<String> statusOptions = [
+      'Not Started',
+      'In Progress',
       'Pending',
-      'Unresolved',
+      'Resolved',
     ];
 
-    final RxString status = 'Resolved'.obs; // Default status
+    final RxString status = 'Not Started'.obs; // Default status
 
     return Scaffold(
       body: FutureBuilder<DocumentSnapshot>(
@@ -40,6 +39,9 @@ class ReportDetailSuperEOPage extends StatelessWidget {
           final TextEditingController replyController = TextEditingController(
             text: reportData['reply'], // Use the existing reply
           );
+
+          // Set the initial status based on the report data
+          status.value = reportData['status'] ?? 'Not Started';
 
           return Obx(() => Scaffold(
                 backgroundColor: Colors.white,
@@ -66,8 +68,7 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                               ],
                             ),
                             SizedBox(height: 8),
-                            if (reportData['image'] !=
-                                '-') // Show image if it exists
+                            if (reportData['image'] != '-')
                               Image.network(
                                 reportData['image'],
                                 fit: BoxFit.cover,
@@ -75,21 +76,6 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                 height: 200,
                               ),
                             SizedBox(height: 16),
-                            // Text('Category', style: TextStyle(fontSize: 18)),
-                            // SizedBox(height: 8),
-                            // TextFormField(
-                            //   initialValue: reportData['category'],
-                            //   readOnly: true,
-                            //   decoration: InputDecoration(
-                            //     filled: true,
-                            //     fillColor: Colors.grey[200],
-                            //     border: OutlineInputBorder(
-                            //       borderRadius: BorderRadius.circular(10),
-                            //       borderSide: BorderSide.none,
-                            //     ),
-                            //   ),
-                            // ),
-                            // SizedBox(height: 8),
                             Text('Description:',
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
@@ -157,12 +143,11 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                       elevation: 5,
                                       padding: EdgeInsets.all(10),
                                     ),
-                                    items:
-                                        categoryOptions.map((String category) {
+                                    items: statusOptions.map((String status) {
                                       return DropdownMenuItem<String>(
-                                        value: category,
+                                        value: status,
                                         child: Text(
-                                          category,
+                                          status,
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       );

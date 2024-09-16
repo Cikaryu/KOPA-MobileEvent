@@ -27,36 +27,35 @@ class ServiceController extends GetxController {
     Get.back();
   }
 
-  Future<void> fetchStatusImage(String reportId, String status) async {
-    String imageName;
-
+  String getStatusImagePath(String status) {
     switch (status) {
+      case 'Not Started':
+        return 'assets/icons/status/ic_not_started.svg';
+      case 'In Progress':
+        return 'assets/icons/status/ic_in_progress.svg';
       case 'Pending':
-        imageName = 'pending.png';
-        break;
+        return 'assets/icons/status/ic_pending.svg';
       case 'Resolved':
-        imageName = 'received.png';
-        break;
-      case 'Unresolved':
-        imageName = 'close.png';
-        break;
+        return 'assets/icons/status/ic_received.svg';
       default:
-        imageName = 'default.png';
-    }
-
-    debugPrint('Image name determined: $imageName'); // Debug statement
-
-    try {
-      final downloadUrl = await FirebaseStorage.instance
-          .ref('status/$imageName')
-          .getDownloadURL();
-      debugPrint('Fetched image URL: $downloadUrl'); // Debug statement
-      statusImageUrls[reportId] = downloadUrl; // Menyimpan URL gambar
-    } catch (e) {
-      debugPrint('Error fetching status image: $e'); // Debug statement
-      statusImageUrls[reportId] = ''; // Set to empty string if failed
+        return 'assets/icons/status/ic_default.svg'; // Fallback image
     }
   }
+
+  Color getStatusColor(String? status) {
+  switch (status) {
+    case 'Not Started':
+      return Colors.grey;
+    case 'In Progress':
+      return Colors.blue;
+    case 'Pending':
+      return Colors.yellow[700]!;  // Darker shade of yellow for better visibility
+    case 'Resolved':
+      return Colors.green;
+    default:
+      return Colors.black;  // Default color if status is null or unknown
+  }
+}
 
   Stream<QuerySnapshot> getReportsStream() {
     final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId

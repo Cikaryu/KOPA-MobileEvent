@@ -59,7 +59,6 @@ class SearchParticipantController extends GetxController {
     isLoading.value = value;
   }
 
-
   Future<void> fetchParticipantKitStatus(String participantId) async {
     try {
       final doc = await FirebaseFirestore.instance
@@ -286,19 +285,16 @@ class SearchParticipantController extends GetxController {
       participantKitStatus[category].forEach((item, value) {
         updates['$category.$item.status'] = 'Received';
       });
-
       await FirebaseFirestore.instance
           .collection('participantKit')
           .doc(participantId)
           .update(updates);
-
       final String Activityid = _firestore.collection('activityLogs').doc().id;
       // add logs activity
       final User? user = _auth.currentUser;
       if (user != null) {
         final DocumentSnapshot userDoc =
             await _firestore.collection('users').doc(user.uid).get();
-
         final String name = userDoc['name'] ?? '';
         await _firestore.collection('activityLogs').doc(Activityid).set({
           'type': 'participantkit_changed_all', // Set type as a simple string
@@ -309,18 +305,21 @@ class SearchParticipantController extends GetxController {
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
-
       // Update local state
       participantKitStatus[category].forEach((item, value) {
         value['status'] = 'Received';
       });
-
       // Refresh the participant kit status
       await fetchParticipantKitStatus(participantId);
-    } catch (e) {
+      Get.snackbar("Success", "All items in $category marked as received.");
+    } catch (e, stackTrace) {
       print('Error checking all items: $e');
+      print('Stack trace: $stackTrace');
+      Get.snackbar("Error", "Failed to update all items: ${e.toString()}");
     }
   }
+
+// Add this new method to show the confirmation dialog
 
   Future<void> submitParticipantKit(String participantId) async {
     try {

@@ -374,7 +374,7 @@ class ProfileSuperEOPage extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(horizontal: 60, vertical: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     child: Text(
