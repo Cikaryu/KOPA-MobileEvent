@@ -31,7 +31,8 @@ class ScannerView extends StatelessWidget {
                     final String qrCode = barcode!.rawValue!;
                     qrCodeController.processQRCode(qrCode);
                   } else {
-                    Get.snackbar("Error", "Failed to scan QR code.");
+                    Get.snackbar("Error", "Failed to scan QR code.",backgroundColor: Colors.red,
+          colorText: Colors.white,);
                   }
                 },
               ),
@@ -74,10 +75,16 @@ class ScannerView extends StatelessWidget {
                         // Navigation handled in processQRCode
                       }).catchError((error) {
                         print('Error in QR code processing: $error');
-                        Get.snackbar("Error", "Failed to process QR code.");
+                        Get.snackbar("Error", "Failed to process QR code.",
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                        );
                       });
                     } else {
-                      Get.snackbar("Error", "Failed to scan QR code.");
+                      Get.snackbar("Error", "Failed to scan QR code.",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                      );
                     }
                   },
                 ),

@@ -15,11 +15,22 @@ class ScanController extends GetxController {
   var poloShirtSize = ''.obs;
   var isProcessing = false.obs;
   var expandedContainer = RxString('');
+  final Rx<String?> userId = Rx<String?>(null);
 
   @override
   void onInit() {
     super.onInit();
     // Initialize any necessary data or listeners here
+    _initializeUserId();
+  }
+
+  void _initializeUserId() {
+    if (Get.arguments != null && Get.arguments is Map) {
+      userId.value = Get.arguments['userId'] as String?;
+      print('UserId initialized: ${userId.value}');
+    } else {
+      print('Get.arguments is null or not a Map');
+    }
   }
 
   void toggleContainerExpansion(String containerName) {
@@ -122,7 +133,12 @@ class ScanController extends GetxController {
       status[field] = newStatus;
     } catch (e) {
       print('Error updating item status: $e');
-      Get.snackbar("Error", "Failed to update item status.");
+      Get.snackbar(
+        "Error",
+        "Failed to update item status.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -143,11 +159,21 @@ class ScanController extends GetxController {
         Get.off(() => ScanProfileView(), arguments: {'userId': qrCode});
       } else {
         print('Participant not found.');
-        Get.snackbar("Error", "Participant not found.");
+        Get.snackbar(
+          "Error",
+          "Participant not found.",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       print('Error processing QR code: $e');
-      Get.snackbar("Error", "Failed to process QR code.");
+      Get.snackbar(
+        "Error",
+        "Failed to process QR code.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading(false);
       isProcessing(false);
@@ -166,7 +192,6 @@ class ScanController extends GetxController {
         return 'assets/icons/status/ic_default.svg';
     }
   }
-  
 
   String getStatusForItem(String category, String item) {
     return status['$category.$item'] ?? 'Pending';
@@ -180,17 +205,32 @@ class ScanController extends GetxController {
           .doc(userId)
           .update({'role': newRole});
       participantData['role'] = newRole;
-      Get.snackbar("Success", "Participant role updated successfully.");
+      Get.snackbar(
+        "Success",
+        "Participant role updated successfully.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       print('Error updating participant role: $e');
-      Get.snackbar("Error", "Failed to update participant role.");
+      Get.snackbar(
+        "Error",
+        "Failed to update participant role.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
   void checkAllItems(String containerName) async {
-    try {
-      String userId = Get.arguments?['userId'];
+    if (userId.value == null) {
+      print('Error: userId is null');
+      Get.snackbar("Error", "User ID not found. Please try again.",
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
 
+    try {
       Map<String, dynamic> updateData = {};
       List<String> fieldsToUpdate = [];
 
@@ -205,7 +245,12 @@ class ScanController extends GetxController {
           fieldsToUpdate = ['voucherEwallet', 'voucherBelanja'];
           break;
         default:
-          Get.snackbar("Error", "Invalid container name: $containerName");
+          Get.snackbar(
+            "Error",
+            "Invalid container name: $containerName",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
           return;
       }
 
@@ -218,15 +263,21 @@ class ScanController extends GetxController {
 
       await _firestore
           .collection('participantKit')
-          .doc(userId)
+          .doc(userId.value)
           .update(updateData);
       status.refresh();
 
       Get.snackbar(
-          "Success", "All items in $containerName marked as received.");
-    } catch (e) {
+        "Success",
+        "All items in $containerName marked as received.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e, stackTrace) {
       print('Error checking all items: $e');
-      Get.snackbar("Error", "Failed to update all items: $e");
+      print('Stack trace: $stackTrace');
+      Get.snackbar("Error", "Failed to update all items: ${e.toString()}",
+          backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 
@@ -236,10 +287,93 @@ class ScanController extends GetxController {
       await _firestore.collection('participantKit').doc(userId).update({
         'submitUpdatedAt': FieldValue.serverTimestamp(),
       });
-      Get.snackbar("Success", "Participant kit submitted successfully.");
+      Get.snackbar(
+        "Success",
+        "Participant kit submitted successfully.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       print('Error submitting participant kit: $e');
-      Get.snackbar("Error", "Failed to submit participant kit.");
+      Get.snackbar(
+        "Error",
+        "Failed to submit participant kit.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
+  }
+
+  void showConfirmCheckAllItems(BuildContext context, String containerName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Confirm Action',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Are you sure you want to mark all items as received?',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    color: Colors.red,
+                    border: Border(
+                      top: BorderSide(color: Colors.redAccent),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text('No',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16)),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    color: Colors.green,
+                    border: Border(
+                      top: BorderSide(color: Colors.greenAccent),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text('Yes',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16)),
+                    onPressed: () {
+                      checkAllItems(
+                          containerName); // Mark all items as received
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }

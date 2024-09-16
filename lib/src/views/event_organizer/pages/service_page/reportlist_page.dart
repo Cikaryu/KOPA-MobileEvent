@@ -14,6 +14,7 @@ class ReportListEventOrganizerPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: HexColor('727578'),
         title: Text('Report List',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -72,6 +73,7 @@ class ReportListEventOrganizerPage extends StatelessWidget {
                           color: Colors.grey[300],
                         ),
                         width: 140,
+                        maxHeight: 160,
                         offset: Offset(5, 50),
                         elevation: 5,
                         padding: EdgeInsets.all(10),
@@ -84,10 +86,10 @@ class ReportListEventOrganizerPage extends StatelessWidget {
                 ),
                 Spacer(),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.25,
                   child: Obx(
                     () => DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
+                      child: DropdownButton2<String>(
                         isDense: true,
                         value: reportController.selectedSortOption.value,
                         items: [
@@ -106,6 +108,17 @@ class ReportListEventOrganizerPage extends StatelessWidget {
                             reportController.sortReportsByDate();
                           }
                         },
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey[300],
+                          ),
+                          width: 120,
+                          maxHeight: 160,
+                          offset: Offset(-5, 0),
+                          elevation: 5,
+                          padding: EdgeInsets.all(10),
+                        ),
                       ),
                     ),
                   ),

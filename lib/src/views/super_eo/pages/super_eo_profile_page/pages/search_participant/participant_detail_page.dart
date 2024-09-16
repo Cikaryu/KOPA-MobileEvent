@@ -486,21 +486,63 @@ class ParticipantDetailPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Action'),
-          content: Text('Are you sure you want to mark all items as received?'),
+          backgroundColor: Colors.white,
+          title: Text(
+            'Confirm Action',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Are you sure you want to mark all items as received?',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
           actions: <Widget>[
-            TextButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-            TextButton(
-              child: Text('Yes'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                controller.checkAllItems(participant.uid, containerName);
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        color: Colors.red,
+                        border: Border(
+                          top: BorderSide(color: Colors.redAccent),
+                        ),
+                      ),
+                      child: Text('No',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16))),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                ),
+                TextButton(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        color: Colors.green,
+                        border: Border(
+                          top: BorderSide(color: Colors.greenAccent),
+                        ),
+                      ),
+                      child: Text('Yes',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16))),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    controller.checkAllItems(participant.uid, containerName);
+                  },
+                ),
+              ],
             ),
           ],
         );

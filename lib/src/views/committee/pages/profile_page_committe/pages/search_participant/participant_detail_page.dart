@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:path/path.dart';
 
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
@@ -124,7 +125,7 @@ class ParticipantDetailPage extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 buildDropdownContainer(
-                    controller, 'Merchandise', 'merchandise', [
+                    controller, context, 'Merchandise', 'merchandise', [
                   buildStatusRow(
                       controller,
                       'Polo Shirt (${controller.poloShirtSize})',
@@ -139,14 +140,16 @@ class ParticipantDetailPage extends StatelessWidget {
                       controller, 'Jas Hujan', 'merchandise.jasHujan'),
                 ]),
                 SizedBox(height: 16),
-                buildDropdownContainer(controller, 'Souvenir', 'souvenir', [
+                buildDropdownContainer(
+                    controller, context, 'Souvenir', 'souvenir', [
                   buildStatusRow(
                       controller, 'Gelang Tridatu', 'souvenir.gelangTridatu'),
                   buildStatusRow(
                       controller, 'Selendang Udeng', 'souvenir.selendangUdeng'),
                 ]),
                 SizedBox(height: 16),
-                buildDropdownContainer(controller, 'Benefit', 'benefit', [
+                buildDropdownContainer(
+                    controller, context, 'Benefit', 'benefit', [
                   buildStatusRow(
                       controller, 'Voucher Belanja', 'benefit.voucherBelanja'),
                   buildStatusRow(
@@ -237,7 +240,7 @@ class ParticipantDetailPage extends StatelessWidget {
                         width: 420,
                         duration: Duration(milliseconds: 300),
                         height: controller.isContainerExpanded(containerName)
-                            ? (children.length * 40.0 + 60)
+                            ? (children.length * 40.0 + 88)
                             : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -262,8 +265,8 @@ class ParticipantDetailPage extends StatelessWidget {
   Widget buildProfileRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
@@ -278,8 +281,12 @@ class ParticipantDetailPage extends StatelessWidget {
     );
   }
 
-  Widget buildDropdownContainer(SearchParticipantController controller,
-      String title, String containerName, List<Widget> children) {
+  Widget buildDropdownContainer(
+      SearchParticipantController controller,
+      BuildContext context,
+      String title,
+      String containerName,
+      List<Widget> children) {
     return Center(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
@@ -369,19 +376,19 @@ class ParticipantDetailPage extends StatelessWidget {
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    controller.checkAllItems(
-                                        participant.uid, containerName);
+                                    _showConfirmationDialog(
+                                        context, controller, containerName);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: Colors.white,
-                                    backgroundColor: HexColor('E97717'),
+                                    backgroundColor: Colors.red,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 24, vertical: 6),
                                   ),
-                                  child: Text('Check All (Received)'),
+                                  child: Text('Click If All Received'),
                                 ),
                               ),
                             ],
@@ -396,6 +403,76 @@ class ParticipantDetailPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showConfirmationDialog(BuildContext context,
+      SearchParticipantController controller, String containerName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Confirm Action',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'Are you sure you want to mark all items as received?',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        color: Colors.red,
+                        border: Border(
+                          top: BorderSide(color: Colors.redAccent),
+                        ),
+                      ),
+                      child: Text('No',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16))),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                ),
+                TextButton(
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        color: Colors.green,
+                        border: Border(
+                          top: BorderSide(color: Colors.greenAccent),
+                        ),
+                      ),
+                      child: Text('Yes',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16))),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    controller.checkAllItems(participant.uid, containerName);
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 

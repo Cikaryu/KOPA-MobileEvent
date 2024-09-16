@@ -126,7 +126,8 @@ class ScanController extends GetxController {
       await fetchStatusImage(field, newStatus);
     } catch (e) {
       print('Error updating item status: $e');
-      Get.snackbar("Error", "Failed to update item status.");
+      Get.snackbar("Error", "Failed to update item status.",backgroundColor: Colors.red,
+          colorText: Colors.white,);
     }
   }
 
@@ -147,11 +148,13 @@ class ScanController extends GetxController {
         Get.off(() => ScanProfileView(), arguments: {'userId': qrCode});
       } else {
         print('Participant not found.');
-        Get.snackbar("Error", "Participant not found.");
+        Get.snackbar("Error", "Participant not found.",backgroundColor: Colors.red,
+            colorText: Colors.white,);
       }
     } catch (e) {
       print('Error processing QR code: $e');
-      Get.snackbar("Error", "Failed to process QR code.");
+      Get.snackbar("Error", "Failed to process QR code.",backgroundColor: Colors.red,
+          colorText: Colors.white,);
     } finally {
       isLoading(false);
       isProcessing(false);
@@ -237,7 +240,8 @@ class ScanController extends GetxController {
           fieldsToUpdate = ['voucherEwallet', 'voucherBelanja'];
           break;
         default:
-          Get.snackbar("Error", "Invalid container name: $containerName");
+          Get.snackbar("Error", "Invalid container name: $containerName",backgroundColor: Colors.red,
+          colorText: Colors.white,);
           return;
       }
 
@@ -255,10 +259,12 @@ class ScanController extends GetxController {
       status.refresh();
 
       Get.snackbar(
-          "Success", "All items in $containerName marked as received.");
+          "Success", "All items in $containerName marked as received.",backgroundColor: Colors.green,
+          colorText: Colors.white,);
     } catch (e) {
       print('Error checking all items: $e');
-      Get.snackbar("Error", "Failed to update all items: $e");
+      Get.snackbar("Error", "Failed to update all items: $e",backgroundColor: Colors.red,
+          colorText: Colors.white,);
     }
   }
 
@@ -268,10 +274,12 @@ class ScanController extends GetxController {
       await _firestore.collection('participantKit').doc(userId).update({
         'submittedAt': FieldValue.serverTimestamp(),
       });
-      Get.snackbar("Success", "Participant kit submitted successfully.");
+      Get.snackbar("Success", "Participant kit submitted successfully.",backgroundColor: Colors.green,
+          colorText: Colors.white,);
     } catch (e) {
       print('Error submitting participant kit: $e');
-      Get.snackbar("Error", "Failed to submit participant kit.");
+      Get.snackbar("Error", "Failed to submit participant kit.",backgroundColor: Colors.red,
+          colorText: Colors.white,);
     }
   }
 }

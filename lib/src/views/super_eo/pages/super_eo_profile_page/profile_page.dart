@@ -214,7 +214,7 @@ class ProfileSuperEOPage extends StatelessWidget {
                                     ],
                                   ),
                                   child: Icon(
-                                    Icons.upload_rounded,
+                                    Icons.link,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -223,7 +223,7 @@ class ProfileSuperEOPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Export Data',
+                                      'Database Event',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,

@@ -66,7 +66,6 @@ class _HomePageParticipantState extends State<HomePageSuperEO> {
                             )
                           ],
                         ),
-                       
                         Text(
                           'Welcome To Your Homepage',
                           style: TextStyle(
@@ -84,7 +83,7 @@ class _HomePageParticipantState extends State<HomePageSuperEO> {
                     children: [
                       Container(
                         width: Get.width,
-                        height: 160,
+                        height: MediaQuery.of(context).size.height * 0.2,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/evenyt.png'),
@@ -238,7 +237,8 @@ class _HomePageParticipantState extends State<HomePageSuperEO> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 34),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.034),
                       Container(
                         width: Get.width,
                         height: MediaQuery.of(context).size.height *
@@ -460,7 +460,7 @@ class _HomePageParticipantState extends State<HomePageSuperEO> {
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: HexColor('#01613B'),
+                                  color: HexColor('#E97717'),
                                 ),
                               ),
                               SizedBox(height: 8),
@@ -482,7 +482,7 @@ class _HomePageParticipantState extends State<HomePageSuperEO> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: HexColor('#01613B'),
+                                  color: HexColor('#E97717'),
                                 ),
                               ),
                               Text(

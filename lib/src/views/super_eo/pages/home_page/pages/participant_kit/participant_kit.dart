@@ -1,12 +1,8 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'participant_kit_controller.dart';
-import 'participant_kit_days/day_one.dart';
-import 'participant_kit_days/day_three.dart';
-import 'participant_kit_days/day_two.dart';
 
 class ParticipantKit extends StatelessWidget {
   ParticipantKit({Key? key}) : super(key: key);
-
   final ParticipantKitController controller = ParticipantKitController();
 
   @override
@@ -29,47 +25,76 @@ class ParticipantKit extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    "Polo Shirt",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Friday, 20 September 2024",
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at ipsum at nulla ultrices gravida. Integer nec viverra magna. Etiam euismod lacus eu dui vestibulum, eget luctus sem aliquet.",
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.justify,
+                  ),
                   const SizedBox(height: 24),
+                  _buildImageItem(
+                      'assets/images/participant_kit/poloshirt1.png'),
+                  const SizedBox(height: 18),
+                  _buildImageItem(
+                      'assets/images/participant_kit/poloshirt2.png'),
+                  const SizedBox(height: 44),
+                  Text(
+                    "T-Shirt",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Saturday, 21 September 2024",
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at ipsum at nulla ultrices gravida. Integer nec viverra magna. Etiam euismod lacus eu dui vestibulum, eget luctus sem aliquet.",
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.justify,
+                  ),
+                  const SizedBox(height: 24),
+                  _buildImageItem(
+                      'assets/images/participant_kit/poloshirt1.png'),
+                  const SizedBox(height: 18),
+                  _buildImageItem(
+                      'assets/images/participant_kit/poloshirt2.png'),
+                  const SizedBox(height: 44),
+                  Text(
+                    "Name Tag",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Sunday, 22 September 2024",
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at ipsum at nulla ultrices gravida. Integer nec viverra magna. Etiam euismod lacus eu dui vestibulum, eget luctus sem aliquet.",
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.justify,
+                  ),
+                  const SizedBox(height: 24),
+                  _buildImageItem(
+                      'assets/images/participant_kit/poloshirt1.png'),
+                  const SizedBox(height: 18),
+                  _buildImageItem(
+                      'assets/images/participant_kit/poloshirt2.png'),
                 ],
-              ),
-            ),
-            // Tab bar hari
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  _buildDayTab(0, 'Day 1'),
-                  _buildDayTab(1, 'Day 2'),
-                  _buildDayTab(2, 'Day 3'),
-                ],
-              ),
-            ),
-            // Konten hari berdasarkan tab yang dipilih
-            SizedBox(
-              height: 600,
-              child: ValueListenableBuilder<int>(
-                valueListenable: controller.selectedDay,
-                builder: (context, value, child) {
-                  switch (value) {
-                    case 0:
-                      return DayOneContent();
-                    case 1:
-                      return DayTwoContent();
-                    case 2:
-                      return DayThreeContent();
-                    default:
-                      return Center(child: Text('Invalid Day'));
-                  }
-                },
               ),
             ),
           ],
@@ -78,30 +103,26 @@ class ParticipantKit extends StatelessWidget {
     );
   }
 
-  Widget _buildDayTab(int day, String label) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => controller.changeDay(day),
-        child: ValueListenableBuilder<int>(
-          valueListenable: controller.selectedDay,
-          builder: (context, value, child) {
-            final isSelected = value == day;
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: isSelected ? HexColor("727578") : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-            );
-          },
+  // Fungsi untuk menampilkan gambar item
+  Widget _buildImageItem(String imagePath) {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.asset(
+            imagePath,
+            alignment: Alignment.center,
+            height: 200,
+            width: Get.width / 1.9,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );

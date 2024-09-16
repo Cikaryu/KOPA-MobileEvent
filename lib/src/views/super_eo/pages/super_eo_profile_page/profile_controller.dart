@@ -182,6 +182,8 @@ class ProfileSuperEOController extends GetxController {
           "You have switched to the Participant role.",
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
 
         Get.offAll(() => ParticipantView());
@@ -203,6 +205,8 @@ class ProfileSuperEOController extends GetxController {
           "You have switched to the Super Event Organizer role.",
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
 
         Get.offAll(() => SuperEOView());

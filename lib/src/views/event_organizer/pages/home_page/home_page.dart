@@ -240,8 +240,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 34),
-                      Container(
+  SizedBox(height: MediaQuery.of(context).size.height * 0.034),                      Container(
                         width: Get.width,
                         height: MediaQuery.of(context).size.height * 0.225, // 22.5% of the screen height
                         decoration: ShapeDecoration(
@@ -461,7 +460,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: HexColor('#01613B'),
+                                  color: HexColor('#E97717'),
                                 ),
                               ),
                               SizedBox(height: 8),
@@ -483,7 +482,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: HexColor('#01613B'),
+                                  color: HexColor('#E97717'),
                                 ),
                               ),
                               Text(

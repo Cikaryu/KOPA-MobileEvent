@@ -45,7 +45,7 @@ class HomePageCommitteeController extends GetxController {
     }
   }
 
- Future<DateTime> getServerTime() async {
+  Future<DateTime> getServerTime() async {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('serverTime').doc('time');
     await docRef.set({'timestamp': FieldValue.serverTimestamp()});

@@ -184,6 +184,8 @@ class ProfileCommitteeController extends GetxController {
           "You have switched to the Participant role.",
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
 
         Get.offAll(() => ParticipantView());
@@ -201,6 +203,8 @@ class ProfileCommitteeController extends GetxController {
           "You have switched to the Committee role.",
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
 
         Get.offAll(() => CommitteeView());

@@ -136,7 +136,12 @@ class ScanController extends GetxController {
       await fetchStatusImage(field, newStatus);
     } catch (e) {
       print('Error updating item status: $e');
-      Get.snackbar("Error", "Failed to update item status.");
+      Get.snackbar(
+        "Error",
+        "Failed to update item status.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -157,11 +162,21 @@ class ScanController extends GetxController {
         Get.off(() => ScanProfileView(), arguments: {'userId': qrCode});
       } else {
         print('Participant not found.');
-        Get.snackbar("Error", "Participant not found.");
+        Get.snackbar(
+          "Error",
+          "Participant not found.",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       print('Error processing QR code: $e');
-      Get.snackbar("Error", "Failed to process QR code.");
+      Get.snackbar(
+        "Error",
+        "Failed to process QR code.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading(false);
       isProcessing(false);
@@ -235,17 +250,28 @@ class ScanController extends GetxController {
       participantData.remove('wasEventOrganizer');
       participantData.remove('wasSuperEO');
 
-      Get.snackbar("Success", "Participant role updated successfully.");
+      Get.snackbar(
+        "Success",
+        "Participant role updated successfully.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       print('Error updating participant role: $e');
-      Get.snackbar("Error", "Failed to update participant role.");
+      Get.snackbar(
+        "Error",
+        "Failed to update participant role.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
   void checkAllItems(String containerName) async {
     if (userId.value == null) {
       print('Error: userId is null');
-      Get.snackbar("Error", "User ID not found. Please try again.");
+      Get.snackbar("Error", "User ID not found. Please try again.",
+          backgroundColor: Colors.red, colorText: Colors.white);
       return;
     }
 
@@ -264,7 +290,12 @@ class ScanController extends GetxController {
           fieldsToUpdate = ['voucherEwallet', 'voucherBelanja'];
           break;
         default:
-          Get.snackbar("Error", "Invalid container name: $containerName");
+          Get.snackbar(
+            "Error",
+            "Invalid container name: $containerName",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
           return;
       }
 
@@ -295,25 +326,67 @@ class ScanController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Text(
             'Confirm Action',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          content: Text('Are you sure you want to mark all items as received?'),
+          content: Text(
+            'Are you sure you want to mark all items as received?',
+            textAlign: TextAlign.left,
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
           actions: <Widget>[
-            TextButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-            TextButton(
-              child: Text('Yes'),
-              onPressed: () {
-                checkAllItems(containerName); // Mark all items as received
-                Navigator.of(context).pop(); // Close the dialog
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    color: Colors.red,
+                    border: Border(
+                      top: BorderSide(color: Colors.redAccent),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text('No',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16)),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    color: Colors.green,
+                    border: Border(
+                      top: BorderSide(color: Colors.greenAccent),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text('Yes',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16)),
+                    onPressed: () {
+                      checkAllItems(
+                          containerName); // Mark all items as received
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -327,10 +400,20 @@ class ScanController extends GetxController {
       await _firestore.collection('participantKit').doc(userId).update({
         'submittedAt': FieldValue.serverTimestamp(),
       });
-      Get.snackbar("Success", "Participant kit submitted successfully.");
+      Get.snackbar(
+        "Success",
+        "Participant kit submitted successfully.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       print('Error submitting participant kit: $e');
-      Get.snackbar("Error", "Failed to submit participant kit.");
+      Get.snackbar(
+        "Error",
+        "Failed to submit participant kit.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 }

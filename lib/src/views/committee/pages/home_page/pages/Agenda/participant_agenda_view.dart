@@ -21,7 +21,7 @@ class ParticipantAgendaView extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white)),
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('#727578'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
@@ -55,23 +55,28 @@ class ParticipantAgendaView extends StatelessWidget {
               ),
             ),
             // Konten hari berdasarkan tab yang dipilih
-            SizedBox(
-              height: 1150,
-              child: ValueListenableBuilder<int>(
-                valueListenable: controller.selectedDay,
-                builder: (context, value, child) {
-                  switch (value) {
-                    case 0:
-                      return DayOneContentAgenda();
-                    case 1:
-                      return DayTwoContentAgenda();
-                    case 2:
-                      return DayThreeContentAgenda();
-                    default:
-                      return Center(child: Text('Invalid Day'));
-                  }
-                },
-              ),
+            ValueListenableBuilder<int>(
+              valueListenable: controller.selectedDay,
+              builder: (context, value, child) {
+                double height;
+                switch (value) {
+                  case 0:
+                    height = 1150;
+                    break;
+                  case 1:
+                    height = 825;
+                    break;
+                  case 2:
+                    height = 875;
+                    break;
+                  default:
+                    height = 1150; // Default height
+                }
+                return SizedBox(
+                  height: height,
+                  child: _buildDayContent(value),
+                );
+              },
             ),
           ],
         ),
@@ -90,7 +95,7 @@ class ParticipantAgendaView extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: isSelected ? HexColor("#01613B") : Colors.transparent,
+                color: isSelected ? HexColor("#727578") : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -106,5 +111,18 @@ class ParticipantAgendaView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildDayContent(int day) {
+    switch (day) {
+      case 0:
+        return DayOneContentAgenda();
+      case 1:
+        return DayTwoContentAgenda();
+      case 2:
+        return DayThreeContentAgenda();
+      default:
+        return Center(child: Text('Invalid Day'));
+    }
   }
 }

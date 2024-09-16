@@ -18,7 +18,8 @@ class ScanProfileView extends StatelessWidget {
         if (userId != null) {
           scanController.fetchParticipantData(userId);
         } else {
-          Get.snackbar("Error", "User ID not provided.");
+          Get.snackbar("Error", "User ID not provided.",
+              backgroundColor: Colors.red, colorText: Colors.white);
           Get.back();
         }
       }

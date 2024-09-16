@@ -1,3 +1,4 @@
+import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:excel/excel.dart';
@@ -16,8 +17,9 @@ class ExportDataController extends GetxController {
       if (!permissionGranted) {
         Get.snackbar(
           'Error',
-          'Storage permission is required to export data. Please grant permission.',
+          'Storage permission is required to export data. Please grant permission.',backgroundColor: Colors.red,colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
+          
         );
         return;
       }
@@ -57,7 +59,8 @@ class ExportDataController extends GetxController {
       var fileBytes = excel.save();
       await _saveExcelFile(fileBytes!, selectedExportType.value);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to download file: $e');
+      Get.snackbar('Error', 'Failed to download file: $e',backgroundColor: Colors.red,
+          colorText: Colors.white,);
       print('Error details: $e');
     }
   }
@@ -315,7 +318,8 @@ class ExportDataController extends GetxController {
     var file = File('$kopaDir/$fileName');
     await file.writeAsBytes(fileBytes);
 
-    Get.snackbar('Success', 'File downloaded to: ${file.path}');
+    Get.snackbar('Success', 'File downloaded to: ${file.path}',backgroundColor: Colors.green,
+          colorText: Colors.white,);
   }
 
   Future<bool> _getStoragePermission() async {

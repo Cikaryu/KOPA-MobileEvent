@@ -154,12 +154,14 @@ class ReportSuperEOController extends GetxController {
         });
       }
 
-      Get.snackbar('Sukses', 'Laporan berhasil diperbarui.');
+      Get.snackbar('Sukses', 'Laporan berhasil diperbarui.',backgroundColor: Colors.green,
+          colorText: Colors.white,);
       fetchReports();
       return true;
     } catch (e) {
       debugPrint('Error updating report: $e');
-      Get.snackbar('Error', 'Gagal memperbarui laporan.');
+      Get.snackbar('Error', 'Gagal memperbarui laporan.',backgroundColor: Colors.red,
+          colorText: Colors.white,);
       return false;
     } finally {
       isLoading.value = false;

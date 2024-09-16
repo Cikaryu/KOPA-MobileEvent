@@ -63,10 +63,14 @@ class FeedbackController extends GetxController {
         rating.value = 0.0;
       } else {
         Get.snackbar('Error', 'User not logged in',
+        backgroundColor: Colors.red,
+          colorText: Colors.white,
             snackPosition: SnackPosition.TOP);
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to submit feedback: $e',
+      backgroundColor: Colors.red,
+          colorText: Colors.white,
           snackPosition: SnackPosition.TOP);
     }
   }

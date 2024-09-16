@@ -20,7 +20,8 @@ class ScanProfileView extends StatelessWidget {
         if (userId != null) {
           scanController.fetchParticipantData(userId);
         } else {
-          Get.snackbar("Error", "User ID not provided.");
+          Get.snackbar("Error", "User ID not provided.",
+              backgroundColor: Colors.red, colorText: Colors.white);
           Get.back();
         }
       }
@@ -249,7 +250,7 @@ class ScanProfileView extends StatelessWidget {
                         duration: Duration(milliseconds: 300),
                         height:
                             scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 60)
+                                ? (children.length * 40.0 + 88)
                                 : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -274,8 +275,8 @@ class ScanProfileView extends StatelessWidget {
   Widget buildProfileRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
             label,
@@ -368,17 +369,20 @@ class ScanProfileView extends StatelessWidget {
                                 Center(
                                   child: ElevatedButton(
                                     onPressed: () =>
-                                        controller.checkAllItems(containerName),
+                                        controller.showConfirmCheckAllItems(
+                                      Get.context!, // Provide the current context
+                                      containerName,
+                                    ),
                                     style: ElevatedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      backgroundColor: HexColor('01613B'),
+                                      backgroundColor: Colors.red,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 24, vertical: 6),
                                     ),
-                                    child: Text('Check All (Received)'),
+                                    child: Text('Click If All Received'),
                                   ),
                                 ),
                               ],
