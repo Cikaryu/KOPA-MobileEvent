@@ -186,12 +186,15 @@ class ReportListEventOrganizerPage extends StatelessWidget {
                                             color: HexColor("01613B"),
                                           ),
                                           SizedBox(width: 10),
-                                          Text(
-                                            reportData['title'] ?? 'No Title',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18.0,
+                                          SizedBox(
+                                            width: 240,
+                                            child: Text(
+                                              reportData['title'] ?? 'No Title',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18.0,
+                                              ),
                                             ),
                                           ),
                                           Spacer(),

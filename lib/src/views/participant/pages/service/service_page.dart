@@ -165,10 +165,16 @@ class ServicePage extends StatelessWidget {
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Row(
                                 children: [
-                                  Text(
-                                    reportData['title'] ?? 'No Title',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  SizedBox(
+                                    width: 200,
+                                    child: Text(
+                                      reportData['title'] ?? 'No Title',maxLines: 1,
+                                      style:
+                                      TextStyle(
+
+                                        fontWeight: FontWeight.bold,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                   ),
                                   Expanded(child: SizedBox()),
