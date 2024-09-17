@@ -55,7 +55,8 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _nameController,
                   decoration: InputDecoration(
                     hintText: 'Your name',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -75,7 +76,8 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _areaController,
                   decoration: InputDecoration(
                     hintText: 'Your Area',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -95,7 +97,8 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _divisionController,
                   decoration: InputDecoration(
                     hintText: 'Your Division',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -116,7 +119,8 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _departmentController,
                   decoration: InputDecoration(
                     hintText: 'Your Department',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -136,7 +140,8 @@ class SignupSlide2View extends StatelessWidget {
                   controller: _addressController,
                   decoration: InputDecoration(
                     hintText: 'Your Address',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -159,7 +164,8 @@ class SignupSlide2View extends StatelessWidget {
                   maxLength: 13,
                   decoration: InputDecoration(
                     hintText: 'Example : 08123xxxxxxx',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),
@@ -184,10 +190,12 @@ class SignupSlide2View extends StatelessWidget {
                 SizedBox(height: 5),
                 TextFormField(
                   controller: _ktpNumberController,
+                  keyboardType: TextInputType.number,
                   maxLength: 16,
                   decoration: InputDecoration(
                     hintText: 'Your NIK',
-                    hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
+                    hintStyle: TextStyle(
+                        fontSize: 14, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey),

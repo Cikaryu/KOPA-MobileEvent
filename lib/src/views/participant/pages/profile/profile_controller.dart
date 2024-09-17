@@ -459,6 +459,10 @@ class ProfileController extends GetxController {
     } finally {
       setLoading(false);
       Get.back();
+      Get.snackbar('Success', 'Profile updated successfully',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white);
     }
   }
 
@@ -698,7 +702,7 @@ class ProfileController extends GetxController {
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),
             backgroundColor: Colors.green,
-          colorText: Colors.white,
+            colorText: Colors.white,
           );
 
           Get.offAll(() => ParticipantView());
@@ -721,7 +725,7 @@ class ProfileController extends GetxController {
               snackPosition: SnackPosition.TOP,
               duration: Duration(seconds: 3),
               backgroundColor: Colors.green,
-          colorText: Colors.white,
+              colorText: Colors.white,
             );
 
             Get.offAll(() => SuperEOView());
@@ -742,7 +746,7 @@ class ProfileController extends GetxController {
               snackPosition: SnackPosition.TOP,
               duration: Duration(seconds: 3),
               backgroundColor: Colors.green,
-          colorText: Colors.white,
+              colorText: Colors.white,
             );
 
             Get.offAll(() => EventOrganizerView());
@@ -763,7 +767,7 @@ class ProfileController extends GetxController {
               snackPosition: SnackPosition.TOP,
               duration: Duration(seconds: 3),
               backgroundColor: Colors.green,
-          colorText: Colors.white,
+              colorText: Colors.white,
             );
 
             Get.offAll(() => CommitteeView());
@@ -786,7 +790,7 @@ class ProfileController extends GetxController {
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),
             backgroundColor: Colors.green,
-          colorText: Colors.white,
+            colorText: Colors.white,
           );
 
           Get.offAll(() => ParticipantView());
@@ -808,7 +812,7 @@ class ProfileController extends GetxController {
             snackPosition: SnackPosition.TOP,
             duration: Duration(seconds: 3),
             backgroundColor: Colors.green,
-          colorText: Colors.white,
+            colorText: Colors.white,
           );
 
           Get.offAll(() => ParticipantView());
