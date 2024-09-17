@@ -1,7 +1,5 @@
-import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 
 class ChangePasswordPage extends StatelessWidget {
   const ChangePasswordPage({super.key});
@@ -30,12 +28,24 @@ class ChangePasswordPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(child: Image.asset("assets/images/PasswordReset.png")),
+            SizedBox(height: 20),
             Center(
-              child: Text(
-                'A password reset verification will be sent to:\n$userEmail',
+              child: RichText(
                 textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'Click reset button to send a verification to your registered email address. Password change verification will be sent to your email ',
+                  style: TextStyle(color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: userEmail,
+                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,height: 1.5),
+                    ),
+                  ],
+                ),
               ),
             ),
+
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
