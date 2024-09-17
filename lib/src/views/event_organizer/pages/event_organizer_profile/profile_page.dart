@@ -233,54 +233,54 @@ class ProfileEventOrganizerPage extends StatelessWidget {
                         //     ),
                         //   ),
                         // ),
-                        SizedBox(height: 12),
-                        InkWell(
-                          onTap: () {},
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 12.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: HexColor("E97717"),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3F000000),
-                                        spreadRadius: 0,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.copy,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(width: 16.0),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Data Logs',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Spacer(),
-                                Icon(
-                                  Icons.keyboard_arrow_right_rounded,
-                                  color: Colors.grey,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        // SizedBox(height: 12),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     padding: EdgeInsets.symmetric(vertical: 12.0),
+                        //     child: Row(
+                        //       children: [
+                        //         Container(
+                        //           width: 40,
+                        //           height: 40,
+                        //           decoration: BoxDecoration(
+                        //             color: HexColor("E97717"),
+                        //             borderRadius: BorderRadius.circular(10),
+                        //             boxShadow: [
+                        //               BoxShadow(
+                        //                 color: Color(0x3F000000),
+                        //                 spreadRadius: 0,
+                        //                 offset: Offset(0, 0),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           child: Icon(
+                        //             Icons.copy,
+                        //             color: Colors.white,
+                        //           ),
+                        //         ),
+                        //         SizedBox(width: 16.0),
+                        //         Column(
+                        //           crossAxisAlignment: CrossAxisAlignment.start,
+                        //           children: [
+                        //             Text(
+                        //               'Data Logs',
+                        //               style: TextStyle(
+                        //                 fontWeight: FontWeight.bold,
+                        //                 fontSize: 18.0,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //         Spacer(),
+                        //         Icon(
+                        //           Icons.keyboard_arrow_right_rounded,
+                        //           color: Colors.grey,
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                         SizedBox(height: 12),
                         profileSuperEOController.role.value == 'Event Organizer'
                             ? InkWell(

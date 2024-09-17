@@ -2,7 +2,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/participant_detail_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_controller.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +10,8 @@ class SearchParticipantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchParticipantController searchParticipantController = Get.put(SearchParticipantController());
+    final SearchParticipantController searchParticipantController =
+        Get.put(SearchParticipantController());
 
     return Scaffold(
       appBar: AppBar(
@@ -60,172 +60,172 @@ class SearchParticipantPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Categories',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        // SizedBox(height: 11),
-                        // Container(
-                        //   width: 238,
-                        //   height: 50,
-                        //   padding: const EdgeInsets.symmetric(
-                        //       horizontal: 12, vertical: 15),
-                        //   decoration: ShapeDecoration(
-                        //     color: Color(0xFFF3F3F3),
-                        //     shape: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //     ),
-                        //     shadows: [
-                        //       BoxShadow(
-                        //         color: Color(0x3F000000),
-                        //         blurRadius: 4,
-                        //         offset: Offset(0, 0),
-                        //         spreadRadius: 0,
-                        //       )
-                        //     ],
-                        //   ),
-                        //   child: Text(
-                        //     'Categorize by attendence',
-                        //     textAlign: TextAlign.center,
-                        //     style: TextStyle(
-                        //       color: Colors.black,
-                        //       fontSize: 16,
-                        //       fontFamily: 'Roboto',
-                        //       fontWeight: FontWeight.w400,
-                        //       height: 0,
-                        //     ),
-                        //   ),
-                        // ),
-                        GestureDetector(
-                          onTap: () async {
-                            searchParticipantController.toggleKitStatusFilter();
-                          },
-                          child: Container(
-                            width: 300,
-                            height: 120,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 60,
-                                  child: Stack(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Colors.grey[300],
-                                        backgroundImage:
-                                            searchParticipantController
-                                                        .allParticipants
-                                                        .isNotEmpty &&
-                                                    searchParticipantController
-                                                            .allParticipants[0]
-                                                            .selfieUrl !=
-                                                        null &&
-                                                    searchParticipantController
-                                                        .allParticipants[0]
-                                                        .selfieUrl!
-                                                        .isNotEmpty
-                                                ? NetworkImage(
-                                                    searchParticipantController
-                                                        .allParticipants[0]
-                                                        .selfieUrl!)
-                                                : null,
-                                        child: searchParticipantController
-                                                    .allParticipants.isEmpty ||
-                                                searchParticipantController
-                                                        .allParticipants[0]
-                                                        .selfieUrl ==
-                                                    null ||
-                                                searchParticipantController
-                                                    .allParticipants[0]
-                                                    .selfieUrl!
-                                                    .isEmpty
-                                            ? Icon(Icons.person,
-                                                size: 24,
-                                                color: Colors.grey[600])
-                                            : null,
-                                      ),
-                                      Positioned(
-                                        left: 20,
-                                        child: CircleAvatar(
-                                          radius: 20,
-                                          backgroundColor: Colors.grey[300],
-                                          backgroundImage:
-                                              searchParticipantController
-                                                              .allParticipants
-                                                              .length >
-                                                          1 &&
-                                                      searchParticipantController
-                                                              .allParticipants[
-                                                                  1]
-                                                              .selfieUrl !=
-                                                          null &&
-                                                      searchParticipantController
-                                                          .allParticipants[1]
-                                                          .selfieUrl!
-                                                          .isNotEmpty
-                                                  ? NetworkImage(
-                                                      searchParticipantController
-                                                          .allParticipants[1]
-                                                          .selfieUrl!)
-                                                  : null,
-                                          child: searchParticipantController
-                                                          .allParticipants
-                                                          .length <=
-                                                      1 ||
-                                                  searchParticipantController
-                                                          .allParticipants[1]
-                                                          .selfieUrl ==
-                                                      null ||
-                                                  searchParticipantController
-                                                      .allParticipants[1]
-                                                      .selfieUrl!
-                                                      .isEmpty
-                                              ? Icon(Icons.person,
-                                                  size: 24,
-                                                  color: Colors.grey[600])
-                                              : null,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Categorize by Kit Status',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: searchParticipantController
-                                            .isKitStatusFiltered.value
-                                        ? HexColor("E97717")
-                                        : Colors.black,
-                                    fontSize: 16,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Container(
-                      height: 1,
-                      color: Colors.black,
-                      width: Get.width,
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 18),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Text(
+                  //         'Categories',
+                  //         style: Theme.of(context).textTheme.titleLarge,
+                  //       ),
+                  //       // SizedBox(height: 11),
+                  //       // Container(
+                  //       //   width: 238,
+                  //       //   height: 50,
+                  //       //   padding: const EdgeInsets.symmetric(
+                  //       //       horizontal: 12, vertical: 15),
+                  //       //   decoration: ShapeDecoration(
+                  //       //     color: Color(0xFFF3F3F3),
+                  //       //     shape: RoundedRectangleBorder(
+                  //       //       borderRadius: BorderRadius.circular(10),
+                  //       //     ),
+                  //       //     shadows: [
+                  //       //       BoxShadow(
+                  //       //         color: Color(0x3F000000),
+                  //       //         blurRadius: 4,
+                  //       //         offset: Offset(0, 0),
+                  //       //         spreadRadius: 0,
+                  //       //       )
+                  //       //     ],
+                  //       //   ),
+                  //       //   child: Text(
+                  //       //     'Categorize by attendence',
+                  //       //     textAlign: TextAlign.center,
+                  //       //     style: TextStyle(
+                  //       //       color: Colors.black,
+                  //       //       fontSize: 16,
+                  //       //       fontFamily: 'Roboto',
+                  //       //       fontWeight: FontWeight.w400,
+                  //       //       height: 0,
+                  //       //     ),
+                  //       //   ),
+                  //       // ),
+                  //       GestureDetector(
+                  //         onTap: () async {
+                  //           searchParticipantController.toggleKitStatusFilter();
+                  //         },
+                  //         child: Container(
+                  //           width: 300,
+                  //           height: 120,
+                  //           padding: const EdgeInsets.symmetric(vertical: 15),
+                  //           child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.start,
+                  //             crossAxisAlignment: CrossAxisAlignment.center,
+                  //             children: [
+                  //               SizedBox(
+                  //                 width: 60,
+                  //                 child: Stack(
+                  //                   children: [
+                  //                     CircleAvatar(
+                  //                       radius: 20,
+                  //                       backgroundColor: Colors.grey[300],
+                  //                       backgroundImage:
+                  //                           searchParticipantController
+                  //                                       .allParticipants
+                  //                                       .isNotEmpty &&
+                  //                                   searchParticipantController
+                  //                                           .allParticipants[0]
+                  //                                           .selfieUrl !=
+                  //                                       null &&
+                  //                                   searchParticipantController
+                  //                                       .allParticipants[0]
+                  //                                       .selfieUrl!
+                  //                                       .isNotEmpty
+                  //                               ? NetworkImage(
+                  //                                   searchParticipantController
+                  //                                       .allParticipants[0]
+                  //                                       .selfieUrl!)
+                  //                               : null,
+                  //                       child: searchParticipantController
+                  //                                   .allParticipants.isEmpty ||
+                  //                               searchParticipantController
+                  //                                       .allParticipants[0]
+                  //                                       .selfieUrl ==
+                  //                                   null ||
+                  //                               searchParticipantController
+                  //                                   .allParticipants[0]
+                  //                                   .selfieUrl!
+                  //                                   .isEmpty
+                  //                           ? Icon(Icons.person,
+                  //                               size: 24,
+                  //                               color: Colors.grey[600])
+                  //                           : null,
+                  //                     ),
+                  //                     Positioned(
+                  //                       left: 20,
+                  //                       child: CircleAvatar(
+                  //                         radius: 20,
+                  //                         backgroundColor: Colors.grey[300],
+                  //                         backgroundImage:
+                  //                             searchParticipantController
+                  //                                             .allParticipants
+                  //                                             .length >
+                  //                                         1 &&
+                  //                                     searchParticipantController
+                  //                                             .allParticipants[
+                  //                                                 1]
+                  //                                             .selfieUrl !=
+                  //                                         null &&
+                  //                                     searchParticipantController
+                  //                                         .allParticipants[1]
+                  //                                         .selfieUrl!
+                  //                                         .isNotEmpty
+                  //                                 ? NetworkImage(
+                  //                                     searchParticipantController
+                  //                                         .allParticipants[1]
+                  //                                         .selfieUrl!)
+                  //                                 : null,
+                  //                         child: searchParticipantController
+                  //                                         .allParticipants
+                  //                                         .length <=
+                  //                                     1 ||
+                  //                                 searchParticipantController
+                  //                                         .allParticipants[1]
+                  //                                         .selfieUrl ==
+                  //                                     null ||
+                  //                                 searchParticipantController
+                  //                                     .allParticipants[1]
+                  //                                     .selfieUrl!
+                  //                                     .isEmpty
+                  //                             ? Icon(Icons.person,
+                  //                                 size: 24,
+                  //                                 color: Colors.grey[600])
+                  //                             : null,
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //               ),
+                  //               SizedBox(width: 10),
+                  //               // Text(
+                  //               //   'Categorize by Kit Status',
+                  //               //   textAlign: TextAlign.center,
+                  //               //   style: TextStyle(
+                  //               //     color: searchParticipantController
+                  //               //             .isKitStatusFiltered.value
+                  //               //         ? HexColor("E97717")
+                  //               //         : Colors.black,
+                  //               //     fontSize: 16,
+                  //               //     fontFamily: 'Roboto',
+                  //               //     fontWeight: FontWeight.w400,
+                  //               //   ),
+                  //               // ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                  //   child: Container(
+                  //     height: 1,
+                  //     color: Colors.black,
+                  //     width: Get.width,
+                  //   ),
+                  // ),
                   SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),

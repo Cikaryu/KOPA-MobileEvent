@@ -36,67 +36,52 @@ class ReportEventOrganizerController extends GetxController {
     return '';
   }
 
-  Future<void> fetchStatusImage(String reportId, String status) async {
-    String imageName;
-
+  String getStatusImagePath(String status) {
     switch (status) {
-      case 'Unresolved':
-        imageName = 'close.png';
-        break;
-      case 'Resolved':
-        imageName = 'received.png';
-        break;
+      case 'Not Started':
+        return 'assets/icons/status/ic_not_started.svg';
+      case 'In Progress':
+        return 'assets/icons/status/ic_in_progress.svg';
       case 'Pending':
-        imageName = 'pending.png';
-        break;
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Resolved':
+        return 'assets/icons/status/ic_received.svg';
       default:
-        imageName = 'default.png';
-    }
-
-    try {
-      final downloadUrl = await FirebaseStorage.instance
-          .ref('status/$imageName')
-          .getDownloadURL();
-      statusImageUrls[reportId] = downloadUrl;
-    } catch (e) {
-      debugPrint('Error fetching status image: $e');
-      statusImageUrls[reportId] = '';
+        return 'assets/icons/status/ic_default.svg'; // Fallback image
     }
   }
-
-
 
   void sortReportsByDate() {
-  filteredReports.sort((a, b) {
-    final dataA = a.data() as Map<String, dynamic>;
-    final dataB = b.data() as Map<String, dynamic>;
-    final Timestamp timestampA = dataA['createdAt'];
-    final Timestamp timestampB = dataB['createdAt'];
+    filteredReports.sort((a, b) {
+      final dataA = a.data() as Map<String, dynamic>;
+      final dataB = b.data() as Map<String, dynamic>;
+      final Timestamp timestampA = dataA['createdAt'];
+      final Timestamp timestampB = dataB['createdAt'];
 
-    if (selectedSortOption.value == 'Oldest') {
-      return timestampA.compareTo(timestampB);
-    } else {
-      return timestampB.compareTo(timestampA);
-    }
-  });
-}
-
-void applyFilter(String filter) {
-  selectedFilter.value = filter;
-  filterReports();
-}
-
-void filterReports() {
-  if (selectedFilter.isEmpty) {
-    filteredReports.value = List.from(allReports);
-  } else {
-    filteredReports.value = allReports.where((report) {
-      final data = report.data() as Map<String, dynamic>;
-      return data['status'] == selectedFilter.value;
-    }).toList();
+      if (selectedSortOption.value == 'Oldest') {
+        return timestampA.compareTo(timestampB);
+      } else {
+        return timestampB.compareTo(timestampA);
+      }
+    });
   }
-  sortReportsByDate();
-}
+
+  void applyFilter(String filter) {
+    selectedFilter.value = filter;
+    filterReports();
+  }
+
+  void filterReports() {
+    if (selectedFilter.isEmpty) {
+      filteredReports.value = List.from(allReports);
+    } else {
+      filteredReports.value = allReports.where((report) {
+        final data = report.data() as Map<String, dynamic>;
+        return data['status'] == selectedFilter.value;
+      }).toList();
+    }
+    sortReportsByDate();
+  }
 
   void fetchReports() {
     _firestore.collection('report').snapshots().listen((snapshot) {
@@ -138,15 +123,23 @@ void filterReports() {
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
-      Get.snackbar('Sukses', 'Laporan berhasil diperbarui.',backgroundColor: Colors.green,
-          colorText: Colors.white,);
+      Get.snackbar(
+        'Sukses',
+        'Laporan berhasil diperbarui.',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
       // Refresh the reports after updating
       fetchReports();
       return true;
     } catch (e) {
       debugPrint('Error updating report: $e');
-      Get.snackbar('Error', 'Gagal memperbarui laporan.',backgroundColor: Colors.red,
-          colorText: Colors.white,);
+      Get.snackbar(
+        'Error',
+        'Gagal memperbarui laporan.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;

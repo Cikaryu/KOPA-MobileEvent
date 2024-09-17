@@ -327,7 +327,7 @@ class ScanProfileView extends StatelessWidget {
                         duration: Duration(milliseconds: 300),
                         height:
                             scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 45)
+                                ? (children.length * 40.0 + 40)
                                 : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -362,7 +362,7 @@ class ScanProfileView extends StatelessWidget {
           ),
           Text(
             value,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 14),
           ),
         ],
       ),

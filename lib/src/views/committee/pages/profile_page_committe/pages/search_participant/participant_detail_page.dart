@@ -274,7 +274,8 @@ class ParticipantDetailPage extends StatelessWidget {
           ),
           Text(
             value,
-            style: TextStyle(fontSize: 16),
+            maxLines: 1,
+            style: TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
           ),
         ],
       ),

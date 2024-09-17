@@ -14,10 +14,14 @@ class ForgotPasswordView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password',style: TextStyle(fontWeight: FontWeight.bold),),
-
+        backgroundColor: Colors.white,
+        title: Text(
+          'Forgot Password',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -31,7 +35,8 @@ class ForgotPasswordView extends StatelessWidget {
             Center(
               child: Text(
                 'Please enter your email address to\n receive a verification',
-                textAlign: TextAlign.center,style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               ),
             ),
             SizedBox(
@@ -42,7 +47,10 @@ class ForgotPasswordView extends StatelessWidget {
               controller: emailController,
               decoration: InputDecoration(
                 hintText: 'Please enter your email address',
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 14,fontWeight: FontWeight.w400),
+                hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
                 prefixIcon: Icon(Icons.email),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),

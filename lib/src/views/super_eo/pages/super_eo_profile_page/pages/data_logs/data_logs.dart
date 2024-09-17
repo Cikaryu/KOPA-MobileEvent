@@ -60,29 +60,39 @@ class DataLogsPageView extends StatelessWidget {
                   ),
                   SizedBox(
                     width: Get.width / 1.5,
-                    child: Obx(() => DropdownButtonFormField2<String>(
-                          decoration: InputDecoration(
-                            isDense: true,
-                            hintText: 'Choose Filter',
-                            fillColor: HexColor("#F2F2F2"),
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
+                    child: Obx(
+                      () => DropdownButtonFormField2<String>(
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: 'Choose Filter',
+                          fillColor: HexColor("#F2F2F2"),
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          value:
-                              controller.filter.value, // Dropdown filter value
-                          items: const [
-                            DropdownMenuItem(
-                                value: 'newest', child: Text('Newest')),
-                            DropdownMenuItem(
-                                value: 'oldest', child: Text('Oldest')),
-                          ],
-                          onChanged: controller
-                              .changeFilter, // Update filter on selection
-                        )),
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey[300],
+                          ),
+                          offset: Offset(0, 0),
+                          elevation: 5,
+                          maxHeight: 120,
+                          padding: EdgeInsets.all(10),
+                        ),
+                        value: controller.filter.value, // Dropdown filter value
+                        items: const [
+                          DropdownMenuItem(
+                              value: 'newest', child: Text('Newest')),
+                          DropdownMenuItem(
+                              value: 'oldest', child: Text('Oldest')),
+                        ],
+                        onChanged: controller
+                            .changeFilter, // Update filter on selection
+                      ),
+                    ),
                   ),
                 ],
               ),

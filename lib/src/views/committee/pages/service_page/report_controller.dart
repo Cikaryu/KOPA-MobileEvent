@@ -38,31 +38,18 @@ class ReportCommitteeController extends GetxController {
     return '';
   }
 
-  Future<void> fetchStatusImage(String reportId, String status) async {
-    String imageName;
-
+  String getStatusImagePath(String status) {
     switch (status) {
-      case 'Unresolved':
-        imageName = 'close.png';
-        break;
-      case 'Resolved':
-        imageName = 'received.png';
-        break;
+      case 'Not Started':
+        return 'assets/icons/status/ic_not_started.svg';
+      case 'In Progress':
+        return 'assets/icons/status/ic_in_progress.svg';
       case 'Pending':
-        imageName = 'pending.png';
-        break;
+        return 'assets/icons/status/ic_pending.svg';
+      case 'Resolved':
+        return 'assets/icons/status/ic_received.svg';
       default:
-        imageName = 'default.png';
-    }
-
-    try {
-      final downloadUrl = await FirebaseStorage.instance
-          .ref('status/$imageName')
-          .getDownloadURL();
-      statusImageUrls[reportId] = downloadUrl;
-    } catch (e) {
-      debugPrint('Error fetching status image: $e');
-      statusImageUrls[reportId] = '';
+        return 'assets/icons/status/ic_default.svg'; // Fallback image
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/service_page/report_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/material.dart';
 
 class ReportDetailCommitteePage extends StatelessWidget {
   final String reportId;
@@ -13,13 +12,14 @@ class ReportDetailCommitteePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ReportCommitteeController reportController =
         Get.put(ReportCommitteeController());
-    final List<String> categoryOptions = [
-      'Resolved',
+    final List<String> statusOptions = [
+      'Not Started',
+      'In Progress',
       'Pending',
-      'Unresolved',
+      'Resolved',
     ];
 
-    final RxString status = 'Resolved'.obs; // Default status
+    final RxString status = 'Not Started'.obs; // Default status
 
     return Scaffold(
       body: FutureBuilder<DocumentSnapshot>(
@@ -39,20 +39,15 @@ class ReportDetailCommitteePage extends StatelessWidget {
             text: reportData['reply'], // Use the existing reply
           );
 
+          // Set the initial status based on the report data
+          status.value = reportData['status'] ?? 'Not Started';
+
           return Obx(() => Scaffold(
                 backgroundColor: Colors.white,
                 appBar: AppBar(
+                  backgroundColor: Colors.white,
                   scrolledUnderElevation: 0,
-                  backgroundColor: HexColor('727578'),
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Get.back(),
-                  ),
-                  centerTitle: true,
-                  title: Text(
-                    '${reportData['title']}',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  title: Text('${reportData['title']}'),
                 ),
                 body: reportController.isLoading.value
                     ? Center(child: CircularProgressIndicator())
@@ -72,8 +67,7 @@ class ReportDetailCommitteePage extends StatelessWidget {
                               ],
                             ),
                             SizedBox(height: 8),
-                            if (reportData['image'] !=
-                                '-') // Show image if it exists
+                            if (reportData['image'] != '-')
                               Image.network(
                                 reportData['image'],
                                 fit: BoxFit.cover,
@@ -81,21 +75,6 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                 height: 200,
                               ),
                             SizedBox(height: 16),
-                            // Text('Category', style: TextStyle(fontSize: 18)),
-                            // SizedBox(height: 8),
-                            // TextFormField(
-                            //   initialValue: reportData['category'],
-                            //   readOnly: true,
-                            //   decoration: InputDecoration(
-                            //     filled: true,
-                            //     fillColor: Colors.grey[200],
-                            //     border: OutlineInputBorder(
-                            //       borderRadius: BorderRadius.circular(10),
-                            //       borderSide: BorderSide.none,
-                            //     ),
-                            //   ),
-                            // ),
-                            // SizedBox(height: 8),
                             Text('Description:',
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
@@ -135,7 +114,7 @@ class ReportDetailCommitteePage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Mark As',
+                                Text('Status:',
                                     style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold)),
@@ -158,17 +137,16 @@ class ReportDetailCommitteePage extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.grey[300],
                                       ),
-                                      width: 140,
-                                      offset: Offset(144, 48),
+                                      offset: Offset(0, 48),
                                       elevation: 5,
+                                      maxHeight: 120,
                                       padding: EdgeInsets.all(10),
                                     ),
-                                    items:
-                                        categoryOptions.map((String category) {
+                                    items: statusOptions.map((String status) {
                                       return DropdownMenuItem<String>(
-                                        value: category,
+                                        value: status,
                                         child: Text(
-                                          category,
+                                          status,
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       );

@@ -166,12 +166,12 @@ class ServicePage extends StatelessWidget {
                               child: Row(
                                 children: [
                                   SizedBox(
-                                    width: 200,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
                                     child: Text(
-                                      reportData['title'] ?? 'No Title',maxLines: 1,
-                                      style:
-                                      TextStyle(
-
+                                      reportData['title'] ?? 'No Title',
+                                      maxLines: 1,
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         overflow: TextOverflow.ellipsis,
                                       ),

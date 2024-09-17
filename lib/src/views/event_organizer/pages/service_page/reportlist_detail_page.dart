@@ -13,13 +13,14 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ReportEventOrganizerController reportController =
         Get.put(ReportEventOrganizerController());
-    final List<String> categoryOptions = [
-      'Resolved',
+    final List<String> statusOptions = [
+      'Not Started',
+      'In Progress',
       'Pending',
-      'Unresolved',
+      'Resolved',
     ];
 
-    final RxString status = 'Resolved'.obs; // Default status
+    final RxString status = 'Not Started'.obs; // Default status
 
     return Scaffold(
       body: FutureBuilder<DocumentSnapshot>(
@@ -38,6 +39,9 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
           final TextEditingController replyController = TextEditingController(
             text: reportData['reply'], // Use the existing reply
           );
+
+          // Set the initial status based on the report data
+          status.value = reportData['status'] ?? 'Not Started';
 
           return Obx(() => Scaffold(
                 backgroundColor: Colors.white,
@@ -64,8 +68,7 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                               ],
                             ),
                             SizedBox(height: 8),
-                            if (reportData['image'] !=
-                                '-') // Show image if it exists
+                            if (reportData['image'] != '-')
                               Image.network(
                                 reportData['image'],
                                 fit: BoxFit.cover,
@@ -73,21 +76,6 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                                 height: 200,
                               ),
                             SizedBox(height: 16),
-                            Text('Category', style: TextStyle(fontSize: 18)),
-                            SizedBox(height: 8),
-                            TextFormField(
-                              initialValue: reportData['category'],
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8),
                             Text('Description:',
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
@@ -127,7 +115,7 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Mark As',
+                                Text('Status:',
                                     style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold)),
@@ -150,17 +138,16 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.grey[300],
                                       ),
-                                      width: 140,
-                                      offset: Offset(144, 48),
+                                      offset: Offset(0, 48),
                                       elevation: 5,
+                                      maxHeight: 120,
                                       padding: EdgeInsets.all(10),
                                     ),
-                                    items:
-                                        categoryOptions.map((String category) {
+                                    items: statusOptions.map((String status) {
                                       return DropdownMenuItem<String>(
-                                        value: category,
+                                        value: status,
                                         child: Text(
-                                          category,
+                                          status,
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       );
@@ -175,7 +162,7 @@ class ReportDetailEventOrganizerPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 40),
+                            SizedBox(height: 80),
                             ElevatedButton(
                               onPressed: () async {
                                 // Proses Update Laporan

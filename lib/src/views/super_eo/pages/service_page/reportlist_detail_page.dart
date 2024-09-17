@@ -138,9 +138,9 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.grey[300],
                                       ),
-                                      width: 140,
-                                      offset: Offset(144, 48),
+                                      offset: Offset(0, 48),
                                       elevation: 5,
+                                      maxHeight: 120,
                                       padding: EdgeInsets.all(10),
                                     ),
                                     items: statusOptions.map((String status) {
@@ -162,7 +162,7 @@ class ReportDetailSuperEOPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 40),
+                            SizedBox(height: 80),
                             ElevatedButton(
                               onPressed: () async {
                                 // Proses Update Laporan

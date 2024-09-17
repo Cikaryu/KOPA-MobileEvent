@@ -3,6 +3,7 @@ import 'package:app_kopabali/src/views/committee/pages/service_page/report_contr
 import 'package:app_kopabali/src/views/committee/pages/service_page/reportlist_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 class ReportListCommitteePage extends StatelessWidget {
@@ -57,8 +58,12 @@ class ReportListCommitteePage extends StatelessWidget {
                           child: Text('Resolved'),
                         ),
                         DropdownMenuItem(
-                          value: 'Unresolved',
-                          child: Text('Unresolved'),
+                          value: 'Not Started',
+                          child: Text('Not Started'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'In Progress',
+                          child: Text('In Progress'),
                         ),
                         DropdownMenuItem(
                           value: 'Pending',
@@ -73,11 +78,10 @@ class ReportListCommitteePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.grey[300],
                         ),
-                        width: 140,
+                        width: 130,
                         maxHeight: 160,
-                        offset: Offset(5, 50),
+                        offset: Offset(5, 20),
                         elevation: 5,
-                        padding: EdgeInsets.all(10),
                       ),
                       iconStyleData: IconStyleData(
                         icon: SizedBox.shrink(),
@@ -139,8 +143,6 @@ class ReportListCommitteePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final report = reports[index];
                   final reportData = report.data() as Map<String, dynamic>;
-                  reportController.fetchStatusImage(
-                      report.id, reportData['status']);
                   Timestamp createdAtTimestamp = reportData['createdAt'];
                   DateTime createdAt = createdAtTimestamp.toDate();
                   String formattedDate =
@@ -262,6 +264,7 @@ class ReportListCommitteePage extends StatelessWidget {
                                             //                 FontWeight.bold)),
                                             //   ],
                                             // ),
+                                            SizedBox(height: 8),
                                             Row(
                                               children: [
                                                 Text(
@@ -278,29 +281,16 @@ class ReportListCommitteePage extends StatelessWidget {
                                                           FontWeight.bold),
                                                 ),
                                                 SizedBox(width: 4),
-                                                Obx(() {
-                                                  final imageUrl = reportController
-                                                              .statusImageUrls[
-                                                          report.id] ??
-                                                      '';
-
-                                                  if (imageUrl.isEmpty) {
-                                                    return Icon(Icons
-                                                        .error); // Menampilkan ikon error jika gambar gagal diambil
-                                                  }
-                                                  return Image.network(
-                                                    imageUrl,
-                                                    width: 40,
-                                                    height: 40,
-                                                    errorBuilder: (context,
-                                                        error, stackTrace) {
-                                                      debugPrint(
-                                                          'Error loading image: $error');
-                                                      return Icon(Icons
-                                                          .error); // Menampilkan ikon error jika gambar gagal dimuat
-                                                    },
-                                                  );
-                                                }),
+                                                SvgPicture.asset(
+                                                  reportController
+                                                      .getStatusImagePath(
+                                                          reportData['status']),
+                                                  width: 24,
+                                                  height: 24,
+                                                  placeholderBuilder:
+                                                      (BuildContext context) =>
+                                                          Icon(Icons.error),
+                                                ),
                                               ],
                                             ),
                                           ],

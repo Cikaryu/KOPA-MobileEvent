@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+
 //Todo : ukuran baju
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
@@ -232,7 +233,7 @@ class ParticipantDetailPage extends StatelessWidget {
           ),
           Text(
             value,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 14),
           ),
         ],
       ),
