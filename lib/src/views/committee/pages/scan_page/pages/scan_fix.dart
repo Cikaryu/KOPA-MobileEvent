@@ -277,6 +277,7 @@ class ScanProfileView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,

@@ -311,11 +311,13 @@ class SearchParticipantController extends GetxController {
       });
       // Refresh the participant kit status
       await fetchParticipantKitStatus(participantId);
-      Get.snackbar("Success", "All items in $category marked as received.");
+      Get.snackbar("Success", "All items in $category marked as received.",backgroundColor: Colors.green,
+        colorText: Colors.white,);
     } catch (e, stackTrace) {
       print('Error checking all items: $e');
       print('Stack trace: $stackTrace');
-      Get.snackbar("Error", "Failed to update all items: ${e.toString()}");
+      Get.snackbar("Error", "Failed to update all items: ${e.toString()}",backgroundColor: Colors.red,
+        colorText: Colors.white,);
     }
   }
 

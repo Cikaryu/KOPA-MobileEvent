@@ -313,11 +313,12 @@ class ScanController extends GetxController {
       status.refresh();
 
       Get.snackbar(
-          "Success", "All items in $containerName marked as received.");
+          "Success", "All items in $containerName marked as received.",backgroundColor: Colors.green,
+        colorText: Colors.white,);
     } catch (e, stackTrace) {
       print('Error checking all items: $e');
       print('Stack trace: $stackTrace');
-      Get.snackbar("Error", "Failed to update all items: ${e.toString()}");
+      Get.snackbar("Error", "Failed to update all items: ${e.toString()}",backgroundColor: Colors.red,colorText: Colors.white);
     }
   }
 

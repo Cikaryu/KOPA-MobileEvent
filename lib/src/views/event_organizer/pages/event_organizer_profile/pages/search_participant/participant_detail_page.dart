@@ -197,7 +197,7 @@ class ParticipantDetailPage extends StatelessWidget {
                         width: 420,
                         duration: Duration(milliseconds: 300),
                         height: controller.isContainerExpanded(containerName)
-                            ? (children.length * 40.0 + 60)
+                            ? (children.length * 45 + 25)
                             : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -222,8 +222,9 @@ class ParticipantDetailPage extends StatelessWidget {
   Widget buildProfileRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,

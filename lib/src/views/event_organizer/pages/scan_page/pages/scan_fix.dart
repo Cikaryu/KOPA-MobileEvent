@@ -327,7 +327,7 @@ class ScanProfileView extends StatelessWidget {
                         duration: Duration(milliseconds: 300),
                         height:
                             scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 60)
+                                ? (children.length * 40.0 + 45)
                                 : 0,
                         curve: Curves.easeInOut,
                         child: SingleChildScrollView(
@@ -352,8 +352,9 @@ class ScanProfileView extends StatelessWidget {
   Widget buildProfileRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,

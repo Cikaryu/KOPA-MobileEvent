@@ -86,7 +86,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                     children: [
                       Container(
                         width: Get.width,
-                        height: 160,
+                        height: MediaQuery.of(context).size.height * 0.2,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/evenyt.png'),
