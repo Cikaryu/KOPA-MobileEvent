@@ -11,8 +11,7 @@ class ReportController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   final Rx<XFile?> selectedImage = Rx<XFile?>(null);
   var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
-  var statusImageUrls =
-      <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
+  var statusImageUrls = <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
 
   late Rx<User?> _user;
 
@@ -273,14 +272,15 @@ class ReportController extends GetxController {
     }
   }
 
-  Stream<QuerySnapshot> getReports() {
-    final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId
+   Future<List<QueryDocumentSnapshot>> getReports() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
-      return FirebaseFirestore.instance
+      final querySnapshot = await FirebaseFirestore.instance
           .collection('report')
-          .where('userId', isEqualTo: userId) // Filter berdasarkan userId
-          .snapshots();
+          .where('userId', isEqualTo: userId)
+          .get();
+      return querySnapshot.docs;
     }
-    return Stream.empty();
+    return [];
   }
 }

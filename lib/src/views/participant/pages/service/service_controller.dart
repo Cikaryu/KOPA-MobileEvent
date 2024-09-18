@@ -57,14 +57,15 @@ class ServiceController extends GetxController {
   }
 }
 
-  Stream<QuerySnapshot> getReportsStream() {
-    final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId
+ Future<List<QueryDocumentSnapshot>> getReports() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
-      return FirebaseFirestore.instance
+      final querySnapshot = await FirebaseFirestore.instance
           .collection('report')
-          .where('userId', isEqualTo: userId) // Filter berdasarkan userId
-          .snapshots();
+          .where('userId', isEqualTo: userId)
+          .get();
+      return querySnapshot.docs;
     }
-    return Stream.empty(); // Mengembalikan stream kosong jika userId tidak ada
+    return [];
   }
 }

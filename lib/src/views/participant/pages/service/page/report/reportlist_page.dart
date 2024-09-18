@@ -57,18 +57,22 @@ class ReportListPage extends StatelessWidget {
         title: Text('Report List', style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: reportController.getReports(),
+      body: FutureBuilder<List<QueryDocumentSnapshot>>(
+        future: reportController.getReports(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text('No reports found.'));
           }
 
-          final reports = snapshot.data!.docs;
+          final reports = snapshot.data!;
 
           return ListView.builder(
             itemCount: reports.length,

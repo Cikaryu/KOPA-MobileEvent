@@ -118,14 +118,26 @@ class ServicePage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: serviceController.getReportsStream(),
+                  FutureBuilder<List<QueryDocumentSnapshot>>(
+                    future: serviceController.getReports(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
 
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error: ${snapshot.error}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return Center(
                           child: Text(
                             'No reports available.',
@@ -137,7 +149,7 @@ class ServicePage extends StatelessWidget {
                         );
                       }
 
-                      final reports = snapshot.data!.docs
+                      final reports = snapshot.data!
                           .take(4)
                           .toList(); // Take only 4 reports
 
@@ -181,12 +193,9 @@ class ServicePage extends StatelessWidget {
                                   Text(
                                     reportData['status'] ?? 'No Status',
                                     style: TextStyle(
-                                      // color: serviceController
-                                      //     .getStatusColor(reportData['status']),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  // Display SVG icon
                                   SvgPicture.asset(
                                     serviceController
                                         .getStatusImagePath(status),
