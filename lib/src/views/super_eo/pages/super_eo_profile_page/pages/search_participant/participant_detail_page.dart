@@ -308,20 +308,15 @@ class ParticipantDetailPage extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Obx(() {
-                      return AnimatedContainer(
-                        width: 420,
-                        duration: Duration(milliseconds: 300),
-                        height: controller.isContainerExpanded(containerName)
-                            ? (children.length * 40.0 + 88)
-                            : 0,
+                      return AnimatedSize(
+                        duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
-                        child: SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: children,
-                          ),
-                        ),
+                        child: controller.isContainerExpanded(containerName)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: children,
+                              )
+                            : SizedBox.shrink(),
                       );
                     }),
                   ],
@@ -349,6 +344,7 @@ class ParticipantDetailPage extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             value,
             style: TextStyle(fontSize: 14),
+            maxLines: 2,
           ),
         ],
       ),

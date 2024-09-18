@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:path/path.dart';
 
 class ParticipantDetailPage extends StatelessWidget {
   final Participant participant;
@@ -236,20 +235,15 @@ class ParticipantDetailPage extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Obx(() {
-                      return AnimatedContainer(
-                        width: 420,
-                        duration: Duration(milliseconds: 300),
-                        height: controller.isContainerExpanded(containerName)
-                            ? (children.length * 40.0 + 88)
-                            : 0,
+                      return AnimatedSize(
+                        duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
-                        child: SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: children,
-                          ),
-                        ),
+                        child: controller.isContainerExpanded(containerName)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: children,
+                              )
+                            : SizedBox.shrink(),
                       );
                     }),
                   ],
@@ -272,10 +266,12 @@ class ParticipantDetailPage extends StatelessWidget {
             label,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+          SizedBox(height: 4),
           Text(
+            overflow: TextOverflow.ellipsis,
             value,
-            maxLines: 1,
-            style: TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
+            style: TextStyle(fontSize: 14),
+            maxLines: 2,
           ),
         ],
       ),

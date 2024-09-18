@@ -245,21 +245,15 @@ class ScanProfileView extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Obx(() {
-                      return AnimatedContainer(
-                        width: 420,
-                        duration: Duration(milliseconds: 300),
-                        height:
-                            scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 88)
-                                : 0,
+                      return AnimatedSize(
+                        duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
-                        child: SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: children,
-                          ),
-                        ),
+                        child: scanController.isContainerExpanded(containerName)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: children,
+                              )
+                            : SizedBox.shrink(),
                       );
                     }),
                   ],
@@ -276,16 +270,18 @@ class ScanProfileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+          SizedBox(height: 4),
           Text(
+            overflow: TextOverflow.ellipsis,
             value,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 14),
+            maxLines: 2,
           ),
         ],
       ),

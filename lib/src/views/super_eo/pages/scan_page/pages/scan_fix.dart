@@ -159,7 +159,8 @@ class ScanProfileView extends StatelessWidget {
                       scanController, 'Jas Hujan', 'merchandise.jasHujan'),
                 ]),
                 SizedBox(height: 16),
-                buildDropdownContainer(scanController, 'Souvenir Program', 'souvenir', [
+                buildDropdownContainer(
+                    scanController, 'Souvenir Program', 'souvenir', [
                   buildStatusRow(scanController, 'Gelang Tridatu',
                       'souvenir.gelangTridatu'),
                   buildStatusRow(scanController, 'Selendang Udeng',
@@ -328,21 +329,15 @@ class ScanProfileView extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Obx(() {
-                      return AnimatedContainer(
-                        width: 420,
-                        duration: Duration(milliseconds: 300),
-                        height:
-                            scanController.isContainerExpanded(containerName)
-                                ? (children.length * 40.0 + 88)
-                                : 0,
+                      return AnimatedSize(
+                        duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
-                        child: SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: children,
-                          ),
-                        ),
+                        child: scanController.isContainerExpanded(containerName)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: children,
+                              )
+                            : SizedBox.shrink(),
                       );
                     }),
                   ],
@@ -370,6 +365,7 @@ class ScanProfileView extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             value,
             style: TextStyle(fontSize: 14),
+            maxLines: 2,
           ),
         ],
       ),
