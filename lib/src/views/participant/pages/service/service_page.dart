@@ -167,7 +167,7 @@ class ServicePage extends StatelessWidget {
                                 children: [
                                   SizedBox(
                                     width:
-                                        MediaQuery.of(context).size.width * 0.4,
+                                        MediaQuery.of(context).size.width * 0.3,
                                     child: Text(
                                       reportData['title'] ?? 'No Title',
                                       maxLines: 1,
