@@ -1,4 +1,4 @@
-import 'package:app_kopabali/src/core/base_import.dart'; // Assuming this imports your core packages.
+import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/pages/data_logs/data_logs_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -8,14 +8,13 @@ class DataLogsPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DataLogsController controller =
-        Get.put(DataLogsController()); // Controller instance
+    final DataLogsController controller = Get.put(DataLogsController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: HexColor("#727578"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(), // Go back functionality
+          onPressed: () => Get.back(),
         ),
         title: const Text(
           'Data Logs',
@@ -33,7 +32,7 @@ class DataLogsPageView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 18, vertical: 20),
               child: TextFormField(
-                onChanged: (value) {},
+                onChanged: (value) => controller.updateSearchQuery(value),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: HexColor('F3F3F3'),
@@ -55,13 +54,11 @@ class DataLogsPageView extends StatelessWidget {
                     "Filter by:",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: 20),
                   SizedBox(
                     width: Get.width / 1.5,
                     child: Obx(
-                      () => DropdownButtonFormField2<String>(
+                          () => DropdownButtonFormField2<String>(
                         decoration: InputDecoration(
                           isDense: true,
                           hintText: 'Choose Filter',
@@ -82,15 +79,12 @@ class DataLogsPageView extends StatelessWidget {
                           maxHeight: 120,
                           padding: EdgeInsets.all(10),
                         ),
-                        value: controller.filter.value, // Dropdown filter value
+                        value: controller.filter.value,
                         items: const [
-                          DropdownMenuItem(
-                              value: 'newest', child: Text('Newest')),
-                          DropdownMenuItem(
-                              value: 'oldest', child: Text('Oldest')),
+                          DropdownMenuItem(value: 'newest', child: Text('Newest')),
+                          DropdownMenuItem(value: 'oldest', child: Text('Oldest')),
                         ],
-                        onChanged: controller
-                            .changeFilter, // Update filter on selection
+                        onChanged: controller.changeFilter,
                       ),
                     ),
                   ),
@@ -109,7 +103,7 @@ class DataLogsPageView extends StatelessWidget {
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
                       blurRadius: 5,
-                      offset: Offset(0, 3), // changes position of shadow
+                      offset: Offset(0, 3),
                     ),
                   ],
                 ),
@@ -125,8 +119,7 @@ class DataLogsPageView extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           'Change Logs',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -136,14 +129,12 @@ class DataLogsPageView extends StatelessWidget {
                         width: Get.width / 1,
                         padding: const EdgeInsets.symmetric(horizontal: 18),
                         child: Obx(() => ListView.builder(
-                              itemCount:
-                                  controller.logs.length, // Logs list count
-                              itemBuilder: (context, index) {
-                                final log = controller.logs[index]; // Log item
-                                return _buildLogItem(
-                                    action: log.action); // Build log item UI
-                              },
-                            )),
+                          itemCount: controller.filteredLogs.length,
+                          itemBuilder: (context, index) {
+                            final log = controller.filteredLogs[index];
+                            return _buildLogItem(action: log.action);
+                          },
+                        )),
                       ),
                     ),
                     SizedBox(height: 16),
@@ -158,20 +149,17 @@ class DataLogsPageView extends StatelessWidget {
   }
 
   Widget _buildLogItem({required String action}) {
-    // Function to get the status and format the log text accordingly
     TextSpan getFormattedAction(String action) {
       String status = "";
       String beforeStatus = "";
       String afterStatus = "";
       String date = "";
 
-      // Split the action to extract the date (assuming the date is followed by a newline)
       if (action.contains('\n')) {
-        date = action.split('\n')[0]; // Date part
-        action = action.split('\n')[1]; // Remaining part of the action
+        date = action.split('\n')[0];
+        action = action.split('\n')[1];
       }
 
-      // Check if the action contains specific status keywords
       if (action.contains('Pending')) {
         status = 'Pending';
         beforeStatus = action.split('Pending')[0];
@@ -186,27 +174,21 @@ class DataLogsPageView extends StatelessWidget {
         afterStatus = action.split('Received')[1];
       }
 
-      // If no status found, return the full action text with formatted date
       if (status.isEmpty) {
         return TextSpan(
           children: [
             TextSpan(
               text: "$date\n",
-              style: const TextStyle(
-                  height: 1.5,
-                  fontSize: 16,
-                  color: Colors.black), // Updated font size to 16
+              style: const TextStyle(height: 1.5, fontSize: 16, color: Colors.black),
             ),
             TextSpan(
               text: action,
-              style: const TextStyle(
-                  fontSize: 16, color: Colors.black), // Default text style
+              style: const TextStyle(fontSize: 16, color: Colors.black),
             ),
           ],
         );
       }
 
-      // Assign colors based on status
       Color statusColor;
       if (status == 'Pending') {
         statusColor = HexColor("F0B811");
@@ -215,30 +197,27 @@ class DataLogsPageView extends StatelessWidget {
       } else if (status == 'Received') {
         statusColor = Colors.green;
       } else {
-        statusColor = Colors.black; // Default color if no status is found
+        statusColor = Colors.black;
       }
 
-      // Return the formatted TextSpan with colored status and formatted date
       return TextSpan(
         children: [
           TextSpan(
-              text: "$date\n",
-              style: const TextStyle(
-                  height: 1.5,
-                  fontSize: 16,
-                  color: Colors.black)), // Updated font size to 16
+            text: "$date\n",
+            style: const TextStyle(height: 1.5, fontSize: 16, color: Colors.black),
+          ),
           TextSpan(
-              text: beforeStatus,
-              style: const TextStyle(fontSize: 16, color: Colors.black)),
+            text: beforeStatus,
+            style: const TextStyle(fontSize: 16, color: Colors.black),
+          ),
           TextSpan(
-              text: status,
-              style: TextStyle(
-                  color: statusColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
+            text: status,
+            style: TextStyle(color: statusColor, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           TextSpan(
-              text: afterStatus,
-              style: const TextStyle(fontSize: 16, color: Colors.black)),
+            text: afterStatus,
+            style: const TextStyle(fontSize: 16, color: Colors.black),
+          ),
         ],
       );
     }

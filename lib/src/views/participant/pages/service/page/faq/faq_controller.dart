@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+  import 'package:get/get.dart';
 
 class FaqController extends GetxController {
   var faqs = <Map<String, String>>[

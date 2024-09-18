@@ -33,7 +33,7 @@ class ParticipantKit extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Polo Shirt",
+                    "Name Tag",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
@@ -42,17 +42,20 @@ class ParticipantKit extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at ipsum at nulla ultrices gravida. Integer nec viverra magna. Etiam euismod lacus eu dui vestibulum, eget luctus sem aliquet.",
+                    "One of the main items to be received on the first day is a name tag. This name tag is specially designed for the event and will provide identification as well as a uniform appearance for all participants.",
                     style: TextStyle(fontSize: 16),
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 24),
                   _buildImageItem(
-                      'assets/images/participant_kit/poloshirt1.png'),
+                      'assets/images/participant_kit/nametag1.png'),
                   const SizedBox(height: 18),
                   _buildImageItem(
-                      'assets/images/participant_kit/poloshirt2.png'),
-                  const SizedBox(height: 44),
+                      'assets/images/participant_kit/nametag2.png'),
+                  const SizedBox(height: 18),
+                  _buildImageItem(
+                      'assets/images/participant_kit/nametag3.png'),
+                  const SizedBox(height: 24),
                   Text(
                     "T-Shirt",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -63,19 +66,22 @@ class ParticipantKit extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at ipsum at nulla ultrices gravida. Integer nec viverra magna. Etiam euismod lacus eu dui vestibulum, eget luctus sem aliquet.",
+                    "On the second day, participants will receive a t-shirt. This t-shirt is designed to provide comfort during the activities and also serves as a souvenir from the event.",
                     style: TextStyle(fontSize: 16),
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 24),
                   _buildImageItem(
-                      'assets/images/participant_kit/poloshirt1.png'),
+                      'assets/images/participant_kit/tshirt1.png'),
                   const SizedBox(height: 18),
                   _buildImageItem(
-                      'assets/images/participant_kit/poloshirt2.png'),
+                      'assets/images/participant_kit/tshirt2.png'),
+                  const SizedBox(height: 18),
+                  _buildImageItem(
+                      'assets/images/participant_kit/tshirt3.png'),
                   const SizedBox(height: 44),
                   Text(
-                    "Name Tag",
+                    "Polo Shirt",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
@@ -84,16 +90,19 @@ class ParticipantKit extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at ipsum at nulla ultrices gravida. Integer nec viverra magna. Etiam euismod lacus eu dui vestibulum, eget luctus sem aliquet.",
+                    "On the third day, participants will receive a polo shirt. This polo shirt is specially designed for the event and will provide comfort as well as a uniform appearance for all participants.",
                     style: TextStyle(fontSize: 16),
                     textAlign: TextAlign.justify,
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   _buildImageItem(
                       'assets/images/participant_kit/poloshirt1.png'),
                   const SizedBox(height: 18),
                   _buildImageItem(
                       'assets/images/participant_kit/poloshirt2.png'),
+                  const SizedBox(height: 18),
+                  _buildImageItem(
+                      'assets/images/participant_kit/polo_shirt.png'),
                 ],
               ),
             ),
@@ -109,8 +118,8 @@ class ParticipantKit extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.grey,
-            width: 1,
+            color: HexColor('#F2F2F2'),
+            width: 2,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -120,7 +129,7 @@ class ParticipantKit extends StatelessWidget {
             imagePath,
             alignment: Alignment.center,
             height: 200,
-            width: Get.width / 1.9,
+            width: Get.width / 1,
             fit: BoxFit.cover,
           ),
         ),
