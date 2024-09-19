@@ -15,7 +15,7 @@ class HomePageParticipant extends StatelessWidget {
     final HomePageParticipantController homePageController =
         Get.put(HomePageParticipantController());
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
@@ -34,16 +34,12 @@ class HomePageParticipant extends StatelessWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
-                    height: MediaQuery.of(context).size.height *
-                        0.1810, // Set height according to your need
-                    color: HexColor('#727578'), // Background color of AppBar
+                    height: MediaQuery.of(context).size.height * 0.1810,
+                    color: HexColor('#727578'),
                     padding: EdgeInsets.fromLTRB(16.0,
                         MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
-                    width: Get.width,
-                    alignment: Alignment.center,
                     child: Column(
                       children: [
-                        // SizedBox(height: 44),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -66,7 +62,6 @@ class HomePageParticipant extends StatelessWidget {
                             )
                           ],
                         ),
-
                         Text(
                           'Welcome To Your Homepage',
                           style: TextStyle(
@@ -75,7 +70,6 @@ class HomePageParticipant extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -115,135 +109,134 @@ class HomePageParticipant extends StatelessWidget {
                             fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.06, // 6% of the screen height
+                        height: MediaQuery.of(context).size.height * 0.06,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(width: 10),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => ParticipantKit()),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: HexColor("F2F2F2"),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/ic_gift.svg',
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  SizedBox(height: 12),
-                                  Text(
-                                    'Participant\nKit',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => ParticipantKit()),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: HexColor("F2F2F2"),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icons/ic_gift.svg',
+                                      width: 30,
+                                      height: 30,
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 12),
+                                    Text(
+                                      'Participant\nKit',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ParticipantBenefitView()),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: HexColor("F2F2F2"),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/ic_user_add.svg',
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  SizedBox(height: 12),
-                                  Text(
-                                    'Participant\nBenefit',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ParticipantBenefitView()),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: HexColor("F2F2F2"),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icons/ic_user_add.svg',
+                                      width: 30,
+                                      height: 30,
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 12),
+                                    Text(
+                                      'Participant\nBenefit',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ParticipantAgendaView()),
-                              );
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: HexColor("F2F2F2"),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/ic_calendar_range.svg',
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  SizedBox(height: 12),
-                                  Text(
-                                    'Agenda\nKegiatan\t\t\t\t',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.black,
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ParticipantAgendaView()),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: HexColor("F2F2F2"),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icons/ic_calendar_range.svg',
+                                      width: 30,
+                                      height: 30,
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 12),
+                                    Text(
+                                      'Agenda\nKegiatan\t\t\t\t',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                        ],
+                          ],
+                        ),
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.034),
                       Container(
                         width: Get.width,
-                        height: MediaQuery.of(context).size.height *
-                            0.225, // 22.5% of the screen height|
+                        height: MediaQuery.of(context).size.height * 0.225,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/bali.png'),
@@ -296,8 +289,7 @@ class HomePageParticipant extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.1175, // 11.75% of the screen height
+                        height: MediaQuery.of(context).size.height * 0.1175,
                       ),
                     ],
                   ),
@@ -307,7 +299,6 @@ class HomePageParticipant extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Column(
                       children: [
-                        //container time countdown
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 29),
                           child: Container(
@@ -332,7 +323,7 @@ class HomePageParticipant extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  '20 - 23 September 2024',
+                                  '22 - 23 September 2024',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -353,7 +344,9 @@ class HomePageParticipant extends StatelessWidget {
                                       ),
                                       SizedBox(height: 4),
                                       Text(
-                                        'Event Live Countdown',
+                                        homePageController.isEventStarted.value
+                                            ? 'Event Started'
+                                            : 'Event Live Countdown',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.white,
@@ -361,88 +354,102 @@ class HomePageParticipant extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(height: 8),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$days',
+                                      homePageController.isEventStarted.value
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 6),
+                                              child: Text(
+                                                'Event is live now, enjoy the event!',
                                                 style: TextStyle(
-                                                  fontSize: 24,
+                                                  fontSize: 18,
                                                   color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Days',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$days',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Days',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$hours',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$hours',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Hours',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Hours',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$minutes',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Minutes',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$minutes',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$seconds',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Seconds',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Minutes',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$seconds',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Seconds',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -575,8 +582,7 @@ class _VenueCardState extends State<VenueCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius:
-                BorderRadius.circular(20), // Set your desired radius here
+            borderRadius: BorderRadius.circular(20),
             child: AspectRatio(
               aspectRatio: 16 / 9,
               child: YoutubePlayer(
@@ -589,7 +595,7 @@ class _VenueCardState extends State<VenueCard> {
                   handleColor: Colors.redAccent,
                 ),
                 onReady: () {
-                  print('Player siap.');
+                  print('Player is ready.');
                 },
                 onEnded: (YoutubeMetaData metaData) {
                   _controller.pause();

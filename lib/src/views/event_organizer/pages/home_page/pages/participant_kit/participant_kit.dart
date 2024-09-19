@@ -34,77 +34,42 @@ class ParticipantKit extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Name Tag",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Friday, 20 September 2024",
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "One of the main items to be received on the first day is a name tag. This name tag is specially designed for the event and will provide identification as well as a uniform appearance for all participants.",
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.justify,
-                  ),
-                  const SizedBox(height: 24),
-                  _buildImageItem(
-                      'assets/images/participant_kit/nametag1.png'),
-                  const SizedBox(height: 18),
-                  _buildImageItem(
-                      'assets/images/participant_kit/nametag2.png'),
-                  const SizedBox(height: 18),
-                  _buildImageItem(
-                      'assets/images/participant_kit/nametag3.png'),
-                  const SizedBox(height: 24),
-                  Text(
-                    "T-Shirt",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Saturday, 21 September 2024",
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "On the second day, participants will receive a t-shirt. This t-shirt is designed to provide comfort during the activities and also serves as a souvenir from the event.",
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.justify,
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: HexColor('F2F2F2'),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Participant Kit",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Friday, 20 September 2024",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          "On day 1, participants can pick up their kit, which typically includes event materials like T-Shirts, Name Tag, etc.",
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.justify,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 24),
-                  _buildImageItem(
-                      'assets/images/participant_kit/tshirt1.png'),
+                  _buildImageItem('assets/images/participant_kit/item1.png'),
                   const SizedBox(height: 18),
-                  _buildImageItem(
-                      'assets/images/participant_kit/tshirt2.png'),
+                  _buildImageItem('assets/images/participant_kit/item2.png'),
                   const SizedBox(height: 18),
-                  _buildImageItem(
-                      'assets/images/participant_kit/tshirt3.png'),
-                  const SizedBox(height: 44),
-                  Text(
-                    "Polo Shirt",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Sunday, 22 September 2024",
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "On the third day, participants will receive a polo shirt. This polo shirt is specially designed for the event and will provide comfort as well as a uniform appearance for all participants.",
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.justify,
-                  ),
-                  SizedBox(height: 24),
-                  _buildImageItem(
-                      'assets/images/participant_kit/poloshirt1.png'),
-                  const SizedBox(height: 18),
-                  _buildImageItem(
-                      'assets/images/participant_kit/poloshirt2.png'),
-                  const SizedBox(height: 18),
-                  _buildImageItem(
-                      'assets/images/participant_kit/polo_shirt.png'),
+                  _buildImageItem('assets/images/participant_kit/item3.png'),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),

@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
 class HomePageCommitteeController extends GetxController {
-  var userName = ''.obs;
+ var userName = ''.obs;
   var duration = Duration().obs;
+  var isEventStarted = false.obs;
   Timer? timer;
   StreamSubscription<DocumentSnapshot>? userSubscription;
+
   @override
   void onInit() {
     super.onInit();
@@ -18,6 +20,7 @@ class HomePageCommitteeController extends GetxController {
   @override
   void dispose() {
     timer?.cancel();
+    userSubscription?.cancel();
     super.dispose();
   }
 
@@ -34,7 +37,6 @@ class HomePageCommitteeController extends GetxController {
           String fullName = data['name'] ?? '';
           List<String> nameParts = fullName.split(' ');
 
-          // Ambil dua kata pertama
           if (nameParts.length > 1) {
             userName.value = '${nameParts[0]} ${nameParts[1]}';
           } else {
@@ -60,14 +62,17 @@ class HomePageCommitteeController extends GetxController {
 
   void startCountdown() async {
     DateTime serverTime = await getServerTime();
-    DateTime eventDate = DateTime(2024, 9, 20, 0, 0,
-        0); // Set tanggal event (20 September 2024) di zona waktu Bali (GMT+8)
+    DateTime eventDate = DateTime(2024, 9, 22, 0, 0, 0);
 
-    // Hitung perbedaan waktu antara server dan waktu event
     duration.value = eventDate.difference(serverTime);
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      duration.value = duration.value - Duration(seconds: 1);
+      if (duration.value.inSeconds > 0) {
+        duration.value = duration.value - Duration(seconds: 1);
+      } else {
+        isEventStarted.value = true;
+        timer.cancel();
+      }
     });
   }
 }

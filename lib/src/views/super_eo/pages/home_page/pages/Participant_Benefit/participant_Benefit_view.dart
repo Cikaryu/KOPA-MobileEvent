@@ -46,7 +46,7 @@ class ParticipantBenefitView extends StatelessWidget {
                         Text(
                           "Participant Benefit",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

@@ -40,9 +40,8 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
-                    height: MediaQuery.of(context).size.height *
-                        0.1810, // Set height according to your need
-                    color: HexColor('#727578'), // Background color of AppBar
+                    height: MediaQuery.of(context).size.height * 0.1810,
+                    color: HexColor('#727578'),
                     padding: EdgeInsets.fromLTRB(16.0,
                         MediaQuery.of(context).padding.top + 20.0, 16.0, 16.0),
                     child: Column(
@@ -116,8 +115,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.06, // 6% of the screen height
+                        height: MediaQuery.of(context).size.height * 0.06,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -244,8 +242,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                           height: MediaQuery.of(context).size.height * 0.034),
                       Container(
                         width: Get.width,
-                        height: MediaQuery.of(context).size.height *
-                            0.225, // 22.5% of the screen height
+                        height: MediaQuery.of(context).size.height * 0.225,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/bali.png'),
@@ -298,8 +295,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.1175, // 11.75% of the screen height
+                        height: MediaQuery.of(context).size.height * 0.1175,
                       ),
                     ],
                   ),
@@ -309,7 +305,6 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Column(
                       children: [
-                        //container time countdown
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 29),
                           child: Container(
@@ -334,7 +329,7 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  '20 - 23 September 2024',
+                                  '22 - 23 September 2024',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -355,7 +350,9 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                       ),
                                       SizedBox(height: 4),
                                       Text(
-                                        'Event Live Countdown',
+                                        homePageController.isEventStarted.value
+                                            ? 'Event Started'
+                                            : 'Event Live Countdown',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.white,
@@ -363,88 +360,102 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                                         ),
                                       ),
                                       SizedBox(height: 8),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$days',
+                                      homePageController.isEventStarted.value
+                                          ? Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 6),
+                                              child: Text(
+                                                'Event is live now, enjoy the event!',
                                                 style: TextStyle(
-                                                  fontSize: 24,
+                                                  fontSize: 18,
                                                   color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Days',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$days',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Days',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$hours',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$hours',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Hours',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Hours',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$minutes',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Minutes',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$minutes',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      '$seconds',
+                                                      style: TextStyle(
+                                                        fontSize: 24,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 4),
+                                                    Text(
+                                                      'Seconds',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Minutes',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '$seconds',
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Seconds',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -577,8 +588,7 @@ class _VenueCardState extends State<VenueCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius:
-                BorderRadius.circular(20), // Set your desired radius here
+            borderRadius: BorderRadius.circular(20),
             child: AspectRatio(
               aspectRatio: 16 / 9,
               child: YoutubePlayer(
@@ -591,7 +601,7 @@ class _VenueCardState extends State<VenueCard> {
                   handleColor: Colors.redAccent,
                 ),
                 onReady: () {
-                  print('Player siap.');
+                  print('Player is ready.');
                 },
                 onEnded: (YoutubeMetaData metaData) {
                   _controller.pause();
