@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
-import 'package:path/path.dart';
 
 class AttendanceController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -70,6 +71,31 @@ class AttendanceController extends GetxController {
     'arrivalJakarta': 'Arrival in Jakarta'
   };
 
+  // EDIT WAKTU EVENT DISINI !
+  var eventTimeRanges = {
+    1: {
+      'departure': {'start': '14:00:', 'end': '14:01'},
+      'arrival': {'start': '14:02', 'end': '14:03'},
+      'csr': {'start': '14:08', 'end': '14:09'},
+      'lunch': {'start': '14:10', 'end': '14:11'},
+      'checkInHotel': {'start': '15:00', 'end': '17:00'},
+      'welcomeDinner': {'start': '19:00', 'end': '21:00'},
+      'arrivedHotel': {'start': '21:00', 'end': '23:00'}
+    },
+    2: {
+      'teamBuilding': {'start': '09:00', 'end': '12:00'},
+      'lunch': {'start': '12:00', 'end': '14:00'},
+      'galaDinner': {'start': '19:00', 'end': '22:00'}
+    },
+    3: {
+      'roomCheckOut': {'start': '07:00', 'end': '09:00'},
+      'luggageDrop': {'start': '09:00', 'end': '10:00'},
+      'departure': {'start': '10:00', 'end': '12:00'},
+      'arrivalJakarta': {'start': '14:00', 'end': '16:00'}
+    },
+  };
+
+
   var currentEvent = '';
   var notParticipating = false.obs;
   var leftEarly = false.obs;
@@ -78,6 +104,7 @@ class AttendanceController extends GetxController {
   void onInit() {
     super.onInit();
     loadAttendanceData();
+    tz.initializeTimeZones();
   }
 
   void setLoading(bool value) {
@@ -133,17 +160,17 @@ class AttendanceController extends GetxController {
   }
 
   bool canAttendEvent(int day, String event) {
-    if (day == 1 && event == 'departure') return true;
+    if (day == 1 && event == 'departure') return isWithinTimeRange(day, event);
 
     var eventIndex = events[day]!.indexOf(event);
     if (eventIndex == 0 && day != 1) {
       // Check last event of previous day
       var lastEventPreviousDay = events[day - 1]!.last;
-      var lastStatusPreviousDay =
-          attendanceStatus[day - 1]![lastEventPreviousDay];
-      return lastStatusPreviousDay == 'Attending' ||
+      var lastStatusPreviousDay = attendanceStatus[day - 1]![lastEventPreviousDay];
+      return (lastStatusPreviousDay == 'Attending' ||
           lastStatusPreviousDay == 'Sick' ||
-          lastStatusPreviousDay == 'Permit';
+          lastStatusPreviousDay == 'Permit') &&
+          isWithinTimeRange(day, event);
     }
 
     if (eventIndex > 0) {
@@ -151,16 +178,40 @@ class AttendanceController extends GetxController {
       var previousStatus = attendanceStatus[day]![previousEvent];
 
       if (day == 1 && previousEvent == 'departure') {
-        return previousStatus == 'Attending';
+        return previousStatus == 'Attending' && isWithinTimeRange(day, event);
       }
 
-      return previousStatus == 'Attending' ||
+      return (previousStatus == 'Attending' ||
           previousStatus == 'Sick' ||
-          previousStatus == 'Permit';
+          previousStatus == 'Permit') &&
+          isWithinTimeRange(day, event);
     }
 
     return false;
   }
+
+  bool isWithinTimeRange(int day, String event) {
+    var nowInUTC8 = tz.TZDateTime.now(tz.getLocation('Asia/Makassar'));
+    var timeRange = eventTimeRanges[day]![event];
+    if (timeRange == null) return false;
+
+    var startTime = _parseTime(timeRange['start']!, nowInUTC8);
+    var endTime = _parseTime(timeRange['end']!, nowInUTC8);
+
+    return nowInUTC8.isAfter(startTime) && nowInUTC8.isBefore(endTime);
+  }
+  tz.TZDateTime _parseTime(String time, tz.TZDateTime referenceDate) {
+    var timeParts = time.split(':');
+    return tz.TZDateTime(
+      tz.getLocation('Asia/Makassar'),
+      referenceDate.year,
+      referenceDate.month,
+      referenceDate.day,
+      int.parse(timeParts[0]),
+      int.parse(timeParts[1]),
+    );
+  }
+
 
   //refresh
   Future<void> refreshAttendanceData() async {

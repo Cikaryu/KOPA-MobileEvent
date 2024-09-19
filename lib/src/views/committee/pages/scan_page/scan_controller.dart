@@ -1,7 +1,6 @@
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/scan_page/pages/scan_fix.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class ScanController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -121,6 +120,39 @@ class ScanController extends GetxController {
     }
   }
 
+  Future<void> logActivity({
+    required String type,
+    required String participantName,
+    String? itemName,
+    String? newStatus,
+    String? newstatusAll,
+    String? newRole,
+  }) async {
+    try {
+      final String activityId = _firestore.collection('activityLogs').doc().id;
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(activityId).set({
+          'type': type,
+          'ParticipantName': participantName,
+          'participantName': participantName,
+          if (itemName != null) 'itemName': itemName,
+          if (newStatus != null) 'newStatus': newStatus,
+          if (newstatusAll != null) 'newstatusAll': newstatusAll,
+          if (newRole != null) 'newRole': newRole,
+          'ChangedBy': name,
+          'changedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      print('Error logging activity: $e');
+    }
+  }
+
   Future<void> updateItemStatus(String field, String newStatus) async {
     try {
       String userId = Get.arguments['userId'];
@@ -131,6 +163,13 @@ class ScanController extends GetxController {
             FieldValue.serverTimestamp(),
       });
       status[field] = newStatus;
+      // Log the activity
+      await logActivity(
+        type: 'participantkit_changed',
+        participantName: participantData['name'] ?? '',
+        itemName: '${fieldParts[0]}.${fieldParts[1]}',
+        newStatus: newStatus,
+      );
     } catch (e) {
       print('Error updating item status: $e');
       Get.snackbar(
@@ -266,7 +305,13 @@ class ScanController extends GetxController {
           .doc(userId.value)
           .update(updateData);
       status.refresh();
-
+      // Log the activity
+      await logActivity(
+        type: 'participantkit_changed_all',
+        participantName: participantData['name'] ?? '',
+        itemName: containerName,
+        newstatusAll: 'Received',
+      );
       Get.snackbar(
         "Success",
         "All items in $containerName marked as received.",
