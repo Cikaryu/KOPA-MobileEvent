@@ -5,9 +5,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SignupSlide3View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _tShirtSizeController = TextEditingController();
-  final TextEditingController _poloShirtSizeController =
-      TextEditingController();
+
 
   SignupSlide3View({super.key});
 
@@ -15,6 +13,8 @@ class SignupSlide3View extends StatelessWidget {
   Widget build(BuildContext context) {
     // Uncomment the following line if you need to use the SignupController.
     final SignupController signupController = Get.put(SignupController());
+    final TextEditingController tShirtSizeController = TextEditingController(text: signupController.tshirtSizeController.text);
+    final TextEditingController poloShirtSizeController = TextEditingController(text: signupController.poloShirtSizeController.text);
     final List<String> ukuranOptions = [
       'S',
       'M',
@@ -83,7 +83,7 @@ class SignupSlide3View extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _tShirtSizeController.text = newValue!;
+                    tShirtSizeController.text = newValue!;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a size' : null,
@@ -119,7 +119,7 @@ class SignupSlide3View extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _poloShirtSizeController.text = newValue!;
+                    poloShirtSizeController.text = newValue!;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a size' : null,
@@ -131,9 +131,9 @@ class SignupSlide3View extends StatelessWidget {
                       FocusScope.of(context).unfocus();
                       if (_formKey.currentState!.validate()) {
                         signupController.tshirtSizeController.text =
-                            _tShirtSizeController.text;
+                            tShirtSizeController.text;
                         signupController.poloShirtSizeController.text =
-                            _poloShirtSizeController.text;
+                            poloShirtSizeController.text;
                         signupController.nextPage();
                       }
                     },

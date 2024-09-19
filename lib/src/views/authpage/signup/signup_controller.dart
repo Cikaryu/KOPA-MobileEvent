@@ -36,6 +36,26 @@ class SignupController extends GetxController {
   var ktpImage = ValueNotifier<File?>(null);
   String? _qrCodePath;
 
+  @override
+  void onInit() {
+    super.onInit();
+    // Initialize controllers with empty strings to avoid null issues
+    emailController = TextEditingController(text: '');
+    passwordController = TextEditingController(text: '');
+    nameController = TextEditingController(text: '');
+    areaController = TextEditingController(text: '');
+    divisionController = TextEditingController(text: '');
+    departmentController = TextEditingController(text: '');
+    addressController = TextEditingController(text: '');
+    whatsappNumberController = TextEditingController(text: '');
+    ktpNumberController = TextEditingController(text: '');
+    tshirtSizeController = TextEditingController(text: '');
+    poloShirtSizeController = TextEditingController(text: '');
+    eWalletTypeController = TextEditingController(text: '');
+    eWalletNumberController = TextEditingController(text: '');
+  }
+
+
   void setSelfieImage(File? image) {
     selfieImage.value = image;
     update();

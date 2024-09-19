@@ -5,14 +5,15 @@ import 'package:app_kopabali/src/core/base_import.dart';
 
 class SignupSlide1View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
 
   SignupSlide1View({super.key});
 
   @override
   Widget build(BuildContext context) {
     final SignupController signupController = Get.put(SignupController());
+    final TextEditingController emailController = TextEditingController(text: signupController.emailController.text);
+    final TextEditingController passwordController = TextEditingController(text: signupController.passwordController.text);
 
     return GestureDetector(
       onTap: () {
@@ -48,7 +49,7 @@ class SignupSlide1View extends StatelessWidget {
                           )),
                       SizedBox(height: 4),
                       TextFormField(
-                        controller: _emailController,
+                        controller: emailController,
                         decoration: InputDecoration(
                           hintText: 'Example@mail.com',
                           hintStyle: TextStyle(fontSize: 14 ,color: Colors.grey.withOpacity(0.6)),
@@ -80,7 +81,7 @@ class SignupSlide1View extends StatelessWidget {
                           )),
                       SizedBox(height: 4),
                       Obx(() => TextFormField(
-                            controller: _passwordController,
+                            controller: passwordController,
                             obscureText: signupController.showPassword.value
                                 ? false
                                 : true,
@@ -116,9 +117,9 @@ class SignupSlide1View extends StatelessWidget {
                             FocusScope.of(context).unfocus();
                             if (_formKey.currentState!.validate()) {
                               signupController.emailController.text =
-                                  _emailController.text;
+                                  emailController.text;
                               signupController.passwordController.text =
-                                  _passwordController.text;
+                                  passwordController.text;
                               signupController.nextPage();
                             }
                           },

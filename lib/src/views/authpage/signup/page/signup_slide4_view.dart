@@ -3,12 +3,8 @@ import 'package:app_kopabali/src/views/authpage/signup/signup_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/services.dart';
 
-
 class SignupSlide4View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _eWalletTypeController = TextEditingController();
-  final TextEditingController _eWalletNumberController =
-      TextEditingController();
 
   SignupSlide4View({super.key});
 
@@ -16,6 +12,10 @@ class SignupSlide4View extends StatelessWidget {
   Widget build(BuildContext context) {
     // Uncomment the following line if you need to use the SignupController.
     final SignupController signupController = Get.put(SignupController());
+    final TextEditingController eWalletTypeController = TextEditingController(
+        text: signupController.eWalletTypeController.text);
+    final TextEditingController eWalletNumberController = TextEditingController(
+        text: signupController.eWalletNumberController.text);
     final List<String> eWalletOptions = [
       'OVO',
       'GoPay',
@@ -34,7 +34,8 @@ class SignupSlide4View extends StatelessWidget {
             onPressed: () {
               signupController.backPage();
             },
-          ),        ),
+          ),
+        ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
           child: Form(
@@ -52,9 +53,7 @@ class SignupSlide4View extends StatelessWidget {
                 SizedBox(height: 5),
                 DropdownButtonFormField2<String>(
                   decoration: InputDecoration(
-
                     hintText: 'Choose E - Wallet Type',
-
                     hintStyle: TextStyle(
                         fontSize: 16, color: Colors.grey.withOpacity(0.6)),
                     border: OutlineInputBorder(
@@ -80,7 +79,7 @@ class SignupSlide4View extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _eWalletTypeController.text = newValue!;
+                    eWalletTypeController.text = newValue!;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a type' : null,
@@ -90,7 +89,7 @@ class SignupSlide4View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: _eWalletNumberController,
+                  controller: eWalletNumberController,
                   keyboardType: TextInputType.number,
                   maxLength: 13,
                   decoration: InputDecoration(
@@ -140,10 +139,10 @@ class SignupSlide4View extends StatelessWidget {
                             poloShirtSize:
                                 signupController.poloShirtSizeController.text,
                             eWalletType: signupController.eWalletTypeController
-                                .text = _eWalletTypeController.text,
+                                .text = eWalletTypeController.text,
                             eWalletNumber: signupController
                                 .eWalletNumberController
-                                .text = _eWalletNumberController.text,
+                                .text = eWalletNumberController.text,
                             context: context,
                             role: 'Participant',
                             status: 'Pending',
