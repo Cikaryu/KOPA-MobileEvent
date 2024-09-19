@@ -1,9 +1,4 @@
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:flutter_svg/svg.dart';
-
-import 'Participant_benefit_days/day_one_benefit.dart';
-import 'Participant_benefit_days/day_three_benefit.dart';
-import 'Participant_benefit_days/day_two_benefit.dart';
 import 'participant_Benefit_controller.dart';
 
 class ParticipantBenefitView extends StatelessWidget {
@@ -23,7 +18,7 @@ class ParticipantBenefitView extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white)),
         scrolledUnderElevation: 0,
-        backgroundColor: HexColor('01613B'),
+        backgroundColor: HexColor('#727578'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
@@ -32,81 +27,91 @@ class ParticipantBenefitView extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: HexColor("#F2F2F2"),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Participant Benefit",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Friday, 20th September",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "On day 1, participants can received different vouchers for different occasions.",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
               child: Column(
                 children: [
-                  const SizedBox(height: 24),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      double imageWidth = constraints.maxWidth *
+                          0.91; // Adjust the width as needed
+                      return Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/participant_benefit/Benefit1.png',
+                            width: imageWidth,
+                            fit: BoxFit.cover,
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/images/participant_benefit/Benefit2.png',
+                            width: imageWidth,
+                            fit: BoxFit.cover,
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/images/participant_benefit/Benefit3.png',
+                            width: imageWidth,
+                            fit: BoxFit.cover,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
-            // Tab bar hari
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  _buildDayTab(0, 'Day 1'),
-                  _buildDayTab(1, 'Day 2'),
-                  _buildDayTab(2, 'Day 3'),
-                ],
-              ),
-            ),
-            // Konten hari berdasarkan tab yang dipilih
-            SizedBox(
-              height: 600,
-              child: ValueListenableBuilder<int>(
-                valueListenable: controller.selectedDay,
-                builder: (context, value, child) {
-                  switch (value) {
-                    case 0:
-                      return DayOneContentBenefit();
-                    case 1:
-                      return DayTwoContentBenefit();
-                    case 2:
-                      return DayThreeContentBenfit();
-                    default:
-                      return Center(child: Text('Invalid Day'));
-                  }
-                },
-              ),
-            ),
+            SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildDayTab(int day, String label) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => controller.changeDay(day),
-        child: ValueListenableBuilder<int>(
-          valueListenable: controller.selectedDay,
-          builder: (context, value, child) {
-            final isSelected = value == day;
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: isSelected ? HexColor("#01613B") : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
 }
+

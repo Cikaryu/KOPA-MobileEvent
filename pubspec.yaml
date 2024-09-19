@@ -83,6 +83,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/participant_kit/
+    - assets/images/participant_benefit/
     - assets/icons/
     - assets/icons/status/
     
