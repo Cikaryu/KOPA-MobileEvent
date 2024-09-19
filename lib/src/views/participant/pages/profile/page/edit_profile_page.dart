@@ -12,34 +12,34 @@ class EditProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          backgroundColor: HexColor('727578'),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              profileController.resetForm;
-              Get.back();
-            },
-          ),
-          title: Text(
-            'Edit Profile',
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true,
-        ),
-        body: Obx(() {
-          return Stack(
-            children: [
-              Container(
+    return Obx(() {
+      return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            Scaffold(
+              appBar: AppBar(
+                scrolledUnderElevation: 0,
+                backgroundColor: HexColor('727578'),
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    profileController.resetForm;
+                    Get.back();
+                  },
+                ),
+                title: Text(
+                  'Edit Profile',
+                  style: TextStyle(color: Colors.white),
+                ),
+                centerTitle: true,
+              ),
+              body: Container(
                 color: Colors.white,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -270,19 +270,20 @@ class EditProfileView extends StatelessWidget {
                   ),
                 ),
               ),
-              // Indikator loading transparan
-              if (profileController.isLoading.value)
-                Container(
-                  color: Colors.black54, // Warna latar belakang transparan
+            ),
+            if (profileController.isLoading.value)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 ),
-            ],
-          );
-        }),
-      ),
-    );
+              ),
+          ],
+        ),
+      );
+    });
   }
 }
 
