@@ -107,7 +107,7 @@ class DataLogsController extends GetxController {
             return 'Benefit';
         }
       } else {
-        return 'Unknown Item';
+        return itemName;
       }
     }
 
@@ -145,7 +145,7 @@ class DataLogsController extends GetxController {
 
         case 'participantkit_changed_all':
           String allItemName = formatItemName(data['itemName']);
-          String newStatusAll = data['newstatusAll'] ?? 'Unknown status';
+          String newStatusAll = data['newstatusAll'] ?? 'unkown status';
           String changedBy = data['changedBy'] ?? 'Unknown User';
           String participantName =
               data['participantName'] ?? 'Unknown Participant';

@@ -70,6 +70,39 @@ class ScanController extends GetxController {
     }
   }
 
+  Future<void> logActivity({
+    required String type,
+    required String participantName,
+    String? itemName,
+    String? newStatus,
+    String? newstatusAll,
+    String? newRole,
+  }) async {
+    try {
+      final String activityId = _firestore.collection('activityLogs').doc().id;
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        final String name = userDoc['name'] ?? '';
+        await _firestore.collection('activityLogs').doc(activityId).set({
+          'type': type,
+          'ParticipantName': participantName,
+          'participantName': participantName,
+          if (itemName != null) 'itemName': itemName,
+          if (newStatus != null) 'newStatus': newStatus,
+          if (newstatusAll != null) 'newstatusAll': newstatusAll,
+          if (newRole != null) 'newRole': newRole,
+          'ChangedBy': name,
+          'changedBy': name,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      print('Error logging activity: $e');
+    }
+  }
+
   Future<void> fetchParticipantImage(String userId) async {
     try {
       final ref =
@@ -124,26 +157,33 @@ class ScanController extends GetxController {
   }
 
   Future<void> updateItemStatus(String field, String newStatus) async {
-    try {
-      String userId = Get.arguments['userId'];
-      final fieldParts = field.split('.');
-      await _firestore.collection('participantKit').doc(userId).update({
-        '${fieldParts[0]}.${fieldParts[1]}.status': newStatus,
-        '${fieldParts[0]}.${fieldParts[1]}.updatedAt':
-            FieldValue.serverTimestamp(),
-      });
-      status[field] = newStatus;
-      await fetchStatusImage(field, newStatus);
-    } catch (e) {
-      print('Error updating item status: $e');
-      Get.snackbar(
-        "Error",
-        "Failed to update item status.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
+  try {
+    String userId = Get.arguments['userId'];
+    final fieldParts = field.split('.');
+    await _firestore.collection('participantKit').doc(userId).update({
+      '${fieldParts[0]}.${fieldParts[1]}.status': newStatus,
+      '${fieldParts[0]}.${fieldParts[1]}.updatedAt': FieldValue.serverTimestamp(),
+    });
+    status[field] = newStatus;
+    await fetchStatusImage(field, newStatus);
+
+    // Log the activity
+    await logActivity(
+      type: 'participantkit_changed',
+      participantName: participantData['name'] ?? '',
+      itemName: '${fieldParts[0]}.${fieldParts[1]}',
+      newStatus: newStatus,
+    );
+  } catch (e) {
+    print('Error updating item status: $e');
+    Get.snackbar(
+      "Error",
+      "Failed to update item status.",
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
+} 
 
   Future<void> processQRCode(String qrCode) async {
     if (isProcessing.value) return;
@@ -231,96 +271,108 @@ class ScanController extends GetxController {
   }
 
   void updateParticipantRole(String newRole) async {
-    try {
-      String userId = Get.arguments['userId'];
-      Map<String, dynamic> updateData = {'role': newRole};
+  try {
+    String userId = Get.arguments['userId'];
+    Map<String, dynamic> updateData = {'role': newRole};
 
-      // Selalu mencoba menghapus field 'was*' ketika mengubah peran
-      updateData['wasCommittee'] = FieldValue.delete();
-      updateData['wasEventOrganizer'] = FieldValue.delete();
-      updateData['wasSuperEO'] = FieldValue.delete();
+    // Selalu mencoba menghapus field 'was*' ketika mengubah peran
+    updateData['wasCommittee'] = FieldValue.delete();
+    updateData['wasEventOrganizer'] = FieldValue.delete();
+    updateData['wasSuperEO'] = FieldValue.delete();
 
-      // Jika peran baru bukan 'participant', tambahkan field 'was*' yang sesuai
+    await _firestore.collection('users').doc(userId).update(updateData);
 
-      await _firestore.collection('users').doc(userId).update(updateData);
+    // Memperbarui participantData lokal
+    participantData['role'] = newRole;
+    participantData.remove('wasCommittee');
+    participantData.remove('wasEventOrganizer');
+    participantData.remove('wasSuperEO');
 
-      // Memperbarui participantData lokal
-      participantData['role'] = newRole;
-      participantData.remove('wasCommittee');
-      participantData.remove('wasEventOrganizer');
-      participantData.remove('wasSuperEO');
+    // Log the activity
+    await logActivity(
+      type: 'user_promotion',
+      participantName: participantData['name'] ?? '',
+      newRole: newRole,
+    );
 
-      Get.snackbar(
-        "Success",
-        "Participant role updated successfully.",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-    } catch (e) {
-      print('Error updating participant role: $e');
-      Get.snackbar(
-        "Error",
-        "Failed to update participant role.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
+    Get.snackbar(
+      "Success",
+      "Participant role updated successfully.",
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
+  } catch (e) {
+    print('Error updating participant role: $e');
+    Get.snackbar(
+      "Error",
+      "Failed to update participant role.",
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
+}
 
   void checkAllItems(String containerName) async {
-    if (userId.value == null) {
-      print('Error: userId is null');
-      Get.snackbar("Error", "User ID not found. Please try again.",
-          backgroundColor: Colors.red, colorText: Colors.white);
-      return;
-    }
-
-    try {
-      Map<String, dynamic> updateData = {};
-      List<String> fieldsToUpdate = [];
-
-      switch (containerName) {
-        case 'merchandise':
-          fieldsToUpdate = ['tShirt', 'poloShirt', 'luggageTag', 'jasHujan'];
-          break;
-        case 'souvenir':
-          fieldsToUpdate = ['gelangTridatu', 'selendangUdeng'];
-          break;
-        case 'benefit':
-          fieldsToUpdate = ['voucherEwallet', 'voucherBelanja'];
-          break;
-        default:
-          Get.snackbar(
-            "Error",
-            "Invalid container name: $containerName",
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-          return;
-      }
-
-      for (String field in fieldsToUpdate) {
-        updateData['$containerName.$field.status'] = 'Received';
-        updateData['$containerName.$field.updatedAt'] =
-            FieldValue.serverTimestamp();
-        status['$containerName.$field'] = 'Received';
-      }
-
-      await _firestore
-          .collection('participantKit')
-          .doc(userId.value)
-          .update(updateData);
-      status.refresh();
-
-      Get.snackbar(
-          "Success", "All items in $containerName marked as received.",backgroundColor: Colors.green,
-        colorText: Colors.white,);
-    } catch (e, stackTrace) {
-      print('Error checking all items: $e');
-      print('Stack trace: $stackTrace');
-      Get.snackbar("Error", "Failed to update all items: ${e.toString()}",backgroundColor: Colors.red,colorText: Colors.white);
-    }
+  if (userId.value == null) {
+    print('Error: userId is null');
+    Get.snackbar("Error", "User ID not found. Please try again.",
+        backgroundColor: Colors.red, colorText: Colors.white);
+    return;
   }
+
+  try {
+    Map<String, dynamic> updateData = {};
+    List<String> fieldsToUpdate = [];
+
+    switch (containerName) {
+      case 'merchandise':
+        fieldsToUpdate = ['tShirt', 'poloShirt', 'luggageTag', 'jasHujan'];
+        break;
+      case 'souvenir':
+        fieldsToUpdate = ['gelangTridatu', 'selendangUdeng'];
+        break;
+      case 'benefit':
+        fieldsToUpdate = ['voucherEwallet', 'voucherBelanja'];
+        break;
+      default:
+        Get.snackbar(
+          "Error",
+          "Invalid container name: $containerName",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+    }
+
+    for (String field in fieldsToUpdate) {
+      updateData['$containerName.$field.status'] = 'Received';
+      updateData['$containerName.$field.updatedAt'] = FieldValue.serverTimestamp();
+      status['$containerName.$field'] = 'Received';
+    }
+
+    await _firestore.collection('participantKit').doc(userId.value).update(updateData);
+    status.refresh();
+
+    // Log the activity
+    await logActivity(
+      type: 'participantkit_changed_all',
+      participantName: participantData['name'] ?? '',
+      itemName: containerName,
+      newstatusAll: 'Received',
+    );
+
+    Get.snackbar(
+      "Success",
+      "All items in $containerName marked as received.",
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
+  } catch (e, stackTrace) {
+    print('Error checking all items: $e');
+    print('Stack trace: $stackTrace');
+    Get.snackbar("Error", "Failed to update all items: ${e.toString()}", backgroundColor: Colors.red, colorText: Colors.white);
+  }
+}
 
   void showConfirmCheckAllItems(BuildContext context, String containerName) {
     showDialog(

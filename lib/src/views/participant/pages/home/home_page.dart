@@ -4,6 +4,7 @@ import 'package:app_kopabali/src/views/participant/pages/home/pages/Agenda/parti
 import 'package:app_kopabali/src/views/participant/pages/home/pages/Venue/venue.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'pages/Participant_Benefit/participant_Benefit_view.dart';
 import 'pages/participant_kit/participant_kit.dart';
@@ -495,7 +496,25 @@ class HomePageParticipant extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(height: 84),
+                        SizedBox(height: 60),
+                        Text(
+                          'Event Highlights',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: HexColor('#E97717'),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: VenueCard(
+                            youtubeUrl:
+                                'https://www.youtube.com/watch?v=Kvp9sOnZZ7U',
+                          ),
+                        ),
+                        SizedBox(height: 30),
                       ],
                     ),
                   ),
@@ -504,6 +523,86 @@ class HomePageParticipant extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class VenueCard extends StatefulWidget {
+  final String youtubeUrl;
+
+  const VenueCard({
+    Key? key,
+    required this.youtubeUrl,
+  }) : super(key: key);
+
+  @override
+  _VenueCardState createState() => _VenueCardState();
+}
+
+class _VenueCardState extends State<VenueCard> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final videoId = YoutubePlayer.convertUrlToId(widget.youtubeUrl);
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId!,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        disableDragSeek: true,
+        enableCaption: false,
+        hideControls: false,
+        hideThumbnail: false,
+        showLiveFullscreenButton: false,
+        useHybridComposition: true,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius:
+                BorderRadius.circular(20), // Set your desired radius here
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: YoutubePlayer(
+                aspectRatio: 16 / 9,
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: Colors.red,
+                progressColors: ProgressBarColors(
+                  playedColor: Colors.red,
+                  handleColor: Colors.redAccent,
+                ),
+                onReady: () {
+                  print('Player siap.');
+                },
+                onEnded: (YoutubeMetaData metaData) {
+                  _controller.pause();
+                },
+                bottomActions: [
+                  CurrentPosition(),
+                  ProgressBar(isExpanded: true),
+                  RemainingDuration(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

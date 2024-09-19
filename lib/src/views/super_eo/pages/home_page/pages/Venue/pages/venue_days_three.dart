@@ -65,7 +65,7 @@ class _VenueCardState extends State<VenueCard> {
         enableCaption: false,
         hideControls: false,
         hideThumbnail: false,
-        showLiveFullscreenButton: false, // Menghilangkan tombol fullscreen
+        showLiveFullscreenButton: false,
         useHybridComposition: true,
       ),
     );
@@ -83,33 +83,37 @@ class _VenueCardState extends State<VenueCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: YoutubePlayer(
-              controller: _controller,
-              showVideoProgressIndicator: true,
-              progressIndicatorColor: Colors.red,
-              progressColors: ProgressBarColors(
-                playedColor: Colors.red,
-                handleColor: Colors.redAccent,
+          // Wrap the YoutubePlayer widget in ClipRRect to apply border radius
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20), // Set your desired radius here
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: YoutubePlayer(
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: Colors.red,
+                progressColors: ProgressBarColors(
+                  playedColor: Colors.red,
+                  handleColor: Colors.redAccent,
+                ),
+                onReady: () {
+                  print('Player siap.');
+                },
+                onEnded: (YoutubeMetaData metaData) {
+                  _controller.pause();
+                },
+                bottomActions: [
+                  CurrentPosition(),
+                  ProgressBar(isExpanded: true),
+                  RemainingDuration(),
+                ],
               ),
-              onReady: () {
-                print('Player siap.');
-              },
-              onEnded: (YoutubeMetaData metaData) {
-                _controller.pause();
-              },
-              bottomActions: [
-                CurrentPosition(),
-                ProgressBar(isExpanded: true),
-                RemainingDuration(),
-              ],
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 widget.title,
                 style: const TextStyle(

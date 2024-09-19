@@ -2,6 +2,7 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/event_organizer/pages/home_page/home_page_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'pages/Agenda/participant_agenda_view.dart';
 import 'pages/Participant_Benefit/participant_Benefit_view.dart';
@@ -68,7 +69,6 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             )
                           ],
                         ),
-                   
                         Text(
                           'Welcome To Your Homepage',
                           style: TextStyle(
@@ -240,9 +240,12 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                           ],
                         ),
                       ),
-  SizedBox(height: MediaQuery.of(context).size.height * 0.034),                      Container(
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.034),
+                      Container(
                         width: Get.width,
-                        height: MediaQuery.of(context).size.height * 0.225, // 22.5% of the screen height
+                        height: MediaQuery.of(context).size.height *
+                            0.225, // 22.5% of the screen height
                         decoration: ShapeDecoration(
                           image: DecorationImage(
                             image: AssetImage('assets/images/bali.png'),
@@ -495,7 +498,25 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 84),
+                        SizedBox(height: 60),
+                        Text(
+                          'Event Highlights',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: HexColor('#E97717'),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: VenueCard(
+                            youtubeUrl:
+                                'https://www.youtube.com/watch?v=Kvp9sOnZZ7U',
+                          ),
+                        ),
+                        SizedBox(height: 30),
                       ],
                     ),
                   ),
@@ -504,6 +525,86 @@ class _HomePageParticipantState extends State<HomePageEventOrganizer> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class VenueCard extends StatefulWidget {
+  final String youtubeUrl;
+
+  const VenueCard({
+    Key? key,
+    required this.youtubeUrl,
+  }) : super(key: key);
+
+  @override
+  _VenueCardState createState() => _VenueCardState();
+}
+
+class _VenueCardState extends State<VenueCard> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final videoId = YoutubePlayer.convertUrlToId(widget.youtubeUrl);
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId!,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        disableDragSeek: true,
+        enableCaption: false,
+        hideControls: false,
+        hideThumbnail: false,
+        showLiveFullscreenButton: false,
+        useHybridComposition: true,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius:
+                BorderRadius.circular(20), // Set your desired radius here
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: YoutubePlayer(
+                aspectRatio: 16 / 9,
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: Colors.red,
+                progressColors: ProgressBarColors(
+                  playedColor: Colors.red,
+                  handleColor: Colors.redAccent,
+                ),
+                onReady: () {
+                  print('Player siap.');
+                },
+                onEnded: (YoutubeMetaData metaData) {
+                  _controller.pause();
+                },
+                bottomActions: [
+                  CurrentPosition(),
+                  ProgressBar(isExpanded: true),
+                  RemainingDuration(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
