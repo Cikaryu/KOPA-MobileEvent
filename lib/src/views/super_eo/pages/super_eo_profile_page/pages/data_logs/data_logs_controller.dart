@@ -10,7 +10,7 @@ class DataLogsController extends GetxController {
   final RxList<LogItem> filteredLogs = <LogItem>[].obs;
   final RxString filter = 'newest'.obs;
   final RxString searchQuery = ''.obs;
-  late StreamSubscription<QuerySnapshot> _logsSubscription;
+  late StreamSubscription<QuerySnapshot> logsSubscription;
 
   @override
   void onInit() {
@@ -20,13 +20,13 @@ class DataLogsController extends GetxController {
 
   @override
   void onClose() {
-    _logsSubscription.cancel();
+    logsSubscription.cancel();
     super.onClose();
   }
 
   void _listenToLogs() {
     try {
-      _logsSubscription =
+      logsSubscription =
           _firestore.collection('activityLogs').snapshots().listen((snapshot) {
             logs.clear();
             if (snapshot.docs.isEmpty) {

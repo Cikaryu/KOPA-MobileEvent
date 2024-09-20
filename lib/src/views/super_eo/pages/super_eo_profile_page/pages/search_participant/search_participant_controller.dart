@@ -19,7 +19,6 @@ class SearchParticipantController extends GetxController {
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
   var isLoading = false.obs;
-  Rx<Stream<DocumentSnapshot>>? participantKitStream;
   RxBool isKitStatusFiltered = false.obs;
   Rx<Participant?> selectedParticipant = Rx<Participant?>(null);
 

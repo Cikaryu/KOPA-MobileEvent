@@ -4,6 +4,8 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/home_page/home_page_controller.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/service_page/report_controller.dart';
+import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/pages/data_logs/data_logs_controller.dart';
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -121,25 +123,26 @@ class ProfileSuperEOController extends GetxController {
   }
 
   Future<void> logout() async {
-    final ProfileController profileController = Get.put(ProfileController());
-    final HomePageSuperEOController homePageController =
-        Get.put(HomePageSuperEOController());
-    try {
-      debugPrint("Logging out...");
-      // Hentikan listener Firestore
-      profileController.participantKitSubscription?.cancel();
-      profileController.participantKitSubscription = null;
-      homePageController.userSubscription?.cancel();
-      homePageController.userSubscription = null;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-      await FirebaseAuth.instance.signOut();
-      debugPrint("User signed out.");
-      return Get.offAllNamed('/signin');
-    } catch (e) {
-      debugPrint("Error during logout: $e");
-    }
+  final HomePageSuperEOController homePageController =
+      Get.put(HomePageSuperEOController());
+  final DataLogsController datalogs = Get.put(DataLogsController());
+  final ReportSuperEOController reportSuperEOController = Get.put(ReportSuperEOController());
+  try {
+    debugPrint("Logging out...");
+    // Cancel Firestore listeners
+    datalogs.logsSubscription.cancel();
+    homePageController.userSubscription?.cancel();
+    homePageController.userSubscription = null;
+    reportSuperEOController.cancelReportsSubscription();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await FirebaseAuth.instance.signOut();
+    debugPrint("User signed out.");
+    return Get.offAllNamed('/signin');
+  } catch (e) {
+    debugPrint("Error during logout: $e");
   }
+}
 
   Future<void> getUserRole() async {
     User? user = FirebaseAuth.instance.currentUser;

@@ -24,29 +24,43 @@ class HomePageSuperEOController extends GetxController {
     super.dispose();
   }
 
-  void fetchUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+   void fetchUserData() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    try {
       userSubscription = FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .snapshots()
-          .listen((DocumentSnapshot userDoc) {
-        if (userDoc.exists) {
-          var data = userDoc.data() as Map<String, dynamic>;
-          String fullName = data['name'] ?? '';
-          List<String> nameParts = fullName.split(' ');
+          .listen(
+        (DocumentSnapshot userDoc) {
+          if (userDoc.exists) {
+            var data = userDoc.data() as Map<String, dynamic>;
+            String fullName = data['name'] ?? '';
+            List<String> nameParts = fullName.split(' ');
 
-          if (nameParts.length > 1) {
-            userName.value = '${nameParts[0]} ${nameParts[1]}';
-          } else {
-            userName.value = fullName;
+            if (nameParts.length > 1) {
+              userName.value = '${nameParts[0]} ${nameParts[1]}';
+            } else {
+              userName.value = fullName;
+            }
           }
-        }
-      });
+        },
+        onError: (error) {
+          print('Error fetching user data: $error');
+          if (error is FirebaseException && error.code == 'permission-denied') {
+            print('Permission denied error!');
+            // Handle the permission issue, maybe log the user out
+          }
+        },
+      );
+    } catch (e) {
+      print('Error setting up Firestore listener: $e');
     }
+  } else {
+    print('User is not authenticated, cannot listen to Firestore.');
   }
-
+}
   Future<DateTime> getServerTime() async {
     DocumentReference docRef =
         FirebaseFirestore.instance.collection('serverTime').doc('time');

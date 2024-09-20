@@ -5,7 +5,7 @@ import 'dart:async';
 
 
 class ReportCommitteeController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<XFile?> selectedImage = Rx<XFile?>(null);
   var reportStatus = <String, String>{}.obs;
@@ -17,6 +17,9 @@ class ReportCommitteeController extends GetxController {
   RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
   RxString selectedSortOption = 'Newest'.obs;
 
+  // Add this variable to store the stream subscription
+  StreamSubscription<QuerySnapshot>? _reportsSubscription;
+
   @override
   void onInit() {
     super.onInit();
@@ -27,12 +30,19 @@ class ReportCommitteeController extends GetxController {
     fetchReports();
   }
 
+  @override
+  void onClose() {
+    // Cancel the subscription when the controller is closed
+    _reportsSubscription?.cancel();
+    super.onClose();
+  }
+
   String get userId => _user.value?.uid ?? '';
 
   Future<String> getUserName() async {
     if (_user.value != null) {
       DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(_user.value!.uid).get();
+          await firestore.collection('users').doc(_user.value!.uid).get();
       return userDoc['name'] ?? '';
     }
     return '';
@@ -88,10 +98,19 @@ void filterReports() {
 }
 
   void fetchReports() {
-    _firestore.collection('report').snapshots().listen((snapshot) {
+    // Cancel any existing subscription before creating a new one
+    _reportsSubscription?.cancel();
+
+    _reportsSubscription = firestore.collection('report').snapshots().listen((snapshot) {
       allReports.value = snapshot.docs;
       filterReports();
     });
+  }
+
+  // Add this method to cancel the stream subscription
+  void cancelReportsSubscription() {
+    _reportsSubscription?.cancel();
+    _reportsSubscription = null;
   }
 
   Future<bool> updateReport({
@@ -101,7 +120,7 @@ void filterReports() {
   }) async {
     isLoading.value = true;
     try {
-      await _firestore.collection('report').doc(reportId).update({
+      await firestore.collection('report').doc(reportId).update({
         'reply': reply,
         'status': status,
         'updatedAt': Timestamp.now(),
@@ -109,18 +128,18 @@ void filterReports() {
 
       // Ambil judul laporan
       DocumentSnapshot reportDoc =
-          await _firestore.collection('report').doc(reportId).get();
+          await firestore.collection('report').doc(reportId).get();
       String reportTitle = reportDoc.get('title');
       String reportName = reportDoc.get('name');
-      final String Activityid = _firestore.collection('activityLogs').doc().id;
+      final String Activityid = firestore.collection('activityLogs').doc().id;
 
       // Buat log aktivitas
       final User? user = _auth.currentUser;
       if (user != null) {
         final DocumentSnapshot userDoc =
-            await _firestore.collection('users').doc(user.uid).get();
+            await firestore.collection('users').doc(user.uid).get();
         final String name = userDoc['name'] ?? '';
-        await _firestore.collection('activityLogs').doc(Activityid).set({
+        await firestore.collection('activityLogs').doc(Activityid).set({
           'type': 'report_reply',
           'reportName': reportName,
           'reportTitle': reportTitle,
@@ -145,6 +164,6 @@ void filterReports() {
   }
 
   Stream<QuerySnapshot> getReports() {
-    return _firestore.collection('report').snapshots();
+    return firestore.collection('report').snapshots();
   }
 }
