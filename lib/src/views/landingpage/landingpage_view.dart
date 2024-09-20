@@ -22,23 +22,31 @@ class LandingPageView extends StatelessWidget {
       child: GetBuilder<LandingPageController>(
         init: LandingPageController(),
         builder: (controller) => Scaffold(
-            backgroundColor: Color(0xFFF5F5F5),
+            backgroundColor: HexColor('#FFFFFF'),
             appBar: AppBar(
-              backgroundColor: Color(0xFFF5F5F5),
+              backgroundColor: HexColor('#FFFFFF'),
             ),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Center(
+                      child: Image.asset(
+                    'assets/images/Kopa.png',
+                    width: Get.width * 0.7,
+                  )),
                   Text(
-                    "Explore the app",
+                    "Kopa Super App",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    "Now your finance are in one place \nand always under controls",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      "Your ultimate gateway to seamless event planning and execution.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                   SizedBox(height: 40),
                   Column(
