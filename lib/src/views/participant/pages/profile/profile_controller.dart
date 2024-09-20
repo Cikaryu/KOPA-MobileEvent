@@ -147,11 +147,10 @@ class ProfileController extends GetxController {
   Future<void> logout() async {
     final HomePageParticipantController homePageController =
         Get.find<HomePageParticipantController>();
-    participantKitSubscription?.cancel();
+    await participantKitSubscription?.cancel();
     participantKitSubscription = null;
-
     // Hentikan listener Firestore
-    homePageController.userSubscription?.cancel();
+    await homePageController.userSubscription?.cancel();
     homePageController.userSubscription = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
