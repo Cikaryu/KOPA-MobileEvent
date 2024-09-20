@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/scan_page/scan_controller.dart';
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-// TODO check if all received
 class ScanProfileView extends StatelessWidget {
   ScanProfileView({super.key});
 
@@ -15,6 +13,8 @@ class ScanProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scanController.participantData.isEmpty) {
         String? userId = Get.arguments?['userId'];
@@ -57,19 +57,19 @@ class ScanProfileView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 Center(
                   child: CircleAvatar(
                     backgroundImage: scanController.imageBytes.value != null
                         ? MemoryImage(scanController.imageBytes.value!)
                         : null,
-                    radius: 41,
+                    radius: screenWidth * 0.11,
                     child: scanController.imageBytes.value == null
                         ? Icon(Icons.person, size: 41, color: Colors.grey[500])
                         : null,
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 Center(
                   child: Text(
                     scanController.participantData['name'] ?? '',
@@ -81,7 +81,7 @@ class ScanProfileView extends StatelessWidget {
                   child: Text(
                     scanController.participantData['email'] ?? '',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: screenWidth * 0.04,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -90,21 +90,21 @@ class ScanProfileView extends StatelessWidget {
                   child: Text(
                     scanController.participantData['role'] ?? '',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: screenWidth * 0.04,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(height: 8),
-                buildRoleDropdown(scanController),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.01),
+                buildRoleDropdown(scanController, screenWidth),
+                SizedBox(height: screenHeight * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text('Profile Data',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 buildProfileContainer(
                   'View Profile',
                   'profileData',
@@ -134,46 +134,62 @@ class ScanProfileView extends StatelessWidget {
                       scanController.participantData['NIK'] ?? '',
                     ),
                   ],
+                  screenWidth,
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text('Participant Kit',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 buildDropdownContainer(
-                    scanController, 'Merchandise', 'merchandise', [
-                  buildStatusRow(
-                      scanController,
-                      'Polo Shirt (${scanController.poloShirtSize})',
-                      'merchandise.poloShirt'),
-                  buildStatusRow(
-                      scanController,
-                      'T-Shirt (${scanController.tShirtSize})',
-                      'merchandise.tShirt'),
-                  buildStatusRow(
-                      scanController, 'Luggage Tag', 'merchandise.luggageTag'),
-                  buildStatusRow(
-                      scanController, 'Jas Hujan', 'merchandise.jasHujan'),
-                ]),
-                SizedBox(height: 16),
+                    scanController,
+                    'Merchandise',
+                    'merchandise',
+                    [
+                      buildStatusRow(
+                          scanController,
+                          'Polo Shirt (${scanController.poloShirtSize})',
+                          'merchandise.poloShirt',
+                          screenWidth),
+                      buildStatusRow(
+                          scanController,
+                          'T-Shirt (${scanController.tShirtSize})',
+                          'merchandise.tShirt',
+                          screenWidth),
+                      buildStatusRow(scanController, 'Luggage Tag',
+                          'merchandise.luggageTag', screenWidth),
+                      buildStatusRow(scanController, 'Jas Hujan',
+                          'merchandise.jasHujan', screenWidth),
+                    ],
+                    screenWidth),
+                SizedBox(height: screenHeight * 0.02),
                 buildDropdownContainer(
-                    scanController, 'Souvenir Program', 'souvenir', [
-                  buildStatusRow(scanController, 'Gelang Tridatu',
-                      'souvenir.gelangTridatu'),
-                  buildStatusRow(scanController, 'Selendang Udeng',
-                      'souvenir.selendangUdeng'),
-                ]),
-                SizedBox(height: 16),
-                buildDropdownContainer(scanController, 'Benefit', 'benefit', [
-                  buildStatusRow(scanController, 'Voucher Belanja',
-                      'benefit.voucherBelanja'),
-                  buildStatusRow(scanController, 'Voucher E-Wallet',
-                      'benefit.voucherEwallet'),
-                ]),
-                SizedBox(height: 24),
+                    scanController,
+                    'Souvenir Program',
+                    'souvenir',
+                    [
+                      buildStatusRow(scanController, 'Gelang Tridatu',
+                          'souvenir.gelangTridatu', screenWidth),
+                      buildStatusRow(scanController, 'Selendang Udeng',
+                          'souvenir.selendangUdeng', screenWidth),
+                    ],
+                    screenWidth),
+                SizedBox(height: screenHeight * 0.02),
+                buildDropdownContainer(
+                    scanController,
+                    'Benefit',
+                    'benefit',
+                    [
+                      buildStatusRow(scanController, 'Voucher Belanja',
+                          'benefit.voucherBelanja', screenWidth),
+                      buildStatusRow(scanController, 'Voucher E-Wallet',
+                          'benefit.voucherEwallet', screenWidth),
+                    ],
+                    screenWidth),
+                SizedBox(height: screenHeight * 0.03),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -201,7 +217,7 @@ class ScanProfileView extends StatelessWidget {
     );
   }
 
-  Widget buildRoleDropdown(ScanController controller) {
+  Widget buildRoleDropdown(ScanController controller, double screenWidth) {
     List<String> roles = [
       'Participant',
       'Committee',
@@ -209,12 +225,12 @@ class ScanProfileView extends StatelessWidget {
       'Super Event Organizer'
     ];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 61),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Promote', style: TextStyle(fontSize: 16)),
-          SizedBox(width: 8),
+          Text('Promote', style: TextStyle(fontSize: screenWidth * 0.04)),
+          SizedBox(width: screenWidth * 0.02),
           Expanded(
             child: DropdownButtonFormField2<String>(
               value: controller.participantData['role'],
@@ -241,14 +257,15 @@ class ScanProfileView extends StatelessWidget {
               ),
               iconStyleData: IconStyleData(
                 icon: Icon(Icons.arrow_drop_down),
-                iconSize: 24,
+                iconSize: screenWidth * 0.06,
                 iconEnabledColor: Colors.grey[700],
                 iconDisabledColor: Colors.grey[400],
               ),
               buttonStyleData: ButtonStyleData(
-                height: 40,
+                height: screenWidth * 0.12,
                 width: double.infinity,
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: EdgeInsets.only(
+                    left: screenWidth * 0.02, right: screenWidth * 0.02),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey),
@@ -256,11 +273,11 @@ class ScanProfileView extends StatelessWidget {
                 ),
               ),
               menuItemStyleData: MenuItemStyleData(
-                height: 40,
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                height: screenWidth * 0.12,
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
               ),
               style: TextStyle(
-                fontSize: 14,
+                fontSize: screenWidth * 0.035,
                 color: Colors.black,
               ),
               decoration: InputDecoration(
@@ -278,15 +295,15 @@ class ScanProfileView extends StatelessWidget {
     );
   }
 
-  Widget buildProfileContainer(
-      String title, String containerName, List<Widget> children) {
+  Widget buildProfileContainer(String title, String containerName,
+      List<Widget> children, double screenWidth) {
     return Center(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.06, vertical: screenWidth * 0.01),
         decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           color: HexColor('F3F3F3'),
           shadows: [
             BoxShadow(
@@ -304,8 +321,8 @@ class ScanProfileView extends StatelessWidget {
                 scanController.toggleContainerExpansion(containerName);
               },
               child: Container(
-                padding: EdgeInsets.all(8),
-                width: 300,
+                padding: EdgeInsets.all(screenWidth * 0.02),
+                width: screenWidth * 0.8,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -315,7 +332,8 @@ class ScanProfileView extends StatelessWidget {
                         Text(
                           title,
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: screenWidth * 0.05,
+                              fontWeight: FontWeight.bold),
                         ),
                         Obx(() {
                           return Icon(
@@ -327,7 +345,7 @@ class ScanProfileView extends StatelessWidget {
                         }),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: screenWidth * 0.02),
                     Obx(() {
                       return AnimatedSize(
                         duration: Duration(milliseconds: 200),
@@ -371,192 +389,214 @@ class ScanProfileView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget buildDropdownContainer(ScanController controller, String title,
-      String containerName, List<Widget> children) {
-    return Center(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-        decoration: ShapeDecoration(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: HexColor('F3F3F3'),
-          shadows: [
-            BoxShadow(
-                color: Color(0x3F000000),
-                blurRadius: 4,
-                offset: Offset(0, 0),
-                spreadRadius: 0)
-          ],
-        ),
-        child: Column(
-          children: [
-            InkWell(
-              onTap: () => controller.toggleContainerExpansion(containerName),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                width: 300,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(title,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
-                        Obx(() => Icon(
-                              controller.isContainerExpanded(containerName)
-                                  ? Icons.keyboard_arrow_down_rounded
-                                  : Icons.keyboard_arrow_up_rounded,
-                              color: Colors.grey,
-                            )),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Obx(() => AnimatedContainer(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          width: 300,
-                          duration: Duration(milliseconds: 300),
-                          height: controller.isContainerExpanded(containerName)
-                              ? (children.length * 60 + 90)
-                              : 0,
-                          curve: Curves.easeInOut,
-                          child: SingleChildScrollView(
-                            physics: NeverScrollableScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Items',
+Widget buildDropdownContainer(ScanController controller, String title,
+    String containerName, List<Widget> children, double screenWidth) {
+  return Center(
+    child: Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.06, vertical: screenWidth * 0.01),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: HexColor('F3F3F3'),
+        shadows: [
+          BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 0),
+              spreadRadius: 0)
+        ],
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => controller.toggleContainerExpansion(containerName),
+            child: Container(
+              padding: EdgeInsets.all(
+                  screenWidth * 0.02), // Adjust padding dynamically
+              width: screenWidth * 0.8, // Adjust width based on screen size
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(title,
+                          style: TextStyle(
+                              fontSize: screenWidth * 0.05, // Adjust font size
+                              fontWeight: FontWeight.bold)),
+                      Obx(() => Icon(
+                            controller.isContainerExpanded(containerName)
+                                ? Icons.keyboard_arrow_down_rounded
+                                : Icons.keyboard_arrow_up_rounded,
+                            color: Colors.grey,
+                          )),
+                    ],
+                  ),
+                  SizedBox(
+                      height:
+                          screenWidth * 0.01), // Responsive vertical spacing
+                  Obx(() => AnimatedContainer(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenWidth * 0.02),
+                        width: screenWidth * 0.8, // Adjust width dynamically
+                        duration: Duration(milliseconds: 300),
+                        height: controller.isContainerExpanded(containerName)
+                            ? (children.length * 60 + 90)
+                            : 0,
+                        curve: Curves.easeInOut,
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Items',
+                                      style: TextStyle(
+                                          fontSize: screenWidth *
+                                              0.04, // Responsive text size
+                                          fontWeight: FontWeight.bold)),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: screenWidth *
+                                            0.1), // Adjust padding dynamically
+                                    child: Text('Status',
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: screenWidth * 0.04,
                                             fontWeight: FontWeight.bold)),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 40),
-                                      child: Text('Status',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                ...children,
-                                SizedBox(height: 16),
-                                Center(
-                                  child: ElevatedButton(
-                                    onPressed: () =>
-                                        controller.showConfirmCheckAllItems(
-                                      Get.context!, // Provide the current context
-                                      containerName,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 24, vertical: 6),
-                                    ),
-                                    child: Text('Click If All Received'),
                                   ),
+                                ],
+                              ),
+                              SizedBox(height: screenWidth * 0.01),
+                              ...children,
+                              SizedBox(height: screenWidth * 0.02),
+                              Center(
+                                child: ElevatedButton(
+                                  onPressed: () =>
+                                      controller.showConfirmCheckAllItems(
+                                    Get.context!, // Provide the current context
+                                    containerName,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: screenWidth * 0.06,
+                                        vertical: screenWidth *
+                                            0.015), // Dynamic padding
+                                  ),
+                                  child: Text('Click If All Received'),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )),
-                  ],
-                ),
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget buildStatusRow(ScanController controller, String itemName, String field,
+    double screenWidth) {
+  return Obx(() {
+    String status =
+        controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
+    List<String> statusOptions = ['Received', 'Pending', 'Not Received'];
+    if (!statusOptions.contains(status)) {
+      status = statusOptions[0];
+    }
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(
+                itemName,
+                style: TextStyle(
+                    fontSize: screenWidth * 0.04, // Adjust text size
+                    color: Colors.black),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Row(
+                children: [
+                  Flexible(
+                    child: DropdownButtonFormField2<String>(
+                      value: status,
+                      items: statusOptions.map((String statusOption) {
+                        return DropdownMenuItem<String>(
+                          value: statusOption,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                statusOption,
+                                style: TextStyle(
+                                  fontSize:
+                                      screenWidth * 0.03, // Adjust text size
+                                  color: Colors.black,
+                                ),
+                                overflow:
+                                    TextOverflow.ellipsis, // Prevent overflow
+                              ),
+                              SizedBox(
+                                width: statusOption == 'Not Received'
+                                    ? screenWidth * 0.03
+                                    : statusOption == 'Pending'
+                                        ? screenWidth * 0.1
+                                        : screenWidth *
+                                            0.09, // Dynamic width based on status
+                              ),
+                              SvgPicture.asset(
+                                controller.getStatusImagePath(statusOption),
+                                width: screenWidth * 0.06, // Responsive icon size
+                                height: screenWidth * 0.06,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          controller.updateItemStatus(field, newValue);
+                        }
+                      },
+                      iconStyleData: IconStyleData(icon: SizedBox.shrink()),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: screenWidth * 0.02,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ),
+        SizedBox(height: screenWidth * 0.02), // Dynamic spacing between rows
+      ],
     );
-  }
-
-  Widget buildStatusRow(
-      ScanController controller, String itemName, String field) {
-    return Obx(() {
-      String status =
-          controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-      List<String> statusOptions = ['Received', 'Pending', 'Not Received'];
-
-      if (!statusOptions.contains(status)) {
-        status = statusOptions[0];
-      }
-
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Text(itemName,
-                    style: TextStyle(fontSize: 16, color: Colors.black)),
-              ),
-              Expanded(
-                flex: 3,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 142,
-                      child: DropdownButtonFormField2<String>(
-                        value: status,
-                        items: statusOptions.map((String statusOption) {
-                          return DropdownMenuItem<String>(
-                            value: statusOption,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(statusOption,
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.black)),
-                                SizedBox(
-                                    width: statusOption == 'Not Received'
-                                        ? 12
-                                        : statusOption == 'Pending'
-                                            ? 40
-                                            : 33),
-                                SvgPicture.asset(
-                                  controller.getStatusImagePath(statusOption),
-                                  width: 24,
-                                  height: 24,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            controller.updateItemStatus(field, newValue);
-                          }
-                        },
-                        iconStyleData: IconStyleData(icon: SizedBox.shrink()),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-        ],
-      );
-    });
-  }
+  });
 }

@@ -13,6 +13,8 @@ class ParticipantDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
     final SearchParticipantController controller =
         Get.put(SearchParticipantController());
     controller.setSelectedParticipant(participant);
@@ -41,21 +43,21 @@ class ParticipantDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 Center(
                   child: CircleAvatar(
                     backgroundImage: participant.selfieUrl != null &&
                             participant.selfieUrl!.isNotEmpty
                         ? NetworkImage(participant.selfieUrl!)
                         : null,
-                    radius: 41,
+                    radius: screenWidth * 0.11,
                     child: participant.selfieUrl == null ||
                             participant.selfieUrl!.isEmpty
                         ? Icon(Icons.person, size: 41, color: Colors.grey[500])
                         : null,
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 Center(
                   child: Text(
                     participant.name ?? 'Unknown',
@@ -66,98 +68,118 @@ class ParticipantDetailPage extends StatelessWidget {
                 Center(
                   child: Text(
                     participant.email ?? 'Unknown',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: screenWidth * 0.04),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Center(
                   child: Text(
                     participant.role ?? 'Unknown',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: screenWidth * 0.04),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(height: 8),
-                buildRoleDropdown(controller),
-                SizedBox(height: 16),
+                SizedBox(height: screenWidth * 0.01),
+                buildRoleDropdown(controller, screenWidth),
+                SizedBox(height: screenWidth * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text('Profile Data',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 buildProfileContainer(
-                  controller,
-                  'View Profile',
-                  'profileData',
-                  [
-                    buildProfileRow(
-                      'Department',
-                      participant.department ?? 'unknown',
-                    ),
-                    buildProfileRow(
-                      'Area',
-                      participant.area ?? 'unknown',
-                    ),
-                    buildProfileRow(
-                      'Division',
-                      participant.division ?? 'unknown',
-                    ),
-                    buildProfileRow(
-                      'Address',
-                      participant.address ?? 'unknown',
-                    ),
-                    buildProfileRow(
-                      'Whatsapp',
-                      participant.whatsappNumber ?? 'unknown',
-                    ),
-                    buildProfileRow(
-                      'NIK',
-                      participant.nik ?? 'unknown',
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
+                    controller,
+                    'View Profile',
+                    'profileData',
+                    [
+                      buildProfileRow(
+                        'Department',
+                        participant.department ?? 'unknown',
+                      ),
+                      buildProfileRow(
+                        'Area',
+                        participant.area ?? 'unknown',
+                      ),
+                      buildProfileRow(
+                        'Division',
+                        participant.division ?? 'unknown',
+                      ),
+                      buildProfileRow(
+                        'Address',
+                        participant.address ?? 'unknown',
+                      ),
+                      buildProfileRow(
+                        'Whatsapp',
+                        participant.whatsappNumber ?? 'unknown',
+                      ),
+                      buildProfileRow(
+                        'NIK',
+                        participant.nik ?? 'unknown',
+                      ),
+                    ],
+                    screenWidth),
+                SizedBox(height: screenHeight * 0.02),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text('Participant Kit',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: screenHeight * 0.02),
                 buildDropdownContainer(
-                    context, controller, 'Merchandise', 'merchandise', [
-                  buildStatusRow(
-                      controller,
-                      'Polo Shirt (${participant.poloShirtSize})',
-                      'merchandise.poloShirt'),
-                  buildStatusRow(
-                      controller,
-                      'T-Shirt (${participant.tShirtSize})',
-                      'merchandise.tShirt'),
-                  buildStatusRow(
-                      controller, 'Luggage Tag', 'merchandise.luggageTag'),
-                  buildStatusRow(
-                      controller, 'Jas Hujan', 'merchandise.jasHujan'),
-                ]),
-                SizedBox(height: 16),
+                  context,
+                  controller,
+                  'Merchandise',
+                  'merchandise',
+                  screenWidth,
+                  [
+                    buildStatusRow(
+                        controller,
+                        'Polo Shirt (${participant.poloShirtSize})',
+                        'merchandise.poloShirt',
+                        screenWidth),
+                    buildStatusRow(
+                        controller,
+                        'T-Shirt (${participant.tShirtSize})',
+                        'merchandise.tShirt',
+                        screenWidth),
+                    buildStatusRow(controller, 'Luggage Tag',
+                        'merchandise.luggageTag', screenWidth),
+                    buildStatusRow(controller, 'Jas Hujan',
+                        'merchandise.jasHujan', screenWidth),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
                 buildDropdownContainer(
-                    context, controller, 'Souvenir Program', 'souvenir', [
-                  buildStatusRow(
-                      controller, 'Gelang Tridatu', 'souvenir.gelangTridatu'),
-                  buildStatusRow(
-                      controller, 'Selendang Udeng', 'souvenir.selendangUdeng'),
-                ]),
-                SizedBox(height: 16),
+                  context,
+                  controller,
+                  'Souvenir Program',
+                  'souvenir',
+                  screenWidth,
+                  [
+                    buildStatusRow(controller, 'Gelang Tridatu',
+                        'souvenir.gelangTridatu', screenWidth),
+                    buildStatusRow(controller, 'Selendang Udeng',
+                        'souvenir.selendangUdeng', screenWidth),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
                 buildDropdownContainer(
-                    context, controller, 'Benefit', 'benefit', [
-                  buildStatusRow(
-                      controller, 'Voucher Belanja', 'benefit.voucherBelanja'),
-                  buildStatusRow(
-                      controller, 'Voucher E-Wallet', 'benefit.voucherEwallet'),
-                ]),
-                SizedBox(height: 24),
+                  context,
+                  controller,
+                  'Benefit',
+                  'benefit',
+                  screenWidth,
+                  [
+                    buildStatusRow(controller, 'Voucher Belanja',
+                        'benefit.voucherBelanja', screenWidth),
+                    buildStatusRow(controller, 'Voucher E-Wallet',
+                        'benefit.voucherEwallet', screenWidth),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.03),
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -187,46 +209,29 @@ class ParticipantDetailPage extends StatelessWidget {
     );
   }
 
-  Widget buildRoleDropdown(SearchParticipantController controller) {
+  Widget buildRoleDropdown(
+      SearchParticipantController controller, double screenWidth) {
     List<String> roles = [
       'Participant',
       'Committee',
       'Event Organizer',
       'Super Event Organizer'
     ];
-    // Add more roles as needed
-
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 61),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Promote', style: TextStyle(fontSize: 16)),
-          SizedBox(width: 8),
+          Text('Promote', style: TextStyle(fontSize: screenWidth * 0.04)),
+          SizedBox(width: screenWidth * 0.02),
           Expanded(
             child: DropdownButtonFormField2<String>(
-              alignment: Alignment.centerLeft,
-              buttonStyleData: ButtonStyleData(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                padding: EdgeInsets.only(right: 8),
-              ),
-              iconStyleData: IconStyleData(
-                icon: Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-              ),
-              isDense: true,
-              isExpanded: true,
               value: participant.role,
               items: roles.map((String role) {
                 return DropdownMenuItem<String>(
                   value: role,
-                  child: Text(
-                    role,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  child:
+                      Text(role, maxLines: 1, overflow: TextOverflow.ellipsis),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -240,15 +245,41 @@ class ParticipantDetailPage extends StatelessWidget {
                   color: Colors.grey[300],
                 ),
                 elevation: 5,
-                offset: Offset(0, -4),
-                maxHeight: 160,
+                offset: const Offset(0, -10),
+                maxHeight: 200,
+              ),
+              iconStyleData: IconStyleData(
+                icon: Icon(Icons.arrow_drop_down),
+                iconSize: screenWidth * 0.06,
+                iconEnabledColor: Colors.grey[700],
+                iconDisabledColor: Colors.grey[400],
+              ),
+              buttonStyleData: ButtonStyleData(
+                height: screenWidth * 0.12,
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                    left: screenWidth * 0.02, right: screenWidth * 0.02),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                ),
+              ),
+              menuItemStyleData: MenuItemStyleData(
+                height: screenWidth * 0.12,
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+              ),
+              style: TextStyle(
+                fontSize: screenWidth * 0.035,
+                color: Colors.black,
               ),
               decoration: InputDecoration(
                 isDense: true,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                contentPadding: EdgeInsets.zero,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
@@ -257,11 +288,16 @@ class ParticipantDetailPage extends StatelessWidget {
     );
   }
 
-  Widget buildProfileContainer(SearchParticipantController controller,
-      String title, String containerName, List<Widget> children) {
+  Widget buildProfileContainer(
+      SearchParticipantController controller,
+      String title,
+      String containerName,
+      List<Widget> children,
+      double screenWidth) {
     return Center(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.06, vertical: screenWidth * 0.01),
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -283,8 +319,8 @@ class ParticipantDetailPage extends StatelessWidget {
                 controller.toggleContainerExpansion(containerName);
               },
               child: Container(
-                padding: EdgeInsets.all(8),
-                width: 300,
+                padding: EdgeInsets.all(screenWidth * 0.02),
+                width: screenWidth * 0.8,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -294,7 +330,8 @@ class ParticipantDetailPage extends StatelessWidget {
                         Text(
                           title,
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: screenWidth * 0.05,
+                              fontWeight: FontWeight.bold),
                         ),
                         Obx(() {
                           return Icon(
@@ -306,7 +343,7 @@ class ParticipantDetailPage extends StatelessWidget {
                         }),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: screenWidth * 0.02),
                     Obx(() {
                       return AnimatedSize(
                         duration: Duration(milliseconds: 200),
@@ -356,10 +393,12 @@ class ParticipantDetailPage extends StatelessWidget {
       SearchParticipantController controller,
       String title,
       String containerName,
+      double screenWidth,
       List<Widget> children) {
     return Center(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.06, vertical: screenWidth * 0.01),
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -381,8 +420,8 @@ class ParticipantDetailPage extends StatelessWidget {
                 controller.toggleContainerExpansion(containerName);
               },
               child: Container(
-                padding: EdgeInsets.all(8),
-                width: 300,
+                padding: EdgeInsets.all(screenWidth * 0.02),
+                width: screenWidth * 0.8,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -392,7 +431,8 @@ class ParticipantDetailPage extends StatelessWidget {
                         Text(
                           title,
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: screenWidth * 0.05,
+                              fontWeight: FontWeight.bold),
                         ),
                         Obx(() {
                           return Icon(
@@ -404,11 +444,12 @@ class ParticipantDetailPage extends StatelessWidget {
                         }),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: screenWidth * 0.01),
                     Obx(() {
                       return AnimatedContainer(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        width: 300,
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenWidth * 0.02),
+                        width: screenWidth * 0.8,
                         duration: Duration(milliseconds: 300),
                         height: controller.isContainerExpanded(containerName)
                             ? (children.length * 60 + 90)
@@ -426,23 +467,24 @@ class ParticipantDetailPage extends StatelessWidget {
                                   Text(
                                     'Items',
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: screenWidth * 0.04,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(right: 40),
+                                    padding: EdgeInsets.only(
+                                        right: screenWidth * 0.1),
                                     child: Text(
                                       'Status',
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: screenWidth * 0.04,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: screenWidth * 0.01),
                               ...children,
-                              SizedBox(height: 16),
+                              SizedBox(height: screenWidth * 0.02),
                               Center(
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -456,7 +498,8 @@ class ParticipantDetailPage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 24, vertical: 6),
+                                        horizontal: screenWidth * 0.06,
+                                        vertical: screenWidth * 0.015),
                                   ),
                                   child: Text('Click If All Received'),
                                 ),
@@ -547,17 +590,18 @@ class ParticipantDetailPage extends StatelessWidget {
   }
 
   Widget buildStatusRow(
-      SearchParticipantController controller, String itemName, String field) {
+    SearchParticipantController controller,
+    String itemName,
+    String field,
+    double screenWidth,
+  ) {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
       List<String> statusOptions = ['Pending', 'Received', 'Not Received'];
-
-      // Ensure that status is one of the valid options
       if (!statusOptions.contains(status)) {
-        status = statusOptions[0]; // Default to 'Pending' if status is invalid
+        status = statusOptions[0];
       }
-
       return Column(
         children: [
           Row(
@@ -566,15 +610,15 @@ class ParticipantDetailPage extends StatelessWidget {
                 flex: 3,
                 child: Text(
                   itemName,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: screenWidth * 0.04, color: Colors.black),
                 ),
               ),
               Expanded(
                 flex: 3,
                 child: Row(
                   children: [
-                    SizedBox(
-                      width: 142,
+                    Flexible(
                       child: DropdownButtonFormField2<String>(
                         value: status,
                         items: statusOptions.map((String statusOption) {
@@ -585,17 +629,19 @@ class ParticipantDetailPage extends StatelessWidget {
                               children: [
                                 Text(statusOption,
                                     style: TextStyle(
-                                        fontSize: 12, color: Colors.black)),
+                                        fontSize: screenWidth * 0.03,
+                                        color: Colors.black)),
                                 SizedBox(
                                     width: statusOption == 'Not Received'
-                                        ? 12
+                                        ? screenWidth * 0.03
                                         : statusOption == 'Pending'
-                                            ? 40
-                                            : 33),
+                                            ? screenWidth * 0.09
+                                            : screenWidth * 0.09),
                                 SvgPicture.asset(
                                   controller.getStatusImagePath(statusOption),
-                                  width: 24,
-                                  height: 24,
+                                  width: screenWidth *
+                                      0.06, // Responsive icon size
+                                  height: screenWidth * 0.06,
                                   fit: BoxFit.contain,
                                 ),
                               ],
@@ -611,7 +657,8 @@ class ParticipantDetailPage extends StatelessWidget {
                         iconStyleData: IconStyleData(icon: SizedBox.shrink()),
                         decoration: InputDecoration(
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 8),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: screenWidth * 0.02),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.green),
                             borderRadius: BorderRadius.circular(10),
@@ -624,7 +671,7 @@ class ParticipantDetailPage extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8),
+          SizedBox(height: screenWidth * 0.02),
         ],
       );
     });

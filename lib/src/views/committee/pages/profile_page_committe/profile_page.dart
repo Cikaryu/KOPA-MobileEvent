@@ -2,7 +2,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pages/search_participant/search_participant_page.dart';
 import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/profile_controller.dart';
 
-
 class ProfileCommitteePage extends StatelessWidget {
   const ProfileCommitteePage({super.key});
 
@@ -95,8 +94,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                     )),
                                 Obx(() => Text(
-                                      profileCommitteeController
-                                          .role.value,
+                                      profileCommitteeController.role.value,
                                       style: TextStyle(fontSize: 16),
                                       overflow: TextOverflow.ellipsis,
                                     )),
@@ -222,7 +220,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                     ],
                                   ),
                                   child: Icon(
-                                    Icons.upload_rounded,
+                                    Icons.link,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -231,7 +229,7 @@ class ProfileCommitteePage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Export Data',
+                                      'Database Event',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,

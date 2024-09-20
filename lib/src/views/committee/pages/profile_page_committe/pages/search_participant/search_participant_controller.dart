@@ -402,6 +402,8 @@ class Participant {
   final String? whatsappNumber;
   final String? nik;
   final String uid;
+  final String? tShirtSize;
+  final String? poloShirtSize;
 
   Participant(
       {this.email,
@@ -414,6 +416,8 @@ class Participant {
       this.address,
       this.whatsappNumber,
       this.nik,
+      this.tShirtSize,
+      this.poloShirtSize,
       required this.uid});
 
   factory Participant.fromDocument(DocumentSnapshot doc) {
@@ -428,6 +432,8 @@ class Participant {
       whatsappNumber: doc['whatsappNumber'] as String?,
       nik: doc['NIK'] as String?,
       selfieUrl: doc['selfieUrl'] as String?,
+      tShirtSize: doc['tShirtSize'] as String?,
+      poloShirtSize: doc['poloShirtSize'] as String?,
       uid: doc.id,
     );
   }
