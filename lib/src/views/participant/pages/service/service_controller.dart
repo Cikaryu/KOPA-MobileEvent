@@ -43,29 +43,33 @@ class ServiceController extends GetxController {
   }
 
   Color getStatusColor(String? status) {
-  switch (status) {
-    case 'Not Started':
-      return Colors.grey;
-    case 'In Progress':
-      return Colors.blue;
-    case 'Pending':
-      return Colors.yellow[700]!;  // Darker shade of yellow for better visibility
-    case 'Resolved':
-      return Colors.green;
-    default:
-      return Colors.black;  // Default color if status is null or unknown
-  }
-}
-
- Future<List<QueryDocumentSnapshot>> getReports() async {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId != null) {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('report')
-          .where('userId', isEqualTo: userId)
-          .get();
-      return querySnapshot.docs;
+    switch (status) {
+      case 'Not Started':
+        return Colors.grey;
+      case 'In Progress':
+        return Colors.blue;
+      case 'Pending':
+        return Colors
+            .yellow[700]!; // Darker shade of yellow for better visibility
+      case 'Resolved':
+        return Colors.green;
+      default:
+        return Colors.black; // Default color if status is null or unknown
     }
-    return [];
+  }
+
+  Stream<QuerySnapshot> getReports() {
+    final userId = FirebaseAuth.instance.currentUser?.uid; // Ambil userId
+    if (userId != null) {
+      return FirebaseFirestore.instance
+          .collection('report')
+          .where('userId', isEqualTo: userId) // Filter berdasarkan userId
+          .snapshots();
+    }
+    return Stream.empty();
+  }
+
+  void refreshReports() {
+    getReports();
   }
 }

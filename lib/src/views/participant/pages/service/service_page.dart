@@ -118,8 +118,8 @@ class ServicePage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-                  FutureBuilder<List<QueryDocumentSnapshot>>(
-                    future: serviceController.getReports(),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: serviceController.getReports(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
@@ -137,7 +137,7 @@ class ServicePage extends StatelessWidget {
                         );
                       }
 
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return Center(
                           child: Text(
                             'No reports available.',
@@ -149,7 +149,7 @@ class ServicePage extends StatelessWidget {
                         );
                       }
 
-                      final reports = snapshot.data!
+                      final reports = snapshot.data!.docs
                           .take(4)
                           .toList(); // Take only 4 reports
 
@@ -157,7 +157,6 @@ class ServicePage extends StatelessWidget {
                         children: reports.map((report) {
                           final reportData =
                               report.data() as Map<String, dynamic>;
-                          final reportId = report.id;
                           final status = reportData['status'] as String;
 
                           return InkWell(

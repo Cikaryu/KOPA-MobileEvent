@@ -3,7 +3,6 @@ import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class ReportController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -11,8 +10,9 @@ class ReportController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   final Rx<XFile?> selectedImage = Rx<XFile?>(null);
   var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
-  var statusImageUrls = <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
-
+  var statusImageUrls =
+      <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
+ final RxBool isLoading = false.obs;
   late Rx<User?> _user;
 
   @override
@@ -174,7 +174,8 @@ class ReportController extends GetxController {
                   ),
                   onPressed: () {
                     Get.back(); // Close dialog
-                    Get.back(); // Go back to previous page
+                    Get.back();
+                    Get.back();
                   },
                 ),
               ),
@@ -265,14 +266,14 @@ class ReportController extends GetxController {
         return 'assets/icons/status/ic_in_progress.svg';
       case 'Pending':
         return 'assets/icons/status/ic_pending.svg';
-      case 'Solved':
+      case 'Resolved':
         return 'assets/icons/status/ic_received.svg';
       default:
         return 'assets/icons/status/ic_default.svg'; // Fallback image
     }
   }
 
-   Future<List<QueryDocumentSnapshot>> getReports() async {
+  Future<List<QueryDocumentSnapshot>> getReports() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       final querySnapshot = await FirebaseFirestore.instance
