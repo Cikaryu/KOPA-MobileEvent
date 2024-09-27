@@ -224,7 +224,7 @@ class EditProfileView extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 28),
+                        SizedBox(height: 16),
                         Text('NIK'),
                         TextFormField(
                           controller: profileController.numberKTPController,
