@@ -7,11 +7,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis/sheets/v4.dart' as sheets;
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 

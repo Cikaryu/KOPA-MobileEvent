@@ -1,16 +1,20 @@
+import 'dart:convert';
+
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_Slide2_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide1_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide3_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:googleapis/sheets/v4.dart' as sheets;
 
 class SignupController extends GetxController {
   PageController pageController = PageController();
@@ -120,6 +124,65 @@ class SignupController extends GetxController {
       default:
         return Container();
     }
+  }
+  Future<String> loadCredentials() async {
+        return await rootBundle
+            .loadString('assets/credentials/credentials.json');
+      }
+
+      Future<AuthClient> getAuthClient() async {
+        String credentials = await loadCredentials();
+        final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
+          json.decode(credentials),
+        );
+
+        final scopes = [
+          drive.DriveApi.driveFileScope,
+          sheets.SheetsApi.spreadsheetsScope,
+        ];
+
+        final authClient =
+            await clientViaServiceAccount(serviceAccountCredentials, scopes);
+        return authClient;
+      }
+
+      Future<void> uploadImageToDrive(File imageFile, String folderId,
+          String departement, String area, String divisi, String user) async {
+        final authClient = await getAuthClient();
+
+        var driveApi = drive.DriveApi(authClient);
+
+        var fileToUpload = drive.File();
+        fileToUpload.name = '${area}_${departement}_${divisi}_$user.png';
+        fileToUpload.parents = [folderId];
+        var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+
+        final response =
+            await driveApi.files.create(fileToUpload, uploadMedia: media);
+        print('Uploaded File Profile ID: ${response.id} with name: $departement');
+      }
+
+      Future<void> uploadImagektpToDrive(
+          File imageFile, String folderId, String user) async {
+        final authClient = await getAuthClient();
+
+        var driveApi = drive.DriveApi(authClient);
+
+        var fileToUpload = drive.File();
+        fileToUpload.name = 'KTP_$user.png';
+        fileToUpload.parents = [folderId];
+        var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+
+        final response =
+            await driveApi.files.create(fileToUpload, uploadMedia: media);
+        print('Uploaded File KTP ID: ${response.id} with name: $user');
+      }
+
+    Future<void> submitToDrive(String username, String area, String department, String division) async {
+    String folderIdktp = '1JcyaT5xNKP4iela099E7RnefFhITKTKj';
+    String folderIdprofile = '1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode';
+    await uploadImagektpToDrive(ktpImage.value!, folderIdktp, username);
+    await uploadImageToDrive(selfieImage.value!, folderIdprofile, department, area, division, username);
   }
 
   Future<void> registerUser({
@@ -239,6 +302,9 @@ class SignupController extends GetxController {
           }
         }
       });
+      // Add Google Drive upload
+      await submitToDrive(name, area, department, division);
+
       // Send email verification
       await userCredential.user!.sendEmailVerification();
 
