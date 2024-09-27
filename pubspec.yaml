@@ -91,6 +91,7 @@ flutter:
     - assets/images/participant_benefit/
     - assets/icons/
     - assets/icons/status/
+    - assets/credentials/credentials.json
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
