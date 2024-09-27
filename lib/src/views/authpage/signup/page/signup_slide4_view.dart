@@ -89,7 +89,7 @@ class SignupSlide4View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: eWalletNumberController,
+                  controller: signupController.eWalletNumberController,
                   keyboardType: TextInputType.number,
                   maxLength: 13,
                   decoration: InputDecoration(

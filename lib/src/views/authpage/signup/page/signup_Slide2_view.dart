@@ -6,20 +6,27 @@ import 'package:flutter/services.dart';
 class SignupSlide2View extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
-
   SignupSlide2View({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Uncomment the following line if you need to use the SignupController.
     final SignupController signupController = Get.put(SignupController());
-    final TextEditingController nameController = TextEditingController(text: signupController.nameController.text);
-    final TextEditingController areaController = TextEditingController(text: signupController.areaController.text);
-    final TextEditingController divisionController = TextEditingController(text: signupController.divisionController.text);
-    final TextEditingController departmentController = TextEditingController(text: signupController.departmentController.text);
-    final TextEditingController addressController = TextEditingController(text: signupController.addressController.text);
-    final TextEditingController whatsappNumberController = TextEditingController(text: signupController.whatsappNumberController.text);
-    final TextEditingController ktpNumberController = TextEditingController(text: signupController.ktpNumberController.text);
+    final TextEditingController nameController =
+        TextEditingController(text: signupController.nameController.text);
+    final TextEditingController areaController =
+        TextEditingController(text: signupController.areaController.text);
+    final TextEditingController divisionController =
+        TextEditingController(text: signupController.divisionController.text);
+    final TextEditingController departmentController =
+        TextEditingController(text: signupController.departmentController.text);
+    final TextEditingController addressController =
+        TextEditingController(text: signupController.addressController.text);
+    final TextEditingController whatsappNumberController =
+        TextEditingController(
+            text: signupController.whatsappNumberController.text);
+    final TextEditingController ktpNumberController =
+        TextEditingController(text: signupController.ktpNumberController.text);
 
     return GestureDetector(
       onTap: () {
@@ -52,7 +59,7 @@ class SignupSlide2View extends StatelessWidget {
                 Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: nameController,
+                  controller: signupController.nameController,
                   decoration: InputDecoration(
                     hintText: 'Your name',
                     hintStyle: TextStyle(
@@ -73,7 +80,7 @@ class SignupSlide2View extends StatelessWidget {
                 Text('Area', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: areaController,
+                  controller: signupController.areaController,
                   decoration: InputDecoration(
                     hintText: 'Your Area',
                     hintStyle: TextStyle(
@@ -94,7 +101,7 @@ class SignupSlide2View extends StatelessWidget {
                 Text('Division', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: divisionController,
+                  controller: signupController.divisionController,
                   decoration: InputDecoration(
                     hintText: 'Your Division',
                     hintStyle: TextStyle(
@@ -116,7 +123,7 @@ class SignupSlide2View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: departmentController,
+                  controller: signupController.departmentController,
                   decoration: InputDecoration(
                     hintText: 'Your Department',
                     hintStyle: TextStyle(
@@ -137,7 +144,7 @@ class SignupSlide2View extends StatelessWidget {
                 Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: addressController,
+                  controller: signupController.addressController,
                   decoration: InputDecoration(
                     hintText: 'Your Address',
                     hintStyle: TextStyle(
@@ -159,7 +166,7 @@ class SignupSlide2View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: whatsappNumberController,
+                  controller: signupController.whatsappNumberController,
                   keyboardType: TextInputType.number,
                   maxLength: 13,
                   decoration: InputDecoration(
@@ -189,7 +196,7 @@ class SignupSlide2View extends StatelessWidget {
                 Text('NIK', style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: ktpNumberController,
+                  controller: signupController.ktpNumberController,
                   keyboardType: TextInputType.number,
                   maxLength: 16,
                   decoration: InputDecoration(
