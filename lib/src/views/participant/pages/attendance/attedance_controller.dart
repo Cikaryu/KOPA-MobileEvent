@@ -7,7 +7,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:googleapis/sheets/v4.dart' as sheets;
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 
 class AttendanceController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -79,7 +85,7 @@ class AttendanceController extends GetxController {
       'csr': {'start': '14:08', 'end': '14:09'},
       'lunch': {'start': '14:10', 'end': '14:11'},
       'checkInHotel': {'start': '15:00', 'end': '17:00'},
-      'welcomeDinner': {'start': '19:00', 'end': '21:00'},
+      'welcomeDinner': {'start': '17:00', 'end': '21:00'},
       'arrivedHotel': {'start': '21:00', 'end': '23:00'}
     },
     2: {
@@ -95,7 +101,6 @@ class AttendanceController extends GetxController {
     },
   };
 
-
   var currentEvent = '';
   var notParticipating = false.obs;
   var leftEarly = false.obs;
@@ -106,6 +111,71 @@ class AttendanceController extends GetxController {
     loadAttendanceData();
     tz.initializeTimeZones();
   }
+
+  Future<String> loadCredentials() async {
+    return await rootBundle.loadString('assets/credentials/credentials.json');
+  }
+
+  Future<AuthClient> getAuthClient() async {
+    String credentials = await loadCredentials();
+    final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
+      json.decode(credentials),
+    );
+
+    final scopes = [
+      drive.DriveApi.driveFileScope,
+      sheets.SheetsApi.spreadsheetsScope,
+    ];
+
+    final authClient =
+        await clientViaServiceAccount(serviceAccountCredentials, scopes);
+    return authClient;
+  }
+
+  Future<void> uploadImageToDrive(
+      File imageFile, String folderId, String status) async {
+    final authClient = await getAuthClient();
+
+    var driveApi = drive.DriveApi(authClient);
+
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    var userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    String userName = userDoc.data()?['name'] ?? 'unknown_user';
+
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    String fileName = '$timestamp${userName}_$status.png';
+    var fileToUpload = drive.File();
+    fileToUpload.name = fileName;
+    fileToUpload.parents = [folderId];
+    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+
+    final response =
+        await driveApi.files.create(fileToUpload, uploadMedia: media);
+    print('Uploaded File ID: ${response.id} with name: $fileName');
+  }
+  
+  Future<void> updateSpreadsheet(String spreadsheetId, String range, List<List<Object>> values) async {
+  final authClient = await getAuthClient();
+
+  var sheetsApi = sheets.SheetsApi(authClient);
+
+  var valueRange = sheets.ValueRange.fromJson({
+    'values': values,
+  });
+
+  await sheetsApi.spreadsheets.values.update(
+    valueRange,
+    spreadsheetId,
+    range,
+    valueInputOption: 'USER_ENTERED',
+  );
+
+  print('Spreadsheet updated');
+}
+
 
   void setLoading(bool value) {
     isLoading.value = value;
@@ -166,10 +236,11 @@ class AttendanceController extends GetxController {
     if (eventIndex == 0 && day != 1) {
       // Check last event of previous day
       var lastEventPreviousDay = events[day - 1]!.last;
-      var lastStatusPreviousDay = attendanceStatus[day - 1]![lastEventPreviousDay];
+      var lastStatusPreviousDay =
+          attendanceStatus[day - 1]![lastEventPreviousDay];
       return (lastStatusPreviousDay == 'Attending' ||
-          lastStatusPreviousDay == 'Sick' ||
-          lastStatusPreviousDay == 'Permit') &&
+              lastStatusPreviousDay == 'Sick' ||
+              lastStatusPreviousDay == 'Permit') &&
           isWithinTimeRange(day, event);
     }
 
@@ -182,8 +253,8 @@ class AttendanceController extends GetxController {
       }
 
       return (previousStatus == 'Attending' ||
-          previousStatus == 'Sick' ||
-          previousStatus == 'Permit') &&
+              previousStatus == 'Sick' ||
+              previousStatus == 'Permit') &&
           isWithinTimeRange(day, event);
     }
 
@@ -200,6 +271,7 @@ class AttendanceController extends GetxController {
 
     return nowInUTC8.isAfter(startTime) && nowInUTC8.isBefore(endTime);
   }
+
   tz.TZDateTime _parseTime(String time, tz.TZDateTime referenceDate) {
     var timeParts = time.split(':');
     return tz.TZDateTime(
@@ -211,7 +283,6 @@ class AttendanceController extends GetxController {
       int.parse(timeParts[1]),
     );
   }
-
 
   //refresh
   Future<void> refreshAttendanceData() async {
@@ -321,8 +392,15 @@ class AttendanceController extends GetxController {
     try {
       String userId = _auth.currentUser!.uid;
       String? imageUrl;
+      String folderId =
+          '1FkRiNu7Yg3zuw7OJFAZ7GCZ6BYllFyjV'; // Specify your folder ID
+
       if (imageFile.value != null) {
+        // Upload to Firebase and get URL
         imageUrl = await uploadImage(imageFile.value!, event);
+
+        // Upload to Google Drive
+        await uploadImageToDrive(imageFile.value!, folderId, status);
       }
 
       await _firestore.collection('attendance').doc(userId).set({
