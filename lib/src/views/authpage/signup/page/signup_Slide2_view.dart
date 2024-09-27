@@ -12,21 +12,21 @@ class SignupSlide2View extends StatelessWidget {
   Widget build(BuildContext context) {
     // Uncomment the following line if you need to use the SignupController.
     final SignupController signupController = Get.put(SignupController());
-    final TextEditingController nameController =
-        TextEditingController(text: signupController.nameController.text);
-    final TextEditingController areaController =
-        TextEditingController(text: signupController.areaController.text);
-    final TextEditingController divisionController =
-        TextEditingController(text: signupController.divisionController.text);
-    final TextEditingController departmentController =
-        TextEditingController(text: signupController.departmentController.text);
-    final TextEditingController addressController =
-        TextEditingController(text: signupController.addressController.text);
-    final TextEditingController whatsappNumberController =
-        TextEditingController(
-            text: signupController.whatsappNumberController.text);
-    final TextEditingController ktpNumberController =
-        TextEditingController(text: signupController.ktpNumberController.text);
+    // final TextEditingController nameController =
+    //     TextEditingController(text: signupController.nameController.text);
+    // final TextEditingController areaController =
+    //     TextEditingController(text: signupController.areaController.text);
+    // final TextEditingController divisionController =
+    //     TextEditingController(text: signupController.divisionController.text);
+    // final TextEditingController departmentController =
+    //     TextEditingController(text: signupController.departmentController.text);
+    // final TextEditingController addressController =
+    //     TextEditingController(text: signupController.addressController.text);
+    // final TextEditingController whatsappNumberController =
+    //     TextEditingController(
+    //         text: signupController.whatsappNumberController.text);
+    // final TextEditingController ktpNumberController =
+    //     TextEditingController(text: signupController.ktpNumberController.text);
 
     return GestureDetector(
       onTap: () {
@@ -480,20 +480,20 @@ class SignupSlide2View extends StatelessWidget {
                     onPressed: () {
                       FocusScope.of(context).unfocus();
                       if (_formKey.currentState!.validate()) {
-                        signupController.nameController.text =
-                            nameController.text;
-                        signupController.areaController.text =
-                            areaController.text;
-                        signupController.divisionController.text =
-                            divisionController.text;
-                        signupController.departmentController.text =
-                            departmentController.text;
-                        signupController.addressController.text =
-                            addressController.text;
-                        signupController.whatsappNumberController.text =
-                            whatsappNumberController.text;
-                        signupController.ktpNumberController.text =
-                            ktpNumberController.text;
+                        // signupController.nameController.text =
+                        //     nameController.text;
+                        // signupController.areaController.text =
+                        //     areaController.text;
+                        // signupController.divisionController.text =
+                        //     divisionController.text;
+                        // signupController.departmentController.text =
+                        //     departmentController.text;
+                        // signupController.addressController.text =
+                        //     addressController.text;
+                        // signupController.whatsappNumberController.text =
+                        //     whatsappNumberController.text;
+                        // signupController.ktpNumberController.text =
+                        //     ktpNumberController.text;
                         signupController.nextPage();
                       }
                     },

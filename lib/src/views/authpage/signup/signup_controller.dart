@@ -55,15 +55,28 @@ class SignupController extends GetxController {
     eWalletNumberController = TextEditingController(text: '');
   }
 
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    areaController.dispose();
+    divisionController.dispose();
+    departmentController.dispose();
+    addressController.dispose();
+    whatsappNumberController.dispose();
+    ktpNumberController.dispose();
+    tshirtSizeController.dispose();
+    poloShirtSizeController.dispose();
+    eWalletTypeController.dispose();
+    eWalletNumberController.dispose();
+    super.onClose();
+  }
+
 
   void setSelfieImage(File? image) {
     selfieImage.value = image;
     update();
-  }
-
-  void onClose() {
-    pageController.dispose();
-    super.onClose();
   }
 
   void nextPage() {

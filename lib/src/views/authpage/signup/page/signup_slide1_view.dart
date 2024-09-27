@@ -11,10 +11,10 @@ class SignupSlide1View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SignupController signupController = Get.put(SignupController());
-    final TextEditingController emailController =
-        TextEditingController(text: signupController.emailController.text);
-    final TextEditingController passwordController =
-        TextEditingController(text: signupController.passwordController.text);
+    // final TextEditingController emailController =
+    //     TextEditingController(text: signupController.emailController.text);
+    // final TextEditingController passwordController =
+    //     TextEditingController(text: signupController.passwordController.text);
 
     return GestureDetector(
       onTap: () {
@@ -104,10 +104,10 @@ class SignupSlide1View extends StatelessWidget {
                     onPressed: () {
                       FocusScope.of(context).unfocus();
                       if (_formKey.currentState!.validate()) {
-                        signupController.emailController.text =
-                            emailController.text;
-                        signupController.passwordController.text =
-                            passwordController.text;
+                        // signupController.emailController.text =
+                        //     emailController.text;
+                        // signupController.passwordController.text =
+                        //     passwordController.text;
                         signupController.nextPage();
                       }
                     },
