@@ -2,6 +2,13 @@ import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:googleapis/sheets/v4.dart' as sheets;
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
 
 class ReportController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -12,7 +19,7 @@ class ReportController extends GetxController {
   var reportStatus = <String, String>{}.obs; // Menyimpan status laporan
   var statusImageUrls =
       <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
- final RxBool isLoading = false.obs;
+  final RxBool isLoading = false.obs;
   late Rx<User?> _user;
 
   @override
@@ -116,13 +123,53 @@ class ReportController extends GetxController {
     return '-';
   }
 
+  Future<String> loadCredentials() async {
+    return await rootBundle.loadString('assets/credentials/credentials.json');
+  }
+
+  Future<AuthClient> getAuthClient() async {
+    String credentials = await loadCredentials();
+    final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
+      json.decode(credentials),
+    );
+
+    final scopes = [
+      drive.DriveApi.driveFileScope,
+      sheets.SheetsApi.spreadsheetsScope,
+    ];
+
+    final authClient =
+        await clientViaServiceAccount(serviceAccountCredentials, scopes);
+    return authClient;
+  }
+
+  Future<void> uploadImageToDrive(
+      File imageFile, String folderId, String title) async {
+    final authClient = await getAuthClient();
+
+    var driveApi = drive.DriveApi(authClient);
+
+    String timestamp = DateFormat('ddMMyy').format(DateTime.now());
+
+    String fileName = '${timestamp}_$title.png';
+    var fileToUpload = drive.File();
+    fileToUpload.name = fileName;
+    fileToUpload.parents = [folderId];
+    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+
+    final response =
+        await driveApi.files.create(fileToUpload, uploadMedia: media);
+    print('Uploaded File ID: ${response.id} with name: $fileName');
+  }
+
   Future<void> submitReport({
     required String title,
-    // required String category,
     required String description,
     required String status,
   }) async {
     try {
+      String folderId = '14tlzo2Nj7_Fk9t3L5lVqBkBG9yVawHra';
+
       if (_user.value == null) {
         throw Exception('User not logged in');
       }
@@ -135,6 +182,12 @@ class ReportController extends GetxController {
       // Upload image if selected
       String imageUrl = await uploadImage(reportId);
 
+      // Upload image to Google Drive
+      if (selectedImage.value != null) {
+        await uploadImageToDrive(
+            File(selectedImage.value!.path), folderId, title);
+      }
+      
       // Create new report document
       await _firestore.collection('report').doc(reportId).set({
         'userId': userId,

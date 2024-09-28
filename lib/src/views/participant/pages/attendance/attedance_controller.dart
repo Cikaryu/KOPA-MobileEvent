@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -78,13 +79,13 @@ class AttendanceController extends GetxController {
   // EDIT WAKTU EVENT DISINI !
   var eventTimeRanges = {
     1: {
-      'departure': {'start': '14:00:', 'end': '14:01'},
-      'arrival': {'start': '14:02', 'end': '14:03'},
-      'csr': {'start': '14:08', 'end': '14:09'},
-      'lunch': {'start': '14:10', 'end': '14:11'},
-      'checkInHotel': {'start': '15:00', 'end': '17:00'},
-      'welcomeDinner': {'start': '17:00', 'end': '21:00'},
-      'arrivedHotel': {'start': '21:00', 'end': '23:00'}
+      'departure': {'start': '13:45:', 'end': '16:01'},
+      'arrival': {'start': '13:45', 'end': '16:01'},
+      'csr': {'start': '13:45', 'end': '16:01'},
+      'lunch': {'start': '13:45', 'end': '16:01'},
+      'checkInHotel': {'start': '13:45', 'end': '16:01'},
+      'welcomeDinner': {'start': '13:45', 'end': '16:01'},
+      'arrivedHotel': {'start': '13:45', 'end': '16:01'}
     },
     2: {
       'teamBuilding': {'start': '09:00', 'end': '12:00'},
@@ -110,6 +111,10 @@ class AttendanceController extends GetxController {
     tz.initializeTimeZones();
   }
 
+  void setLoading(bool value) {
+  isLoading.value = value;
+}
+
   Future<String> loadCredentials() async {
     return await rootBundle.loadString('assets/credentials/credentials.json');
   }
@@ -131,53 +136,96 @@ class AttendanceController extends GetxController {
   }
 
   Future<void> uploadImageToDrive(
-      File imageFile, String folderId, String status) async {
+      File imageFile, String status, String day, String eventActivity) async {
     final authClient = await getAuthClient();
-
     var driveApi = drive.DriveApi(authClient);
 
+    // Fetch user details
     String userId = FirebaseAuth.instance.currentUser!.uid;
-
     var userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     String userName = userDoc.data()?['name'] ?? 'unknown_user';
 
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    // Get the current date in ddMMyy format
+    String timestamp = DateFormat('ddMMyy').format(DateTime.now());
+    // Folder names based on your structure
+    String dayFolder = "Day $day";
+    String eventFolder = "$eventActivity";
+    String eventFolderpermitSick = "Sick/Permit AllActivity";
 
-    String fileName = '$timestamp${userName}_$status.png';
+    // Base folder ID for 'Kopa-Database'
+    String baseFolderId = '1FkRiNu7Yg3zuw7OJFAZ7GCZ6BYllFyjV';
+
+    // Create or get the folders starting from the base folder 'Kopa-Database'
+    String attendanceFolderId =
+        await createOrGetFolderId(driveApi, baseFolderId, '3. ATTENDANCE');
+    String specificDayFolderId =
+        await createOrGetFolderId(driveApi, attendanceFolderId, dayFolder);
+    String specificEventFolderId =
+        await createOrGetFolderId(driveApi, specificDayFolderId, eventFolder);
+    String eventFolderSickPermit =
+        await createOrGetFolderId(driveApi, specificDayFolderId, eventFolderpermitSick,);
+
+    // File name with timestamp and user status
+    String fileName = '${timestamp}_${userName}_$status.png';
+
+    // Upload the image file
     var fileToUpload = drive.File();
     fileToUpload.name = fileName;
-    fileToUpload.parents = [folderId];
+    // Kondisi jika permit/sick
+    if (status != 'Attending') {
+      fileToUpload.parents = [eventFolderSickPermit];
+    } else {
+      fileToUpload.parents = [specificEventFolderId];
+    }
     var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
-
     final response =
         await driveApi.files.create(fileToUpload, uploadMedia: media);
     print('Uploaded File ID: ${response.id} with name: $fileName');
   }
-  
-  Future<void> updateSpreadsheet(String spreadsheetId, String range, List<List<Object>> values) async {
-  final authClient = await getAuthClient();
 
-  var sheetsApi = sheets.SheetsApi(authClient);
+  Future<String> createOrGetFolderId(
+      drive.DriveApi driveApi, String parentId, String folderName) async {
+    try {
+      var query =
+          "'$parentId' in parents and mimeType = 'application/vnd.google-apps.folder' and name = '$folderName' and trashed = false";
+      var folderList = await driveApi.files.list(q: query, spaces: 'drive');
 
-  var valueRange = sheets.ValueRange.fromJson({
-    'values': values,
-  });
-
-  await sheetsApi.spreadsheets.values.update(
-    valueRange,
-    spreadsheetId,
-    range,
-    valueInputOption: 'USER_ENTERED',
-  );
-
-  print('Spreadsheet updated');
-}
-
-
-  void setLoading(bool value) {
-    isLoading.value = value;
+      if (folderList.files!.isNotEmpty) {
+        return folderList.files!.first.id!; // Folder already exists
+      } else {
+        var folder = drive.File();
+        folder.name = folderName;
+        folder.mimeType = 'application/vnd.google-apps.folder';
+        folder.parents = [parentId];
+        var createdFolder = await driveApi.files.create(folder);
+        return createdFolder.id!;
+      }
+    } catch (e) {
+      throw Exception("Failed to create or get folder: $e");
+    }
   }
+
+  Future<void> updateSpreadsheet(
+      String spreadsheetId, String range, List<List<Object>> values) async {
+    final authClient = await getAuthClient();
+
+    var sheetsApi = sheets.SheetsApi(authClient);
+
+    var valueRange = sheets.ValueRange.fromJson({
+      'values': values,
+    });
+
+    await sheetsApi.spreadsheets.values.update(
+      valueRange,
+      spreadsheetId,
+      range,
+      valueInputOption: 'USER_ENTERED',
+    );
+
+    print('Spreadsheet updated');
+  }
+
 
   void toggleDayExpanded(int day) {
     if (day == 1) {
@@ -390,15 +438,18 @@ class AttendanceController extends GetxController {
     try {
       String userId = _auth.currentUser!.uid;
       String? imageUrl;
-      String folderId =
-          '1FkRiNu7Yg3zuw7OJFAZ7GCZ6BYllFyjV'; // Specify your folder ID
+      String displayName = eventDisplayNames[event] ?? event;
 
       if (imageFile.value != null) {
         // Upload to Firebase and get URL
         imageUrl = await uploadImage(imageFile.value!, event);
-
+        
         // Upload to Google Drive
-        await uploadImageToDrive(imageFile.value!, folderId, status);
+        await uploadImageToDrive(
+            imageFile.value!, status, day.toString(), displayName);
+
+
+
       }
 
       await _firestore.collection('attendance').doc(userId).set({
