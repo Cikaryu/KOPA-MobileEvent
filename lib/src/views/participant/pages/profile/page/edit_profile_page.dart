@@ -296,7 +296,9 @@ class ImagePreviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: HexColor('727578'),
         title: Text('Foto Profil'),
+        centerTitle: true,
       ),
       body: Center(
         child: PhotoView(

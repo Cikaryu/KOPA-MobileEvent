@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:app_kopabali/src/views/committee/committee_view.dart';
@@ -9,6 +10,9 @@ import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:flutter/services.dart' show rootBundle;
 
 class ProfileController extends GetxController {
   final TextEditingController nameController = TextEditingController();
@@ -392,6 +396,107 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<String> loadCredentials() async {
+    return await rootBundle.loadString('assets/credentials/credentials.json');
+  }
+
+  Future<AuthClient> getAuthClient() async {
+    String credentials = await loadCredentials();
+    final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
+      json.decode(credentials),
+    );
+
+    final scopes = [
+      drive.DriveApi.driveFileScope,
+    ];
+
+    final authClient =
+        await clientViaServiceAccount(serviceAccountCredentials, scopes);
+    return authClient;
+  }
+
+  Future<void> uploadOrUpdateFileInDrive(File imageFile) async {
+  final authClient = await getAuthClient();
+  var driveApi = drive.DriveApi(authClient);
+
+  // Fetch user details
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw Exception('User not logged in');
+
+  String name = nameController.text.trim();
+  String area = areaController.text.trim();
+  String department = departmentController.text.trim();
+  String division = divisiController.text.trim();
+
+  // Build the new file name based on user details
+  String newFileName = '${area}_${department}_${division}_$name.png';
+
+  // Folder ID for '1. FOTO DIRI' under the base folder
+  String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
+
+  // Fetch the old file name from Firestore (if stored)
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .get();
+  String oldFileName = userDoc['profileFileName'] ?? '';
+
+  // If the file name has changed (due to changes in area, department, division, or name)
+  if (oldFileName.isNotEmpty && oldFileName != newFileName) {
+    // Search for the old file in Google Drive
+    String query = "'$photoFolderId' in parents and name = '$oldFileName' and trashed = false";
+    var fileList = await driveApi.files.list(q: query, spaces: 'drive');
+
+    // If the old file exists, delete it
+    if (fileList.files!.isNotEmpty) {
+      String oldFileId = fileList.files!.first.id!;
+      await driveApi.files.delete(oldFileId);
+      print('Deleted old file with name: $oldFileName');
+    }
+  }
+
+  // Check if the file already exists with the new name
+  String query = "'$photoFolderId' in parents and name = '$newFileName' and trashed = false";
+  var fileList = await driveApi.files.list(q: query, spaces: 'drive');
+
+  if (fileList.files!.isNotEmpty) {
+    // File exists, update it
+    var existingFileId = fileList.files!.first.id!;
+    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+
+    var updatedFile = await driveApi.files.update(
+      drive.File(), // Add more file metadata if needed here
+      existingFileId,
+      uploadMedia: media,
+    );
+    print('Updated File ID: ${updatedFile.id} with name: $newFileName');
+  } else {
+    // File doesn't exist, create a new one
+    var fileToUpload = drive.File();
+    fileToUpload.name = newFileName;
+    fileToUpload.parents = [photoFolderId];
+
+    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+    final response = await driveApi.files.create(fileToUpload, uploadMedia: media);
+
+    print('Uploaded new File ID: ${response.id} with name: $newFileName');
+  }
+
+  // Update the new file name in Firestore to track for future updates
+  await updateOldFileNameInFirestore(newFileName);
+}
+
+Future<void> updateOldFileNameInFirestore(String newFileName) async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  // Store the new file name in Firestore for tracking
+  await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+    'profileFileName': newFileName,
+  });
+}
+
+
   Future<void> saveChanges() async {
     try {
       setLoading(true);
@@ -438,10 +543,16 @@ class ProfileController extends GetxController {
             imageUrl; // Pastikan field ini ada di Firestore
       }
 
+      // If a new image is selected, upload it to Google Drive and update the URL
+      if (selfieImage.value != null) {
+        // Use the uploadOrUpdateFileInDrive function to handle the file upload and update
+        await uploadOrUpdateFileInDrive(selfieImage.value!);
+      }
+
       // Pastikan setidaknya ada satu field yang akan diupdate
       if (updateData.isNotEmpty) {
         // Update data pengguna di Firestore
-        await FirebaseFirestore.instance
+        await FirebaseFirestore.instance  
             .collection('users')
             .doc(user.uid)
             .update(updateData);
