@@ -177,7 +177,7 @@ class ReportController extends GetxController {
     print('Successfully accessed spreadsheet: ${spreadsheet.properties?.title}');
 
     String userName = await getUserName();
-    String timestamp = DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.now());
+    String timestamp = DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.now().toUtc().add(Duration(hours: 8)));
 
     final values = [
       [timestamp, userName, title, description, '', status]
@@ -205,12 +205,19 @@ class ReportController extends GetxController {
   }
 }
 
+void setLoading(bool value) {
+    isLoading.value = value;
+  }
+
   Future<void> submitReport({
     required String title,
     required String description,
     required String status,
   }) async {
     try {
+      
+      setLoading(true);
+
       String folderId = '14tlzo2Nj7_Fk9t3L5lVqBkBG9yVawHra';
 
       if (_user.value == null) {
@@ -246,7 +253,7 @@ class ReportController extends GetxController {
 
       // Submit to Google Sheets
        await submitToGoogleSheets(title, description, status);
-
+      setLoading(false);
       // Show success dialog
       Get.dialog(
         AlertDialog(

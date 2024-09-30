@@ -150,6 +150,15 @@ class ReportListPage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (reportController.isLoading.value)
+                      Positioned.fill(
+                        child: Container(
+                          color: Colors.black.withOpacity(0.5),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               );

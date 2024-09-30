@@ -36,41 +36,46 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 20),
-                    buildStatusDropdown(),
-                    SizedBox(height: 20),
-                    if (selectedStatus == 'Sick' ||
-                        selectedStatus == 'Permit' ||
-                        selectedStatus == 'Left Early') ...[
-                      buildDescriptionField(),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       SizedBox(height: 20),
+                      buildStatusDropdown(),
+                      SizedBox(height: 20),
+                      if (selectedStatus == 'Sick' ||
+                          selectedStatus == 'Permit' ||
+                          selectedStatus == 'Left Early') ...[
+                        buildDescriptionField(),
+                        SizedBox(height: 20),
+                      ],
+                      if (selectedStatus != 'Not Participating' &&
+                          selectedStatus != 'Left Early')
+                        buildAttachmentButton(),
                     ],
-                    if (selectedStatus != 'Not Participating' &&
-                        selectedStatus != 'Left Early')
-                      buildAttachmentButton(),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: buildSubmitButton(),
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: buildSubmitButton(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -319,24 +324,24 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
             ),
           ),
           child: controller.isLoading.value
-            ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Waitting...',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
-                SizedBox(width: 24),
-                SizedBox(
-                    width: 20,  
-                    height: 20, 
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      strokeWidth: 2,
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Waitting...',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
-                  ),
-              ],
-            )
+                    SizedBox(width: 24),
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ],
+                )
               : Text(
                   'Submit Attendance',
                   style: TextStyle(color: Colors.white, fontSize: 14),

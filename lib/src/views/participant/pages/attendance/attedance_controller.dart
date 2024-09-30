@@ -79,13 +79,13 @@ class AttendanceController extends GetxController {
   // EDIT WAKTU EVENT DISINI !
   var eventTimeRanges = {
     1: {
-      'departure': {'start': '13:45:', 'end': '16:01'},
-      'arrival': {'start': '13:45', 'end': '16:01'},
-      'csr': {'start': '13:45', 'end': '16:01'},
-      'lunch': {'start': '13:45', 'end': '16:01'},
-      'checkInHotel': {'start': '13:45', 'end': '16:01'},
-      'welcomeDinner': {'start': '13:45', 'end': '16:01'},
-      'arrivedHotel': {'start': '13:45', 'end': '16:01'}
+      'departure': {'start': '13:45:', 'end': '23:01'},
+      'arrival': {'start': '13:45', 'end': '23:01'},
+      'csr': {'start': '13:45', 'end': '23:01'},
+      'lunch': {'start': '13:45', 'end': '23:01'},
+      'checkInHotel': {'start': '13:45', 'end': '23:01'},
+      'welcomeDinner': {'start': '13:45', 'end': '23:01'},
+      'arrivedHotel': {'start': '13:45', 'end': '23:01'}
     },
     2: {
       'teamBuilding': {'start': '09:00', 'end': '12:00'},
