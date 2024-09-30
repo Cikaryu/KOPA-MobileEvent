@@ -162,6 +162,49 @@ class ReportController extends GetxController {
     print('Uploaded File ID: ${response.id} with name: $fileName');
   }
 
+// Google Sheet
+ Future<void> submitToGoogleSheets(String title, String description, String status) async {
+  final authClient = await getAuthClient();
+  var sheetsApi = sheets.SheetsApi(authClient);
+
+  // Replace with your actual spreadsheet ID
+  final spreadsheetId = '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U';
+  final range = 'Sheet1!A:F'; // This will append to the first empty row
+
+  try {
+    // First, try to get the spreadsheet metadata
+    final spreadsheet = await sheetsApi.spreadsheets.get(spreadsheetId);
+    print('Successfully accessed spreadsheet: ${spreadsheet.properties?.title}');
+
+    String userName = await getUserName();
+    String timestamp = DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.now());
+
+    final values = [
+      [timestamp, userName, title, description, '', status]
+    ];
+
+    final valueRange = sheets.ValueRange(values: values);
+
+    final result = await sheetsApi.spreadsheets.values.append(
+      valueRange,
+      spreadsheetId,
+      range,
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+    );
+
+    print('Data appended to Google Sheets successfully. Updated range: ${result.updates?.updatedRange}');
+  } catch (e) {
+    print('Error interacting with Google Sheets: $e');
+    if (e is sheets.DetailedApiRequestError) {
+      print('Error status: ${e.status}, message: ${e.message}');
+      print('Error details: ${e.jsonResponse}');
+    }
+    // Handle the error as needed
+    // You might want to show an error message to the user here
+  }
+}
+
   Future<void> submitReport({
     required String title,
     required String description,
@@ -200,6 +243,9 @@ class ReportController extends GetxController {
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
+      // Submit to Google Sheets
+       await submitToGoogleSheets(title, description, status);
 
       // Show success dialog
       Get.dialog(
