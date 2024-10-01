@@ -77,7 +77,6 @@ class SignupController extends GetxController {
     super.onClose();
   }
 
-
   void setSelfieImage(File? image) {
     selfieImage.value = image;
     update();
@@ -125,64 +124,162 @@ class SignupController extends GetxController {
         return Container();
     }
   }
+
   Future<String> loadCredentials() async {
-        return await rootBundle
-            .loadString('assets/credentials/credentials.json');
-      }
+    return await rootBundle.loadString('assets/credentials/credentials.json');
+  }
 
-      Future<AuthClient> getAuthClient() async {
-        String credentials = await loadCredentials();
-        final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
-          json.decode(credentials),
-        );
+  Future<AuthClient> getAuthClient() async {
+    String credentials = await loadCredentials();
+    final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
+      json.decode(credentials),
+    );
 
-        final scopes = [
-          drive.DriveApi.driveFileScope,
-          sheets.SheetsApi.spreadsheetsScope,
-        ];
+    final scopes = [
+      drive.DriveApi.driveFileScope,
+      sheets.SheetsApi.spreadsheetsScope,
+    ];
 
-        final authClient =
-            await clientViaServiceAccount(serviceAccountCredentials, scopes);
-        return authClient;
-      }
+    final authClient =
+        await clientViaServiceAccount(serviceAccountCredentials, scopes);
+    return authClient;
+  }
 
-      Future<void> uploadImageToDrive(File imageFile, String folderId,
-          String departement, String area, String divisi, String user) async {
-        final authClient = await getAuthClient();
+  Future<void> uploadImageToDrive(File imageFile, String folderId,
+      String departement, String area, String divisi, String user) async {
+    final authClient = await getAuthClient();
 
-        var driveApi = drive.DriveApi(authClient);
+    var driveApi = drive.DriveApi(authClient);
 
-        var fileToUpload = drive.File();
-        fileToUpload.name = '${area}_${departement}_${divisi}_$user.png';
-        fileToUpload.parents = [folderId];
-        var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+    var fileToUpload = drive.File();
+    fileToUpload.name = '${area}_${departement}_${divisi}_$user.png';
+    fileToUpload.parents = [folderId];
+    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
 
-        final response =
-            await driveApi.files.create(fileToUpload, uploadMedia: media);
-        print('Uploaded File Profile ID: ${response.id} with name: $departement');
-      }
+    final response =
+        await driveApi.files.create(fileToUpload, uploadMedia: media);
+    print('Uploaded File Profile ID: ${response.id} with name: $departement');
+  }
 
-      Future<void> uploadImagektpToDrive(
-          File imageFile, String folderId, String user) async {
-        final authClient = await getAuthClient();
+  Future<void> uploadImagektpToDrive(
+      File imageFile, String folderId, String user) async {
+    final authClient = await getAuthClient();
 
-        var driveApi = drive.DriveApi(authClient);
+    var driveApi = drive.DriveApi(authClient);
 
-        var fileToUpload = drive.File();
-        fileToUpload.name = 'KTP_$user.png';
-        fileToUpload.parents = [folderId];
-        var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+    var fileToUpload = drive.File();
+    fileToUpload.name = 'KTP_$user.png';
+    fileToUpload.parents = [folderId];
+    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
 
-        final response =
-            await driveApi.files.create(fileToUpload, uploadMedia: media);
-        print('Uploaded File KTP ID: ${response.id} with name: $user');
-      }
+    final response =
+        await driveApi.files.create(fileToUpload, uploadMedia: media);
+    print('Uploaded File KTP ID: ${response.id} with name: $user');
+  }
 
-    Future<void> submitToDrive(String username, String area, String department, String division) async {
+  Future<void> submitToDrive(
+      String username, String area, String department, String division) async {
     String folderIdktp = '1JcyaT5xNKP4iela099E7RnefFhITKTKj';
     String folderIdprofile = '1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode';
     await uploadImagektpToDrive(ktpImage.value!, folderIdktp, username);
-    await uploadImageToDrive(selfieImage.value!, folderIdprofile, department, area, division, username);
+    await uploadImageToDrive(selfieImage.value!, folderIdprofile, department,
+        area, division, username);
+  }
+
+  Future<void> updateSpreadsheet(
+      String spreadsheetId, String range, List<Object> newRow) async {
+    try {
+      final authClient = await getAuthClient();
+      var sheetsApi = sheets.SheetsApi(authClient);
+
+      // Get existing values
+      var response =
+          await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+      var existingValues = response.values ?? [];
+      print('Existing values: $existingValues'); // Debug log
+
+      // Check if headers exist, if not, add them
+      if (existingValues.isEmpty || existingValues[0].length < newRow.length) {
+        existingValues.insert(0, [
+          'TimeStamp',
+          'UserId',
+          'Email',
+          'Name',
+          'Area',
+          'Division',
+          'Department',
+          'Address',
+          'WhatsApp Number',
+          'KTP Number',
+          'T-Shirt Size',
+          'Polo Shirt Size',
+          'E-Wallet Type',
+          'E-Wallet Number'
+        ]);
+      }
+
+      // Find the row with the matching UserId
+      int rowIndex = -1;
+      for (int i = 1; i < existingValues.length; i++) {
+        if (existingValues[i].length > 1 && existingValues[i][1] == newRow[1]) {
+          rowIndex = i;
+          break;
+        }
+      }
+      print('Row index for UserId ${newRow[1]}: $rowIndex'); // Debug log
+
+      if (rowIndex != -1) {
+        // Update existing row
+        existingValues[rowIndex] = newRow;
+        print('Updated existing row: ${existingValues[rowIndex]}'); // Debug log
+      } else {
+        // Add new row
+        existingValues.add(newRow);
+        print('Added new row: $newRow'); // Debug log
+      }
+
+      var valueRange = sheets.ValueRange(values: existingValues);
+
+      // Update the entire range
+      var updateResponse = await sheetsApi.spreadsheets.values.update(
+        valueRange,
+        spreadsheetId,
+        range,
+        valueInputOption: 'USER_ENTERED',
+      );
+      print('Spreadsheet update response: $updateResponse'); // Debug log
+
+      // Get the sheet ID
+      var spreadsheet = await sheetsApi.spreadsheets.get(spreadsheetId);
+      var sheetId = spreadsheet.sheets![0].properties!.sheetId;
+
+      // Prepare auto-resize request
+      var autoResizeRequest = sheets.AutoResizeDimensionsRequest(
+        dimensions: sheets.DimensionRange(
+          sheetId: sheetId,
+          dimension: 'COLUMNS',
+          startIndex: 0,
+          endIndex: newRow.length, // Resize all columns that we've used
+        ),
+      );
+
+      // Execute the auto-resize request
+      var batchUpdateRequest = sheets.BatchUpdateSpreadsheetRequest(
+        requests: [
+          sheets.Request(
+            autoResizeDimensions: autoResizeRequest,
+          ),
+        ],
+      );
+
+      await sheetsApi.spreadsheets
+          .batchUpdate(batchUpdateRequest, spreadsheetId);
+
+      print('Spreadsheet updated and columns auto-resized successfully');
+    } catch (e) {
+      print('Error updating spreadsheet: $e');
+      // Handle the error appropriately, e.g., by showing an error message to the user
+    }
   }
 
   Future<void> registerUser({
@@ -304,6 +401,26 @@ class SignupController extends GetxController {
       });
       // Add Google Drive upload
       await submitToDrive(name, area, department, division);
+      final timestamp = DateTime.now().toIso8601String();
+      List<Object> newRow = [
+        timestamp,
+        userCredential.user!.uid, // UserId is now the second column
+        email,
+        name,
+        area,
+        division,
+        department,
+        address,
+        whatsappNumber,
+        ktpNumber,
+        tShirtSize,
+        poloShirtSize,
+        eWalletType,
+        eWalletNumber
+      ];
+      print('Submitting new row: $newRow'); // Debug log
+      await updateSpreadsheet(
+          '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:N', newRow);
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
