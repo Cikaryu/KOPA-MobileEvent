@@ -79,24 +79,24 @@ class AttendanceController extends GetxController {
   // EDIT WAKTU EVENT DISINI !
   var eventTimeRanges = {
     1: {
-      'departure': {'start': '13:45:', 'end': '23:01'},
-      'arrival': {'start': '13:45', 'end': '23:01'},
-      'csr': {'start': '13:45', 'end': '23:01'},
-      'lunch': {'start': '13:45', 'end': '23:01'},
-      'checkInHotel': {'start': '13:45', 'end': '23:01'},
-      'welcomeDinner': {'start': '13:45', 'end': '23:01'},
-      'arrivedHotel': {'start': '13:45', 'end': '23:01'}
+      'departure': {'start': '12:45:', 'end': '23:01'},
+      'arrival': {'start': '12:45', 'end': '23:01'},
+      'csr': {'start': '12:45', 'end': '23:01'},
+      'lunch': {'start': '12:45', 'end': '23:01'},
+      'checkInHotel': {'start': '12:45', 'end': '23:01'},
+      'welcomeDinner': {'start': '12:45', 'end': '23:01'},
+      'arrivedHotel': {'start': '12:45', 'end': '23:01'}
     },
     2: {
-      'teamBuilding': {'start': '09:00', 'end': '12:00'},
-      'lunch': {'start': '12:00', 'end': '14:00'},
-      'galaDinner': {'start': '19:00', 'end': '22:00'}
+      'teamBuilding': {'start': '12:45', 'end': '23:01'},
+      'lunch': {'start': '12:45', 'end': '23:01'},
+      'galaDinner': {'start': '12:45', 'end': '22:00'}
     },
     3: {
-      'roomCheckOut': {'start': '07:00', 'end': '09:00'},
-      'luggageDrop': {'start': '09:00', 'end': '10:00'},
-      'departure': {'start': '10:00', 'end': '12:00'},
-      'arrivalJakarta': {'start': '14:00', 'end': '16:00'}
+      'roomCheckOut': {'start': '12:45', 'end': '23:01'},
+      'luggageDrop': {'start': '12:45', 'end': '23:01'},
+      'departure': {'start': '12:45', 'end': '23:01'},
+      'arrivalJakarta': {'start': '12:45', 'end': '23:01'}
     },
   };
 
@@ -112,8 +112,8 @@ class AttendanceController extends GetxController {
   }
 
   void setLoading(bool value) {
-  isLoading.value = value;
-}
+    isLoading.value = value;
+  }
 
   Future<String> loadCredentials() async {
     return await rootBundle.loadString('assets/credentials/credentials.json');
@@ -163,8 +163,11 @@ class AttendanceController extends GetxController {
         await createOrGetFolderId(driveApi, attendanceFolderId, dayFolder);
     String specificEventFolderId =
         await createOrGetFolderId(driveApi, specificDayFolderId, eventFolder);
-    String eventFolderSickPermit =
-        await createOrGetFolderId(driveApi, specificDayFolderId, eventFolderpermitSick,);
+    String eventFolderSickPermit = await createOrGetFolderId(
+      driveApi,
+      specificDayFolderId,
+      eventFolderpermitSick,
+    );
 
     // File name with timestamp and user status
     String fileName = '${timestamp}_${userName}_$status.png';
@@ -206,26 +209,117 @@ class AttendanceController extends GetxController {
     }
   }
 
-  Future<void> updateSpreadsheet(
-      String spreadsheetId, String range, List<List<Object>> values) async {
-    final authClient = await getAuthClient();
-
-    var sheetsApi = sheets.SheetsApi(authClient);
-
-    var valueRange = sheets.ValueRange.fromJson({
-      'values': values,
-    });
-
-    await sheetsApi.spreadsheets.values.update(
-      valueRange,
-      spreadsheetId,
-      range,
-      valueInputOption: 'USER_ENTERED',
-    );
-
-    print('Spreadsheet updated');
+  Future<String> getUserName() async {
+    String userId = _auth.currentUser!.uid;
+    DocumentSnapshot userDoc =
+        await _firestore.collection('users').doc(userId).get();
+    return userDoc.get('name') as String? ?? 'Unknown User';
   }
 
+  Future<void> submitToGoogleSheets(
+      int day, String event, String status) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
+
+    final spreadsheetId = '1YY4nOT_a--4sqqgtT7mpT3PH8CPQsLM5ZbVKAtJzRLY';
+    final range = 'Sheet1!A:O'; // Assuming columns A to O for all events
+
+    try {
+      final spreadsheet = await sheetsApi.spreadsheets.get(spreadsheetId);
+      print(
+          'Successfully accessed spreadsheet: ${spreadsheet.properties?.title}');
+
+      String userName = await getUserName();
+      String timestamp = DateFormat('dd/MM/yyyy_HH:mm:ss')
+          .format(DateTime.now().toUtc().add(Duration(hours: 8)));
+
+      // Fetch all values from the sheet
+      final response =
+          await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+      List<List<Object?>> values = response.values ?? [];
+
+      // Find the row for the current user
+      int rowIndex =
+          values.indexWhere((row) => row.isNotEmpty && row[0] == userName);
+
+      // Determine the column for the current event
+      int columnIndex = _getEventIndex(day, event);
+      if (columnIndex == -1) {
+        print('Invalid event: $event');
+        return;
+      }
+
+      if (rowIndex != -1) {
+        // User found, update the existing row
+        while (values[rowIndex].length <= columnIndex) {
+          values[rowIndex].add(''); // Ensure the row has enough columns
+        }
+        values[rowIndex][columnIndex] = '${status}_$timestamp';
+
+        // Update the specific cell
+        final updateRange =
+            'Sheet1!${String.fromCharCode(65 + columnIndex)}${rowIndex + 1}';
+        final updateBody = sheets.ValueRange(values: [
+          [values[rowIndex][columnIndex]]
+        ]);
+        await sheetsApi.spreadsheets.values.update(
+          updateBody,
+          spreadsheetId,
+          updateRange,
+          valueInputOption: 'USER_ENTERED',
+        );
+      } else {
+        // User not found, create a new row
+        List<Object> newRow = List.filled(15, '');
+        newRow[0] = userName;
+        newRow[columnIndex] = '${status}_$timestamp';
+
+        final appendBody = sheets.ValueRange(values: [newRow]);
+        await sheetsApi.spreadsheets.values.append(
+          appendBody,
+          spreadsheetId,
+          range,
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+        );
+      }
+
+      print('Data updated in Google Sheets successfully for user: $userName');
+    } catch (e) {
+      print('Error interacting with Google Sheets: $e');
+
+      if (e is sheets.DetailedApiRequestError) {
+        print('Error status: ${e.status}, message: ${e.message}');
+        print('Error details: ${e.jsonResponse}');
+        print('Retrying in 5 seconds...');
+        await Future.delayed(Duration(seconds: 5));
+        await submitToGoogleSheets(day, event, status);
+      }
+    }
+  }
+
+  int _getEventIndex(int day, String event) {
+    // Define the mapping of events to column indices
+    Map<String, int> eventIndices = {
+      'day1_departure': 1,
+      'day1_arrival': 2,
+      'day1_csr': 3,
+      'day1_lunch': 4,
+      'day1_checkInHotel': 5,
+      'day1_welcomeDinner': 6,
+      'day1_arrivedHotel': 7,
+      'day2_teamBuilding': 8,
+      'day2_lunch': 9,
+      'day2_galaDinner': 10,
+      'day3_roomCheckOut': 11,
+      'day3_luggageDrop': 12,
+      'day3_departure': 13,
+      'day3_arrivalJakarta': 14,
+    };
+
+    String key = 'day${day}_$event';
+    return eventIndices[key] ?? -1; // Return -1 if the event is not found
+  }
 
   void toggleDayExpanded(int day) {
     if (day == 1) {
@@ -443,13 +537,10 @@ class AttendanceController extends GetxController {
       if (imageFile.value != null) {
         // Upload to Firebase and get URL
         imageUrl = await uploadImage(imageFile.value!, event);
-        
+
         // Upload to Google Drive
         await uploadImageToDrive(
             imageFile.value!, status, day.toString(), displayName);
-
-
-
       }
 
       await _firestore.collection('attendance').doc(userId).set({
@@ -478,6 +569,9 @@ class AttendanceController extends GetxController {
       } else if (status == 'Left Early') {
         leftEarly.value = true;
       }
+
+      // Tambahkan pemanggilan submitToGoogleSheets di sini
+      await submitToGoogleSheets(day, event, status);
 
       Get.back();
       CustomPopup(
