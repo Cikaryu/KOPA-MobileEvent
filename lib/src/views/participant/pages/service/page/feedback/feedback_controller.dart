@@ -13,6 +13,7 @@ class FeedbackController extends GetxController {
   final rating = 0.0.obs;
   final String spreadsheetId = '1M3gfssXScdFuTzPbGg9wE3Bg9aldOPQKcMglMdRJtwc';
   final String range = 'Sheet1!A:E';
+  final isLoading = false.obs;
 
   @override
   void onClose() {
@@ -121,6 +122,7 @@ class FeedbackController extends GetxController {
 
   Future<void> submitFeedback(String suggestion) async {
     try {
+      isLoading.value = true;
       final User? user = _auth.currentUser;
       if (user != null) {
         final DocumentSnapshot userDoc =
@@ -168,6 +170,8 @@ class FeedbackController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.TOP);
+    } finally {
+      isLoading.value = false;
     }
   }
 }
