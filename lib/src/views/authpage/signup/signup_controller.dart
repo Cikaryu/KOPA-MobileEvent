@@ -198,26 +198,6 @@ class SignupController extends GetxController {
       var existingValues = response.values ?? [];
       print('Existing values: $existingValues'); // Debug log
 
-      // Check if headers exist, if not, add them
-      if (existingValues.isEmpty || existingValues[0].length < newRow.length) {
-        existingValues.insert(0, [
-          'TimeStamp',
-          'UserId',
-          'Email',
-          'Name',
-          'Area',
-          'Division',
-          'Department',
-          'Address',
-          'WhatsApp Number',
-          'KTP Number',
-          'T-Shirt Size',
-          'Polo Shirt Size',
-          'E-Wallet Type',
-          'E-Wallet Number'
-        ]);
-      }
-
       // Find the row with the matching UserId
       int rowIndex = -1;
       for (int i = 1; i < existingValues.length; i++) {
@@ -249,33 +229,7 @@ class SignupController extends GetxController {
       );
       print('Spreadsheet update response: $updateResponse'); // Debug log
 
-      // Get the sheet ID
-      var spreadsheet = await sheetsApi.spreadsheets.get(spreadsheetId);
-      var sheetId = spreadsheet.sheets![0].properties!.sheetId;
-
-      // Prepare auto-resize request
-      var autoResizeRequest = sheets.AutoResizeDimensionsRequest(
-        dimensions: sheets.DimensionRange(
-          sheetId: sheetId,
-          dimension: 'COLUMNS',
-          startIndex: 0,
-          endIndex: newRow.length, // Resize all columns that we've used
-        ),
-      );
-
-      // Execute the auto-resize request
-      var batchUpdateRequest = sheets.BatchUpdateSpreadsheetRequest(
-        requests: [
-          sheets.Request(
-            autoResizeDimensions: autoResizeRequest,
-          ),
-        ],
-      );
-
-      await sheetsApi.spreadsheets
-          .batchUpdate(batchUpdateRequest, spreadsheetId);
-
-      print('Spreadsheet updated and columns auto-resized successfully');
+      print('Spreadsheet updated successfully');
     } catch (e) {
       print('Error updating spreadsheet: $e');
       // Handle the error appropriately, e.g., by showing an error message to the user
@@ -404,7 +358,7 @@ class SignupController extends GetxController {
       final timestamp = DateTime.now().toIso8601String();
       List<Object> newRow = [
         timestamp,
-        userCredential.user!.uid, // UserId is now the second column
+        userCredential.user!.uid,
         email,
         name,
         area,
@@ -416,11 +370,20 @@ class SignupController extends GetxController {
         tShirtSize,
         poloShirtSize,
         eWalletType,
-        eWalletNumber
+        eWalletNumber,
+        // New columns for Participant Kit
+        status, // Merchandise - Polo Shirt
+        status, // Merchandise - T-Shirt
+        status, // Merchandise - Luggage Tag
+        status, // Merchandise - Jas Hujan
+        status, // Souvenir - Gelang Tridatu
+        status, // Souvenir - Selendang Udeng
+        status, // Benefit - Voucher Belanja
+        status, // Benefit - Voucher E-wallet
       ];
       print('Submitting new row: $newRow'); // Debug log
       await updateSpreadsheet(
-          '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:N', newRow);
+          '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:V', newRow);
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
