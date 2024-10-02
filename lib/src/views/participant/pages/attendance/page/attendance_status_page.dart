@@ -23,63 +23,87 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
   String? selectedStatus;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        backgroundColor: HexColor('727578'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-        ),
-        title: Text('Attendance Status', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-      ),
-      backgroundColor: Colors.white,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      buildStatusDropdown(),
-                      SizedBox(height: 20),
-                      if (selectedStatus == 'Sick' ||
-                          selectedStatus == 'Permit' ||
-                          selectedStatus == 'Left Early') ...[
-                        buildDescriptionField(),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+       scrolledUnderElevation: 0,
+      backgroundColor: HexColor('727578'),
+      leading: Obx(() => controller.isLoading.value
+          ? SizedBox.shrink()
+          : IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Get.back(),
+            )),
+      title: Obx(() => controller.isLoading.value
+          ? Text('Submitting...', style: TextStyle(color: Colors.white))
+          : Text('Attendance Status', style: TextStyle(color: Colors.white))),
+      centerTitle: true,
+    ),
+    backgroundColor: Colors.white,
+    body: Stack(
+      children: [
+        GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         SizedBox(height: 20),
+                        buildStatusDropdown(),
+                        SizedBox(height: 20),
+                        if (selectedStatus == 'Sick' ||
+                            selectedStatus == 'Permit' ||
+                            selectedStatus == 'Left Early') ...[
+                          buildDescriptionField(),
+                          SizedBox(height: 20),
+                        ],
+                        if (selectedStatus != 'Not Participating' &&
+                            selectedStatus != 'Left Early')
+                          buildAttachmentButton(),
                       ],
-                      if (selectedStatus != 'Not Participating' &&
-                          selectedStatus != 'Left Early')
-                        buildAttachmentButton(),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: buildSubmitButton(),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: buildSubmitButton(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+        // Add a loading overlay
+        Obx(() {
+          if (controller.isLoading.value) {
+            return Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            );
+          } else {
+            return SizedBox.shrink(); 
+          }
+        }),
+      ],
+    ),
+  );
+}
+
 
   Widget buildStatusDropdown() {
     List<String> statusOptions;
