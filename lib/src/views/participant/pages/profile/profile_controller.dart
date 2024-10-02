@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:googleapis/sheets/v4.dart' as sheets;
 
 class ProfileController extends GetxController {
   final TextEditingController nameController = TextEditingController();
@@ -408,6 +409,7 @@ class ProfileController extends GetxController {
 
     final scopes = [
       drive.DriveApi.driveFileScope,
+      sheets.SheetsApi.spreadsheetsScope
     ];
 
     final authClient =
@@ -416,84 +418,182 @@ class ProfileController extends GetxController {
   }
 
   Future<void> uploadOrUpdateFileInDrive(File imageFile) async {
-  final authClient = await getAuthClient();
-  var driveApi = drive.DriveApi(authClient);
+    final authClient = await getAuthClient();
+    var driveApi = drive.DriveApi(authClient);
 
-  // Fetch user details
-  User? user = FirebaseAuth.instance.currentUser;
-  if (user == null) throw Exception('User not logged in');
+    // Fetch user details
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
 
-  String name = nameController.text.trim();
-  String area = areaController.text.trim();
-  String department = departmentController.text.trim();
-  String division = divisiController.text.trim();
+    String name = nameController.text.trim();
+    String area = areaController.text.trim();
+    String department = departmentController.text.trim();
+    String division = divisiController.text.trim();
 
-  // Build the new file name based on user details
-  String newFileName = '${area}_${department}_${division}_$name.png';
+    // Build the new file name based on user details
+    String newFileName = '${area}_${department}_${division}_$name.png';
 
-  // Folder ID for '1. FOTO DIRI' under the base folder
-  String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
+    // Folder ID for '1. FOTO DIRI' under the base folder
+    String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
 
-  // Fetch the old file name from Firestore (if stored)
-  DocumentSnapshot userDoc = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(user.uid)
-      .get();
-  String oldFileName = userDoc['profileFileName'] ?? '';
+    // Fetch the old file name from Firestore (if stored)
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    String oldFileName = userDoc['profileFileName'] ?? '';
 
-  // If the file name has changed (due to changes in area, department, division, or name)
-  if (oldFileName.isNotEmpty && oldFileName != newFileName) {
-    // Search for the old file in Google Drive
-    String query = "'$photoFolderId' in parents and name = '$oldFileName' and trashed = false";
+    // If the file name has changed (due to changes in area, department, division, or name)
+    if (oldFileName.isNotEmpty && oldFileName != newFileName) {
+      // Search for the old file in Google Drive
+      String query =
+          "'$photoFolderId' in parents and name = '$oldFileName' and trashed = false";
+      var fileList = await driveApi.files.list(q: query, spaces: 'drive');
+
+      // If the old file exists, delete it
+      if (fileList.files!.isNotEmpty) {
+        String oldFileId = fileList.files!.first.id!;
+        await driveApi.files.delete(oldFileId);
+        print('Deleted old file with name: $oldFileName');
+      }
+    }
+
+    // Check if the file already exists with the new name
+    String query =
+        "'$photoFolderId' in parents and name = '$newFileName' and trashed = false";
     var fileList = await driveApi.files.list(q: query, spaces: 'drive');
 
-    // If the old file exists, delete it
     if (fileList.files!.isNotEmpty) {
-      String oldFileId = fileList.files!.first.id!;
-      await driveApi.files.delete(oldFileId);
-      print('Deleted old file with name: $oldFileName');
+      // File exists, update it
+      var existingFileId = fileList.files!.first.id!;
+      var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+
+      var updatedFile = await driveApi.files.update(
+        drive.File(), // Add more file metadata if needed here
+        existingFileId,
+        uploadMedia: media,
+      );
+      print('Updated File ID: ${updatedFile.id} with name: $newFileName');
+    } else {
+      // File doesn't exist, create a new one
+      var fileToUpload = drive.File();
+      fileToUpload.name = newFileName;
+      fileToUpload.parents = [photoFolderId];
+
+      var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+      final response =
+          await driveApi.files.create(fileToUpload, uploadMedia: media);
+
+      print('Uploaded new File ID: ${response.id} with name: $newFileName');
+    }
+
+    // Update the new file name in Firestore to track for future updates
+    await updateOldFileNameInFirestore(newFileName);
+  }
+
+  Future<void> updateOldFileNameInFirestore(String newFileName) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    // Store the new file name in Firestore for tracking
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      'profileFileName': newFileName,
+    });
+  }
+
+ Future<void> updateGoogleSheets(String userId) async {
+  final authClient = await getAuthClient();
+  var sheetsApi = sheets.SheetsApi(authClient);
+
+  const spreadsheetId = '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY';
+  const range = 'Sheet1!A:J'; // Include the range from column A to J
+
+  try {
+    // Get user data from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (!userDoc.exists) {
+      print('User not found');
+      return;
+    }
+
+    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+
+    // Fetch current values from Google Sheets
+    final response = await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+    final values = response.values;
+
+    if (values == null || values.isEmpty) {
+      print('No data found in Google Sheets');
+      return;
+    }
+
+    int rowIndex = -1;
+    for (int i = 1; i < values.length; i++) {
+      if (values[i].length > 1 && values[i][1] == userId) {  // UserId is in column B
+        rowIndex = i + 1;  // Google Sheets is 1-indexed
+        break;
+      }
+    }
+
+    if (rowIndex != -1) {
+      // Ensure we don't attempt to sublist outside the actual range
+      if (values[rowIndex - 1].length >= 10) {
+        List<String> currentValues = values[rowIndex - 1].sublist(3, 10).map((e) => e?.toString() ?? '').toList();
+        List<String> updatedValues = [
+          userData['name'],
+          userData['area'],
+          userData['division'],
+          userData['department'],
+          userData['address'],
+          userData['whatsappNumber'],
+          userData['NIK']
+        ];
+
+        if (!listEquals(currentValues, updatedValues)) {
+          final updateRange = 'Sheet1!D$rowIndex:J$rowIndex';
+          final valueRange = sheets.ValueRange(values: [updatedValues]);
+
+          await sheetsApi.spreadsheets.values.update(
+            valueRange,
+            spreadsheetId,
+            updateRange,
+            valueInputOption: 'USER_ENTERED',
+          );
+          print('Updated Google Sheets.');
+        } else {
+          print('No changes detected.');
+        }
+      } else {
+        print("Error: Row doesn't contain enough columns to update.");
+      }
+    } else {
+      // Append new row if user not found
+      final appendRange = 'Sheet1!D:J';
+      final valueRange = sheets.ValueRange(values: [[
+        userData['name'],
+        userData['area'],
+        userData['division'],
+        userData['department'],
+        userData['address'],
+        userData['whatsappNumber'],
+        userData['NIK']
+      ]]);
+      await sheetsApi.spreadsheets.values.append(
+        valueRange,
+        spreadsheetId,
+        appendRange,
+        valueInputOption: 'USER_ENTERED',
+        insertDataOption: 'INSERT_ROWS',
+      );
+      print('New row added to Google Sheets.');
+    }
+  } catch (e) {
+    if (e is sheets.DetailedApiRequestError) {
+      print('Status: ${e.status}, Message: ${e.message}');
+    } else {
+      print('General Error: $e');
     }
   }
-
-  // Check if the file already exists with the new name
-  String query = "'$photoFolderId' in parents and name = '$newFileName' and trashed = false";
-  var fileList = await driveApi.files.list(q: query, spaces: 'drive');
-
-  if (fileList.files!.isNotEmpty) {
-    // File exists, update it
-    var existingFileId = fileList.files!.first.id!;
-    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
-
-    var updatedFile = await driveApi.files.update(
-      drive.File(), // Add more file metadata if needed here
-      existingFileId,
-      uploadMedia: media,
-    );
-    print('Updated File ID: ${updatedFile.id} with name: $newFileName');
-  } else {
-    // File doesn't exist, create a new one
-    var fileToUpload = drive.File();
-    fileToUpload.name = newFileName;
-    fileToUpload.parents = [photoFolderId];
-
-    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
-    final response = await driveApi.files.create(fileToUpload, uploadMedia: media);
-
-    print('Uploaded new File ID: ${response.id} with name: $newFileName');
-  }
-
-  // Update the new file name in Firestore to track for future updates
-  await updateOldFileNameInFirestore(newFileName);
-}
-
-Future<void> updateOldFileNameInFirestore(String newFileName) async {
-  User? user = FirebaseAuth.instance.currentUser;
-  if (user == null) return;
-
-  // Store the new file name in Firestore for tracking
-  await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-    'profileFileName': newFileName,
-  });
 }
 
 
@@ -552,13 +652,16 @@ Future<void> updateOldFileNameInFirestore(String newFileName) async {
       // Pastikan setidaknya ada satu field yang akan diupdate
       if (updateData.isNotEmpty) {
         // Update data pengguna di Firestore
-        await FirebaseFirestore.instance  
+        await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update(updateData);
       } else {
         debugPrint('Tidak ada data yang diperbarui');
       }
+
+      // Setelah data di Firestore berhasil diupdate, panggil updateGoogleSheets untuk mengupdate Google Sheets
+      await updateGoogleSheets(user.uid);
 
       // Reset form setelah berhasil menyimpan
       fetchUserData();

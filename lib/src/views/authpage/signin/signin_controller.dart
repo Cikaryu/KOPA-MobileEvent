@@ -166,7 +166,7 @@ class SigninController extends GetxController {
                   child: TextButton(
                     child: Text(
                       'Resend Verification Email',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                     onPressed: () async {
                       await sendVerificationEmail(user);
@@ -187,7 +187,7 @@ class SigninController extends GetxController {
                   child: TextButton(
                     child: Text(
                       'OK',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white,fontSize: 12),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
