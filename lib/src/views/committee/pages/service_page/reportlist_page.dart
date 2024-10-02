@@ -143,11 +143,13 @@ class ReportListCommitteePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final report = reports[index];
                   final reportData = report.data() as Map<String, dynamic>;
-                  Timestamp createdAtTimestamp = reportData['createdAt'];
-                  DateTime createdAt = createdAtTimestamp.toDate();
+                  Timestamp createdAtTimestamp =
+                      reportData['createdAt'] as Timestamp;
+                  DateTime createdAt = createdAtTimestamp
+                      .toDate()
+                      .add(Duration(hours: 8)); // Manually adjust to UTC+8
                   String formattedDate =
                       DateFormat('EEE, dd-MM-yyyy / HH:mm').format(createdAt);
-
                   return GestureDetector(
                     onTap: () {
                       Get.to(
@@ -284,7 +286,9 @@ class ReportListCommitteePage extends StatelessWidget {
                                                 SvgPicture.asset(
                                                   reportController
                                                       .getStatusImagePath(
-                                                          reportData['status']),
+                                                          reportData[
+                                                                  'status'] ??
+                                                              'Not Started'),
                                                   width: 24,
                                                   height: 24,
                                                   placeholderBuilder:

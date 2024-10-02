@@ -44,10 +44,26 @@ class ReportDetailCommitteePage extends StatelessWidget {
 
           return Obx(() => Scaffold(
                 backgroundColor: Colors.white,
-                appBar: AppBar(
-                  backgroundColor: Colors.white,
+                 appBar: AppBar(
+                  centerTitle:reportController.isLoading.value ,
+                  automaticallyImplyLeading: !reportController.isLoading.value,
+                  backgroundColor: reportController.isLoading.value
+                    ? HexColor('727578')
+                    : Colors.white,
                   scrolledUnderElevation: 0,
-                  title: Text('${reportData['title']}'),
+                  title: Text(
+                  reportController.isLoading.value
+                    ? 'Waiting For updating report ...'
+                    : '${reportData['title']}',
+                    
+                    style:  reportController.isLoading.value? TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ): TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                  ),
+                  ),
                 ),
                 body: reportController.isLoading.value
                     ? Center(child: CircularProgressIndicator())
