@@ -501,23 +501,173 @@ class ProfileController extends GetxController {
     });
   }
 
- Future<void> updateGoogleSheets(String userId) async {
-  final authClient = await getAuthClient();
-  var sheetsApi = sheets.SheetsApi(authClient);
+  Future<void> updateGoogleSheets(String userId) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
 
-  const spreadsheetId = '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY';
-  const range = 'Sheet1!A:J'; // Include the range from column A to J
+    const spreadsheetId = '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY';
+    const range = 'Sheet1!A:J'; // Include the range from column A to J
 
-  try {
-    // Get user data from Firestore
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    if (!userDoc.exists) {
-      print('User not found');
-      return;
+    try {
+      // Get user data from Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (!userDoc.exists) {
+        print('User not found');
+        return;
+      }
+
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+
+      // Fetch current values from Google Sheets
+      final response =
+          await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+      final values = response.values;
+
+      if (values == null || values.isEmpty) {
+        print('No data found in Google Sheets');
+        return;
+      }
+
+      int rowIndex = -1;
+      for (int i = 1; i < values.length; i++) {
+        if (values[i].length > 1 && values[i][1] == userId) {
+          // UserId is in column B
+          rowIndex = i + 1; // Google Sheets is 1-indexed
+          break;
+        }
+      }
+
+      if (rowIndex != -1) {
+        // Ensure we don't attempt to sublist outside the actual range
+        if (values[rowIndex - 1].length >= 10) {
+          List<String> currentValues = values[rowIndex - 1]
+              .sublist(3, 10)
+              .map((e) => e?.toString() ?? '')
+              .toList();
+          List<String> updatedValues = [
+            userData['name'],
+            userData['area'],
+            userData['division'],
+            userData['department'],
+            userData['address'],
+            userData['whatsappNumber'],
+            userData['NIK']
+          ];
+
+          if (!listEquals(currentValues, updatedValues)) {
+            final updateRange = 'Sheet1!D$rowIndex:J$rowIndex';
+            final valueRange = sheets.ValueRange(values: [updatedValues]);
+
+            await sheetsApi.spreadsheets.values.update(
+              valueRange,
+              spreadsheetId,
+              updateRange,
+              valueInputOption: 'USER_ENTERED',
+            );
+            print('Updated Google Sheets.');
+          } else {
+            print('No changes detected.');
+          }
+        } else {
+          print("Error: Row doesn't contain enough columns to update.");
+        }
+      } else {
+        // Append new row if user not found
+        final appendRange = 'Sheet1!D:J';
+        final valueRange = sheets.ValueRange(values: [
+          [
+            userData['name'],
+            userData['area'],
+            userData['division'],
+            userData['department'],
+            userData['address'],
+            userData['whatsappNumber'],
+            userData['NIK']
+          ]
+        ]);
+        await sheetsApi.spreadsheets.values.append(
+          valueRange,
+          spreadsheetId,
+          appendRange,
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+        );
+        print('New row added to Google Sheets.');
+      }
+    } catch (e) {
+      if (e is sheets.DetailedApiRequestError) {
+        print('Status: ${e.status}, Message: ${e.message}');
+      } else {
+        print('General Error: $e');
+      }
     }
+  }
 
-    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+  Future<void> updateNameOnlyInGoogleSheets(
+      String oldName, String newName) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
 
+    const spreadsheetId = '1YY4nOT_a--4sqqgtT7mpT3PH8CPQsLM5ZbVKAtJzRLY';
+    const range = 'Sheet1!A:A'; // Only looking at column A for names
+
+    try {
+      // Fetch current values from Google Sheets
+      final response =
+          await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+      final values = response.values;
+
+      if (values == null || values.isEmpty) {
+        print('No data found in Google Sheets');
+        return;
+      }
+
+      int rowIndex = -1;
+      for (int i = 0; i < values.length; i++) {
+        if (values[i].isNotEmpty && values[i][0] == oldName) {
+          rowIndex = i + 1; // Google Sheets is 1-indexed
+          break;
+        }
+      }
+
+      if (rowIndex != -1) {
+        // Update existing row
+        final updateRange = 'Sheet1!A$rowIndex';
+        final valueRange = sheets.ValueRange(values: [
+          [newName]
+        ]);
+
+        await sheetsApi.spreadsheets.values.update(
+          valueRange,
+          spreadsheetId,
+          updateRange,
+          valueInputOption: 'USER_ENTERED',
+        );
+        print('Updated name from $oldName to $newName in Google Sheets.');
+      } else {
+        print('Name $oldName not found in Google Sheets.');
+      }
+    } catch (e) {
+      if (e is sheets.DetailedApiRequestError) {
+        print(
+            'Google Sheets API Error - Status: ${e.status}, Message: ${e.message}');
+      } else {
+        print('Error updating name in Google Sheets: $e');
+      }
+    }
+  }
+
+  Future<void> updateNameGooglesheetFeedback(
+      String oldName, String newName , String spreadsheetId) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
+
+    const range = 'Sheet1!B:B'; // Only looking at column A for names
+
+       try {
     // Fetch current values from Google Sheets
     final response = await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
     final values = response.values;
@@ -528,74 +678,85 @@ class ProfileController extends GetxController {
     }
 
     int rowIndex = -1;
-    for (int i = 1; i < values.length; i++) {
-      if (values[i].length > 1 && values[i][1] == userId) {  // UserId is in column B
-        rowIndex = i + 1;  // Google Sheets is 1-indexed
+    for (int i = 0; i < values.length; i++) {
+      if (values[i].isNotEmpty && values[i][0] == oldName) {
+        rowIndex = i + 1; // Google Sheets is 1-indexed
         break;
       }
     }
 
     if (rowIndex != -1) {
-      // Ensure we don't attempt to sublist outside the actual range
-      if (values[rowIndex - 1].length >= 10) {
-        List<String> currentValues = values[rowIndex - 1].sublist(3, 10).map((e) => e?.toString() ?? '').toList();
-        List<String> updatedValues = [
-          userData['name'],
-          userData['area'],
-          userData['division'],
-          userData['department'],
-          userData['address'],
-          userData['whatsappNumber'],
-          userData['NIK']
-        ];
+      // Update existing row
+      final updateRange = 'Sheet1!B$rowIndex';
+      final valueRange = sheets.ValueRange(values: [[newName]]);
 
-        if (!listEquals(currentValues, updatedValues)) {
-          final updateRange = 'Sheet1!D$rowIndex:J$rowIndex';
-          final valueRange = sheets.ValueRange(values: [updatedValues]);
-
-          await sheetsApi.spreadsheets.values.update(
-            valueRange,
-            spreadsheetId,
-            updateRange,
-            valueInputOption: 'USER_ENTERED',
-          );
-          print('Updated Google Sheets.');
-        } else {
-          print('No changes detected.');
-        }
-      } else {
-        print("Error: Row doesn't contain enough columns to update.");
-      }
-    } else {
-      // Append new row if user not found
-      final appendRange = 'Sheet1!D:J';
-      final valueRange = sheets.ValueRange(values: [[
-        userData['name'],
-        userData['area'],
-        userData['division'],
-        userData['department'],
-        userData['address'],
-        userData['whatsappNumber'],
-        userData['NIK']
-      ]]);
-      await sheetsApi.spreadsheets.values.append(
+      await sheetsApi.spreadsheets.values.update(
         valueRange,
         spreadsheetId,
-        appendRange,
+        updateRange,
         valueInputOption: 'USER_ENTERED',
-        insertDataOption: 'INSERT_ROWS',
       );
-      print('New row added to Google Sheets.');
+      print('Updated name from $oldName to $newName in Google Sheets.');
+    } else {
+      print('Name $oldName not found in Google Sheets.');
     }
   } catch (e) {
     if (e is sheets.DetailedApiRequestError) {
-      print('Status: ${e.status}, Message: ${e.message}');
+      print('Google Sheets API Error - Status: ${e.status}, Message: ${e.message}');
     } else {
-      print('General Error: $e');
+      print('Error updating name in Google Sheets: $e');
     }
   }
 }
 
+  Future<void> updateNameGooglesheetReport(
+      String oldName, String newName , String spreadsheetId) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
+
+    const range = 'Sheet1!B:B'; // Only looking at column A for names
+
+      try {
+    // Fetch current values from Google Sheets
+    final response = await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+    final values = response.values;
+
+    if (values == null || values.isEmpty) {
+      print('No data found in Google Sheets');
+      return;
+    }
+
+    List<int> rowIndices = [];
+    for (int i = 0; i < values.length; i++) {
+      if (values[i].isNotEmpty && values[i][0] == oldName) {
+        rowIndices.add(i + 1); // Google Sheets is 1-indexed
+      }
+    }
+
+    if (rowIndices.isNotEmpty) {
+      // Update all matching rows
+      for (int rowIndex in rowIndices) {
+        final updateRange = 'Sheet1!B$rowIndex';
+        final valueRange = sheets.ValueRange(values: [[newName]]);
+        await sheetsApi.spreadsheets.values.update(
+          valueRange,
+          spreadsheetId,
+          updateRange,
+          valueInputOption: 'USER_ENTERED',
+        );
+      }
+      print('Updated ${rowIndices.length} occurrences of $oldName to $newName in Google Sheets.');
+    } else {
+      print('Name $oldName not found in Google Sheets.');
+    }
+  } catch (e) {
+    if (e is sheets.DetailedApiRequestError) {
+      print('Google Sheets API Error - Status: ${e.status}, Message: ${e.message}');
+    } else {
+      print('Error updating names in Google Sheets: $e');
+    }
+  }
+}
 
   Future<void> saveChanges() async {
     try {
@@ -603,6 +764,11 @@ class ProfileController extends GetxController {
       await Future.delayed(Duration(milliseconds: 500));
 
       User? user = FirebaseAuth.instance.currentUser;
+
+      String newName = nameController.text.trim();
+      String oldName = userName.value;
+      String SpreadsheetIdReport = '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U';
+      String SpreadsheetIdFeedback = '1M3gfssXScdFuTzPbGg9wE3Bg9aldOPQKcMglMdRJtwc';
 
       if (user == null) return; // Pastikan pengguna terautentikasi
 
@@ -662,6 +828,13 @@ class ProfileController extends GetxController {
 
       // Setelah data di Firestore berhasil diupdate, panggil updateGoogleSheets untuk mengupdate Google Sheets
       await updateGoogleSheets(user.uid);
+      
+      if (newName.isNotEmpty && newName != oldName) {
+        // Update name in Google Sheets
+        await updateNameOnlyInGoogleSheets(oldName, newName);
+        await updateNameGooglesheetReport(oldName, newName, SpreadsheetIdReport);
+        await updateNameGooglesheetFeedback(oldName, newName, SpreadsheetIdFeedback);
+      }
 
       // Reset form setelah berhasil menyimpan
       fetchUserData();
