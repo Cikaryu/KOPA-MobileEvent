@@ -826,11 +826,6 @@ class ProfileController extends GetxController {
         // Tambahkan URL gambar ke data yang akan diupdate
         updateData['imageUrl'] =
             imageUrl; // Pastikan field ini ada di Firestore
-      }
-
-      // If a new image is selected, upload it to Google Drive and update the URL
-      if (selfieImage.value != null) {
-        // Use the uploadOrUpdateFileInDrive function to handle the file upload and update
         await uploadOrUpdateFileInDrive(selfieImage.value!);
       }
 
