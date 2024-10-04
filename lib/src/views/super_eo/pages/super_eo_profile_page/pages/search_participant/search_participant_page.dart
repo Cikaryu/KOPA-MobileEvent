@@ -12,6 +12,8 @@ class SearchParticipantPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final SearchParticipantController searchParticipantController =
         Get.put(SearchParticipantController());
+        
+        searchParticipantController.startRealtimeUpdates();
 
     return Scaffold(
       appBar: AppBar(

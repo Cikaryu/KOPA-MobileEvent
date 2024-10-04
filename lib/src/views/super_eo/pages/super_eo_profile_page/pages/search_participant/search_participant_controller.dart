@@ -25,13 +25,40 @@ class SearchParticipantController extends GetxController {
   var isLoading = false.obs;
   RxBool isKitStatusFiltered = false.obs;
   Rx<Participant?> selectedParticipant = Rx<Participant?>(null);
+  late StreamSubscription<QuerySnapshot> _participantSubscription;
 
   @override
   void onInit() {
     super.onInit();
     fetchParticipants();
+    startRealtimeUpdates();
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {}
+  }
+
+  void startRealtimeUpdates() {
+    isLoading(true);
+    _participantSubscription =
+        _firestore.collection('users').snapshots().listen((snapshot) {
+      allParticipants.value =
+          snapshot.docs.map((doc) => Participant.fromDocument(doc)).toList();
+      _applyFiltersAndSort();
+      isLoading(false);
+    }, onError: (error) {
+      print('Error in real-time updates: $error');
+      isLoading(false);
+    });
+  }
+
+  void _applyFiltersAndSort() {
+    searchParticipants(searchController.text);
+    sortParticipants();
+  }
+
+  @override
+  void onClose() {
+    _participantSubscription.cancel();
+    super.onClose();
   }
 
   @override
@@ -131,7 +158,7 @@ class SearchParticipantController extends GetxController {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('role', isEqualTo: 'Participant')
+          .where('role')
           .get();
 
       final participants = querySnapshot.docs
@@ -520,12 +547,15 @@ class SearchParticipantController extends GetxController {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(participantId)
-          .update({'role': newRole});
+          .update({
+        'role': newRole,
+        'wasCommittee': FieldValue.delete(),
+        'wasEventOrganizer': FieldValue.delete(),
+        'wasSuperEO': FieldValue.delete(),
+      });
 
-      // Buat log aktivitas
+      // Rest of the function remains the same...
       final String Activityid = _firestore.collection('activityLogs').doc().id;
-
-      // Buat log aktivitas
       final User? user = _auth.currentUser;
       if (user != null) {
         final DocumentSnapshot userDoc =
@@ -539,6 +569,7 @@ class SearchParticipantController extends GetxController {
           'createdAt': FieldValue.serverTimestamp(),
         });
       }
+
       // Update local state
       int index = allParticipants.indexWhere((p) => p.uid == participantId);
       if (index != -1) {

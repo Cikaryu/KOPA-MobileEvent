@@ -337,15 +337,15 @@ class ProfileParticipantPage extends StatelessWidget {
                     buildStatusRow(
                         profileController,
                         'Polo Shirt (${profileController.poloShirtSize.value})',
-                        'merch.poloShirt'),
+                        'merchandise.poloShirt'),
                     buildStatusRow(
                         profileController,
                         'T-Shirt (${profileController.tShirtSize.value})',
-                        'merch.tShirt'),
+                        'merchandise.tShirt'),
                     buildStatusRow(
-                        profileController, 'Luggage Tag', 'merch.luggageTag'),
+                        profileController, 'Luggage Tag', 'merchandise.luggageTag'),
                     buildStatusRow(
-                        profileController, 'Jas Hujan', 'merch.jasHujan'),
+                        profileController, 'Jas Hujan', 'merchandise.jasHujan'),
                   ],
                 ),
                 SizedBox(height: 24),
@@ -512,6 +512,7 @@ class ProfileParticipantPage extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
+          print('Building status row for $itemName: $status');
       return Column(
         children: [
           Row(

@@ -27,11 +27,13 @@ class SearchParticipantController extends GetxController {
   Rx<Stream<DocumentSnapshot>>? participantKitStream;
   RxBool isKitStatusFiltered = false.obs;
   Rx<Participant?> selectedParticipant = Rx<Participant?>(null);
+  late StreamSubscription<QuerySnapshot> _participantSubscription;
 
   @override
   void onInit() {
     super.onInit();
     fetchParticipants();
+    startRealtimeUpdates();
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       getUserData(user);
@@ -48,6 +50,31 @@ class SearchParticipantController extends GetxController {
       debugPrint("User not logged in");
     }
     update();
+  }
+
+  void startRealtimeUpdates() {
+    isLoading(true);
+    _participantSubscription =
+        _firestore.collection('users').snapshots().listen((snapshot) {
+      allParticipants.value =
+          snapshot.docs.map((doc) => Participant.fromDocument(doc)).toList();
+      _applyFiltersAndSort();
+      isLoading(false);
+    }, onError: (error) {
+      print('Error in real-time updates: $error');
+      isLoading(false);
+    });
+  }
+
+  void _applyFiltersAndSort() {
+    searchParticipants(searchController.text);
+    sortParticipants();
+  }
+
+  @override
+  void onClose() {
+    _participantSubscription.cancel();
+    super.onClose();
   }
 
   void toggleContainerExpansion(String containerName) {
@@ -153,7 +180,7 @@ class SearchParticipantController extends GetxController {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('role', isEqualTo: 'Participant')
+          .where('role')
           .get();
 
       final participants = querySnapshot.docs

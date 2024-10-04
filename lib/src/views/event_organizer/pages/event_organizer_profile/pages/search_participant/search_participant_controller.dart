@@ -20,6 +20,8 @@ class SearchParticipantController extends GetxController {
   var isLoading = false.obs;
   Rx<Stream<DocumentSnapshot>>? participantKitStream;
   RxBool isKitStatusFiltered = false.obs;
+  late StreamSubscription<QuerySnapshot> _participantSubscription;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void onInit() {
@@ -29,6 +31,31 @@ class SearchParticipantController extends GetxController {
     if (user != null) {
       getUserData(user);
     }
+  }
+
+  void startRealtimeUpdates() {
+    isLoading(true);
+    _participantSubscription =
+        _firestore.collection('users').snapshots().listen((snapshot) {
+      allParticipants.value =
+          snapshot.docs.map((doc) => Participant.fromDocument(doc)).toList();
+      _applyFiltersAndSort();
+      isLoading(false);
+    }, onError: (error) {
+      print('Error in real-time updates: $error');
+      isLoading(false);
+    });
+  }
+
+  void _applyFiltersAndSort() {
+    searchParticipants(searchController.text);
+    sortParticipants();
+  }
+
+  @override
+  void onClose() {
+    _participantSubscription.cancel();
+    super.onClose();
   }
 
   @override
@@ -160,7 +187,7 @@ class SearchParticipantController extends GetxController {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
-          .where('role', isEqualTo: 'Participant')
+          .where('role')
           .get();
 
       final participants = querySnapshot.docs
