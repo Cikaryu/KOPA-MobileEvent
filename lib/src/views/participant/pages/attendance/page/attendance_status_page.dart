@@ -23,87 +23,86 @@ class _AttendanceStatusPageState extends State<AttendanceStatusPage> {
   String? selectedStatus;
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-       scrolledUnderElevation: 0,
-      backgroundColor: HexColor('727578'),
-      leading: Obx(() => controller.isLoading.value
-          ? SizedBox.shrink()
-          : IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Get.back(),
-            )),
-      title: Obx(() => controller.isLoading.value
-          ? Text('Submitting...', style: TextStyle(color: Colors.white))
-          : Text('Attendance Status', style: TextStyle(color: Colors.white))),
-      centerTitle: true,
-    ),
-    backgroundColor: Colors.white,
-    body: Stack(
-      children: [
-        GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 20),
-                        buildStatusDropdown(),
-                        SizedBox(height: 20),
-                        if (selectedStatus == 'Sick' ||
-                            selectedStatus == 'Permit' ||
-                            selectedStatus == 'Left Early') ...[
-                          buildDescriptionField(),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        backgroundColor: HexColor('727578'),
+        leading: Obx(() => controller.isLoading.value
+            ? SizedBox.shrink()
+            : IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Get.back(),
+              )),
+        title: Obx(() => controller.isLoading.value
+            ? Text('Submitting...', style: TextStyle(color: Colors.white))
+            : Text('Attendance Status', style: TextStyle(color: Colors.white))),
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           SizedBox(height: 20),
+                          buildStatusDropdown(),
+                          SizedBox(height: 20),
+                          if (selectedStatus == 'Sick' ||
+                              selectedStatus == 'Permit' ||
+                              selectedStatus == 'Left Early') ...[
+                            buildDescriptionField(),
+                            SizedBox(height: 20),
+                          ],
+                          if (selectedStatus != 'Not Participating' &&
+                              selectedStatus != 'Left Early')
+                            buildAttachmentButton(),
                         ],
-                        if (selectedStatus != 'Not Participating' &&
-                            selectedStatus != 'Left Early')
-                          buildAttachmentButton(),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: buildSubmitButton(),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: buildSubmitButton(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        // Add a loading overlay
-        Obx(() {
-          if (controller.isLoading.value) {
-            return Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          // Add a loading overlay
+          Obx(() {
+            if (controller.isLoading.value) {
+              return Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return SizedBox.shrink(); 
-          }
-        }),
-      ],
-    ),
-  );
-}
-
+              );
+            } else {
+              return SizedBox.shrink();
+            }
+          }),
+        ],
+      ),
+    );
+  }
 
   Widget buildStatusDropdown() {
     List<String> statusOptions;
@@ -304,74 +303,52 @@ Widget build(BuildContext context) {
   }
 
   Widget buildSubmitButton() {
-    return Obx(() {
-      return SizedBox(
-        width: 240,
-        child: ElevatedButton(
-          onPressed: () async {
-            if (controller.isLoading.value)
-              return; // Prevent multiple submissions
-            if (selectedStatus == null) {
-              CustomPopup(
-                  context: context,
-                  title: 'Status Required!',
-                  content: 'Please select a status before submitting');
-            } else if ((selectedStatus == 'Sick' ||
-                    selectedStatus == 'Permit') &&
-                controller.description.value.isEmpty) {
-              CustomPopup(
-                  context: context,
-                  title: 'Description Required!',
-                  content: 'Please provide a description before submitting');
-            } else if (selectedStatus != 'Not Participating' &&
-                selectedStatus != 'Sick' &&
-                selectedStatus != 'Permit' &&
-                selectedStatus != 'Left Early' &&
-                controller.imageFile.value == null) {
-              CustomPopup(
-                  context: context,
-                  title: 'Photo Required!',
-                  content: 'Please take a photo before submitting');
-            } else {
-              controller.setLoading(true); // Start loading
-              await controller.submitAttendance(
-                  widget.day, widget.event, selectedStatus!);
-              controller.loadAttendanceData();
-              controller.setLoading(false); // Stop loading
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: HexColor('E97717'),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+    return SizedBox(
+      width: 240,
+      child: ElevatedButton(
+        onPressed: () async {
+          if (controller.isLoading.value)
+            return; // Prevent multiple submissions
+          if (selectedStatus == null) {
+            CustomPopup(
+                context: context,
+                title: 'Status Required!',
+                content: 'Please select a status before submitting');
+          } else if ((selectedStatus == 'Sick' || selectedStatus == 'Permit') &&
+              controller.description.value.isEmpty) {
+            CustomPopup(
+                context: context,
+                title: 'Description Required!',
+                content: 'Please provide a description before submitting');
+          } else if (selectedStatus != 'Not Participating' &&
+              selectedStatus != 'Sick' &&
+              selectedStatus != 'Permit' &&
+              selectedStatus != 'Left Early' &&
+              controller.imageFile.value == null) {
+            CustomPopup(
+                context: context,
+                title: 'Photo Required!',
+                content: 'Please take a photo before submitting');
+          } else {
+            controller.setLoading(true); // Start loading
+            await controller.submitAttendance(
+                widget.day, widget.event, selectedStatus!);
+            controller.loadAttendanceData();
+            controller.setLoading(false); // Stop loading
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: HexColor('E97717'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: controller.isLoading.value
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Waitting...',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    SizedBox(width: 24),
-                    SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  ],
-                )
-              : Text(
-                  'Submit Attendance',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
-                ),
         ),
-      );
-    });
+        child: Text(
+          'Submit Attendance',
+          style: TextStyle(color: Colors.white, fontSize: 14),
+        ),
+      ),
+    );
   }
 }

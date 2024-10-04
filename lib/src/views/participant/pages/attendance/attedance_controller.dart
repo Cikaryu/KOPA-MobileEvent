@@ -79,24 +79,24 @@ class AttendanceController extends GetxController {
   // EDIT WAKTU EVENT DISINI !
   var eventTimeRanges = {
     1: {
-      'departure': {'start': '12:45:', 'end': '23:01'},
-      'arrival': {'start': '12:45', 'end': '23:01'},
-      'csr': {'start': '12:45', 'end': '23:01'},
-      'lunch': {'start': '12:45', 'end': '23:01'},
-      'checkInHotel': {'start': '12:45', 'end': '23:01'},
-      'welcomeDinner': {'start': '12:45', 'end': '23:01'},
-      'arrivedHotel': {'start': '12:45', 'end': '23:01'}
+      'departure': {'start': '06:45:', 'end': '23:50'},
+      'arrival': {'start': '06:45', 'end': '23:50'},
+      'csr': {'start': '06:45', 'end': '23:50'},
+      'lunch': {'start': '06:45', 'end': '23:50'},
+      'checkInHotel': {'start': '06:45', 'end': '23:50'},
+      'welcomeDinner': {'start': '06:45', 'end': '23:50'},
+      'arrivedHotel': {'start': '06:45', 'end': '23:50'}
     },
     2: {
-      'teamBuilding': {'start': '12:45', 'end': '23:01'},
-      'lunch': {'start': '12:45', 'end': '23:01'},
-      'galaDinner': {'start': '12:45', 'end': '22:00'}
+      'teamBuilding': {'start': '06:45', 'end': '23:50'},
+      'lunch': {'start': '06:45', 'end': '23:50'},
+      'galaDinner': {'start': '06:45', 'end': '22:00'}
     },
     3: {
-      'roomCheckOut': {'start': '12:45', 'end': '23:01'},
-      'luggageDrop': {'start': '12:45', 'end': '23:01'},
-      'departure': {'start': '12:45', 'end': '23:01'},
-      'arrivalJakarta': {'start': '12:45', 'end': '23:01'}
+      'roomCheckOut': {'start': '06:45', 'end': '23:50'},
+      'luggageDrop': {'start': '06:45', 'end': '23:50'},
+      'departure': {'start': '06:45', 'end': '23:50'},
+      'arrivalJakarta': {'start': '06:45', 'end': '23:50'}
     },
   };
 
