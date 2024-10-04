@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 import 'package:app_kopabali/src/views/participant/participant_view.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/home_page/home_page_controller.dart';
 import 'package:app_kopabali/src/views/super_eo/pages/service_page/report_controller.dart';
@@ -9,6 +8,7 @@ import 'package:app_kopabali/src/views/super_eo/pages/super_eo_profile_page/page
 import 'package:app_kopabali/src/views/super_eo/super_eo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileSuperEOController extends GetxController {
   var userName = ''.obs;
@@ -220,4 +220,10 @@ class ProfileSuperEOController extends GetxController {
       }
     }
   }
+  Future<void> launchURLGoDrive() async {
+  final Uri url = Uri.parse('https://drive.google.com/drive/folders/1FkRiNu7Yg3zuw7OJFAZ7GCZ6BYllFyjV?usp=sharing');
+    if (!await launchUrl(url)) {
+      throw Exception('Tidak dapat membuka $url');
+    }
+}
 }

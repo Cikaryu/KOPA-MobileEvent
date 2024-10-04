@@ -189,12 +189,8 @@ class ProfileSuperEOPage extends StatelessWidget {
                         ),
                         SizedBox(height: 12),
                         InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => ExportDataPage()),
-                            );
-                          },
+                          onTap: () =>
+                              profileSuperEOController.launchURLGoDrive(),
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 12.0),
                             child: Row(
