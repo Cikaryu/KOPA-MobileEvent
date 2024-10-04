@@ -203,16 +203,27 @@ class ScanController extends GetxController {
     };
 
     // Update only the changed statuses
-    List<dynamic> updatedRow = List.from(rows[rowIndex]);
-    for (var entry in changedStatuses.entries) {
-      String item = entry.key;
-      String newStatus = entry.value;
-
-      if (columnMap.containsKey(item)) {
-        int columnIndex = columnMap[item]!;
-        updatedRow[columnIndex] = newStatus;  // Update the status in the row
+      List<dynamic> updatedRow = List.from(rows[rowIndex]);
+      for (var entry in changedStatuses.entries) {
+        String item = entry.key;
+        String newStatus = entry.value;
+        print('Mapping column for item: $item');
+        if (!columnMap.containsKey(item)) {
+          if (item == 'T Shirt') {
+            item = 'T-shirt'; // Ensure consistency with columnMap
+          } else if (item == 'Selendang Udeng') {
+            item = 'Selendang/Udeng'; // Ensure consistency with columnMap
+          } else if (item == 'Voucher Ewallet') {
+            item = 'Voucher E-Wallet'; // Ensure consistency with columnMap
+          }
+          print('Column not found for item: $item');
+        }
+        if (columnMap.containsKey(item)) {
+          print('Column found for item: $item');
+          int columnIndex = columnMap[item]!;
+          updatedRow[columnIndex] = newStatus;
+        }
       }
-    }
 
     // Define the specific range to update (only the row that changed)
     String updateRange = 'Sheet1!A${rowIndex + 2}:V${rowIndex + 2}';  // Row index is 0-based, Google Sheets is 1-based

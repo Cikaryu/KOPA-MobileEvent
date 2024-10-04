@@ -602,6 +602,10 @@ class ParticipantDetailPage extends StatelessWidget {
       if (!statusOptions.contains(status)) {
         status = statusOptions[0];
       }
+
+      bool isLoading = controller.isLoadingMap[field] ??
+          false; // Check if this field is loading
+
       return Column(
         children: [
           Row(
@@ -619,52 +623,87 @@ class ParticipantDetailPage extends StatelessWidget {
                 child: Row(
                   children: [
                     Flexible(
-                      child: DropdownButtonFormField2<String>(
-                        value: status,
-                        items: statusOptions.map((String statusOption) {
-                          return DropdownMenuItem<String>(
-                            value: statusOption,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(statusOption,
+                      child: isLoading
+                          ? Container(
+                              padding: EdgeInsets.all(10),
+                              width: screenWidth * 1,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border:
+                                      Border.all(color: Colors.grey, width: 1),
+                                  color: Colors.transparent),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Loading',
                                     style: TextStyle(
-                                        fontSize: screenWidth * 0.03,
-                                        color: Colors.black)),
-                                SizedBox(
-                                    width: statusOption == 'Not Received'
-                                        ? screenWidth * 0.03
-                                        : statusOption == 'Pending'
-                                            ? screenWidth * 0.09
-                                            : screenWidth * 0.09),
-                                SvgPicture.asset(
-                                  controller.getStatusImagePath(statusOption),
-                                  width: screenWidth *
-                                      0.06, // Responsive icon size
-                                  height: screenWidth * 0.06,
-                                  fit: BoxFit.contain,
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  SizedBox(
+                                    width: screenWidth * 0.12,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                    width: 15,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ) // Show loading spinner in place of dropdown
+                          : DropdownButtonFormField2<String>(
+                              value: status,
+                              items: statusOptions.map((String statusOption) {
+                                return DropdownMenuItem<String>(
+                                  value: statusOption,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(statusOption,
+                                          style: TextStyle(
+                                              fontSize: screenWidth * 0.03,
+                                              color: Colors.black)),
+                                      SizedBox(
+                                          width: statusOption == 'Not Received'
+                                              ? screenWidth * 0.03
+                                              : statusOption == 'Pending'
+                                                  ? screenWidth * 0.09
+                                                  : screenWidth * 0.09),
+                                      SvgPicture.asset(
+                                        controller
+                                            .getStatusImagePath(statusOption),
+                                        width: screenWidth *
+                                            0.06, // Responsive icon size
+                                        height: screenWidth * 0.06,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) async {
+                                if (newValue != null) {
+                                  controller.isLoadingMap[field] =
+                                      true; // Set loading for this field
+                                  await controller.updateItemStatus(
+                                      participant.uid, field, newValue);
+                                  controller.isLoadingMap[field] =
+                                      false; // Remove loading after update
+                                }
+                              },
+                              iconStyleData:
+                                  IconStyleData(icon: SizedBox.shrink()),
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: screenWidth * 0.02),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                              ],
+                              ),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            controller.updateItemStatus(
-                                participant.uid, field, newValue);
-                          }
-                        },
-                        iconStyleData: IconStyleData(icon: SizedBox.shrink()),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: screenWidth * 0.02),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),

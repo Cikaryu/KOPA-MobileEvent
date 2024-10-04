@@ -23,6 +23,7 @@ class SearchParticipantController extends GetxController {
   var tShirtSize = ''.obs;
   var poloShirtSize = ''.obs;
   var isLoading = false.obs;
+  RxMap<String, bool> isLoadingMap = <String, bool>{}.obs;
   RxBool isKitStatusFiltered = false.obs;
   Rx<Participant?> selectedParticipant = Rx<Participant?>(null);
   late StreamSubscription<QuerySnapshot> _participantSubscription;
@@ -312,15 +313,25 @@ class SearchParticipantController extends GetxController {
         'Voucher E-Wallet': 21 // Column V
       };
 
-      // Update only the changed statuses
       List<dynamic> updatedRow = List.from(rows[rowIndex]);
       for (var entry in changedStatuses.entries) {
         String item = entry.key;
         String newStatus = entry.value;
-
+        print('Mapping column for item: $item');
+        if (!columnMap.containsKey(item)) {
+          if (item == 'T Shirt') {
+            item = 'T-shirt'; // Ensure consistency with columnMap
+          } else if (item == 'Selendang Udeng') {
+            item = 'Selendang/Udeng'; // Ensure consistency with columnMap
+          } else if (item == 'Voucher Ewallet') {
+            item = 'Voucher E-Wallet'; // Ensure consistency with columnMap
+          }
+          print('Column not found for item: $item');
+        }
         if (columnMap.containsKey(item)) {
+          print('Column found for item: $item');
           int columnIndex = columnMap[item]!;
-          updatedRow[columnIndex] = newStatus; // Update the status in the row
+          updatedRow[columnIndex] = newStatus;
         }
       }
 
@@ -446,6 +457,7 @@ class SearchParticipantController extends GetxController {
           itemName.substring(1); // Capitalize first letter
       Map<String, String> changedStatuses = {itemName: newStatus};
       await updateGoogleSheetStatus(participantId, changedStatuses);
+
 
       // Update local state
       if (participantKitStatus.containsKey(category) &&

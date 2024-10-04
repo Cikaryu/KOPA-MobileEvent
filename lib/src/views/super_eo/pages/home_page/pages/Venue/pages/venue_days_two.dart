@@ -12,7 +12,7 @@ class VenuePagedaytwo extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 2),
-          child: Text("Friday, 20th September", style: TextStyle(fontSize: 16)),
+          child: Text("Friday, 21th September", style: TextStyle(fontSize: 16)),
         ),
         SizedBox(height: 8),
         VenueCard(

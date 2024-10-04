@@ -449,7 +449,7 @@ class ProfileController extends GetxController {
         .collection('users')
         .doc(user.uid)
         .get();
-    String oldFileName = userDoc['profileFileName'] ?? '';
+    String oldFileName = userDoc['name'] ?? '';
 
     // If the file name has changed (due to changes in area, department, division, or name)
     if (oldFileName.isNotEmpty && oldFileName != newFileName) {
@@ -505,7 +505,7 @@ class ProfileController extends GetxController {
 
     // Store the new file name in Firestore for tracking
     await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-      'profileFileName': newFileName,
+      'name': newFileName,
     });
   }
 
