@@ -5,6 +5,7 @@ import 'package:app_kopabali/src/views/committee/pages/profile_page_committe/pag
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 class SearchParticipantPage extends StatelessWidget {
   const SearchParticipantPage({super.key});
 
