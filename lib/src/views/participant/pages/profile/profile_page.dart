@@ -3,6 +3,7 @@ import 'package:app_kopabali/src/views/participant/pages/profile/page/change_pas
 import 'package:app_kopabali/src/views/participant/pages/profile/page/edit_profile_page.dart';
 import 'package:app_kopabali/src/views/participant/pages/profile/profile_controller.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:photo_view/photo_view.dart';
 
 // todo ubah participant kit ui
 class ProfileParticipantPage extends StatelessWidget {
@@ -59,25 +60,36 @@ class ProfileParticipantPage extends StatelessWidget {
                           width: 300,
                           child: Column(
                             children: [
-                              Container(
-                                width: 82,
-                                height: 82,
-                                decoration: ShapeDecoration(
-                                  image: profileController.imageBytes.value !=
-                                          null
-                                      ? DecorationImage(
-                                          image: MemoryImage(profileController
-                                              .imageBytes.value!),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : null,
-                                  shape: OvalBorder(),
-                                ),
-                                child:
-                                    profileController.imageBytes.value == null
-                                        ? Icon(Icons.person,
-                                            size: 82, color: Colors.grey[500])
+                              GestureDetector(
+                                onTap: () {
+                                  if (profileController.imageBytes.value !=
+                                      null) {
+                                    // Tampilkan preview gambar dengan MemoryImage
+                                    profileController.showMemoryImagePreview(
+                                        context,
+                                        profileController.imageBytes.value!);
+                                  }
+                                },
+                                child: Container(
+                                  width: 82,
+                                  height: 82,
+                                  decoration: ShapeDecoration(
+                                    image: profileController.imageBytes.value !=
+                                            null
+                                        ? DecorationImage(
+                                            image: MemoryImage(profileController
+                                                .imageBytes.value!),
+                                            fit: BoxFit.cover,
+                                          )
                                         : null,
+                                    shape: OvalBorder(),
+                                  ),
+                                  child:
+                                      profileController.imageBytes.value == null
+                                          ? Icon(Icons.person,
+                                              size: 82, color: Colors.grey[500])
+                                          : null,
+                                ),
                               ),
                               SizedBox(height: 16),
                               Obx(() => Text(
@@ -342,8 +354,8 @@ class ProfileParticipantPage extends StatelessWidget {
                         profileController,
                         'T-Shirt (${profileController.tShirtSize.value})',
                         'merchandise.tShirt'),
-                    buildStatusRow(
-                        profileController, 'Luggage Tag', 'merchandise.luggageTag'),
+                    buildStatusRow(profileController, 'Luggage Tag',
+                        'merchandise.luggageTag'),
                     buildStatusRow(
                         profileController, 'Jas Hujan', 'merchandise.jasHujan'),
                   ],
@@ -512,7 +524,7 @@ class ProfileParticipantPage extends StatelessWidget {
     return Obx(() {
       String status =
           controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
-          print('Building status row for $itemName: $status');
+      print('Building status row for $itemName: $status');
       return Column(
         children: [
           Row(
@@ -560,3 +572,25 @@ class ProfileParticipantPage extends StatelessWidget {
     });
   }
 }
+
+// class ImagePreviewPage extends StatelessWidget {
+//   final Uint8List imageBytes;
+
+//   const ImagePreviewPage({super.key, required this.imageBytes});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: HexColor('727578'),
+//         title: Text('Foto Profil'),
+//         centerTitle: true,
+//       ),
+//       body: Center(
+//         child: PhotoView(
+//           imageProvider: MemoryImage(imageBytes),
+//         ),
+//       ),
+//     );
+//   }
+// }

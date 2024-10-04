@@ -662,4 +662,16 @@ class SignupController extends GetxController {
       },
     );
   }
+
+  String? emailValidator(String? value) {
+    if (value!.isEmpty) {
+      return 'Please enter your email';
+    } else if (value.endsWith('@yourcustomdomain.com')) {
+      return null; // valid
+    } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        .hasMatch(value)) {
+      return 'Please enter a valid email.';
+    }
+    return null; // valid
+  }
 }

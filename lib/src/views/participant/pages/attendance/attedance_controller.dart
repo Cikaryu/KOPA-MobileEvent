@@ -79,24 +79,24 @@ class AttendanceController extends GetxController {
   // EDIT WAKTU EVENT DISINI !
   var eventTimeRanges = {
     1: {
-      'departure': {'start': '06:45:', 'end': '23:50'},
-      'arrival': {'start': '06:45', 'end': '23:50'},
-      'csr': {'start': '06:45', 'end': '23:50'},
-      'lunch': {'start': '06:45', 'end': '23:50'},
-      'checkInHotel': {'start': '06:45', 'end': '23:50'},
-      'welcomeDinner': {'start': '06:45', 'end': '23:50'},
-      'arrivedHotel': {'start': '06:45', 'end': '23:50'}
+      'departure': {'start': '00:00:', 'end': '23:59'},
+      'arrival': {'start': '00:00', 'end': '23:59'},
+      'csr': {'start': '00:00', 'end': '23:59'},
+      'lunch': {'start': '00:00', 'end': '23:59'},
+      'checkInHotel': {'start': '00:00', 'end': '23:59'},
+      'welcomeDinner': {'start': '00:00', 'end': '23:59'},
+      'arrivedHotel': {'start': '00:00', 'end': '23:59'}
     },
     2: {
-      'teamBuilding': {'start': '06:45', 'end': '23:50'},
-      'lunch': {'start': '06:45', 'end': '23:50'},
-      'galaDinner': {'start': '06:45', 'end': '22:00'}
+      'teamBuilding': {'start': '00:00', 'end': '23:59'},
+      'lunch': {'start': '00:00', 'end': '23:59'},
+      'galaDinner': {'start': '00:00', 'end': '23:59'}
     },
     3: {
-      'roomCheckOut': {'start': '06:45', 'end': '23:50'},
-      'luggageDrop': {'start': '06:45', 'end': '23:50'},
-      'departure': {'start': '06:45', 'end': '23:50'},
-      'arrivalJakarta': {'start': '06:45', 'end': '23:50'}
+      'roomCheckOut': {'start': '00:00', 'end': '23:59'},
+      'luggageDrop': {'start': '00:00', 'end': '23:59'},
+      'departure': {'start': '00:00', 'end': '23:59'},
+      'arrivalJakarta': {'start': '00:00', 'end': '23:59'}
     },
   };
 
@@ -312,7 +312,7 @@ class AttendanceController extends GetxController {
       'day2_lunch': 9,
       'day2_galaDinner': 10,
       'day3_roomCheckOut': 11,
-      'day3_luggageDrop': 12,
+      'day3_luggageDrop': 00,
       'day3_departure': 13,
       'day3_arrivalJakarta': 14,
     };

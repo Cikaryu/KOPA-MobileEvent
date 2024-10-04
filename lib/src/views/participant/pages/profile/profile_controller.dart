@@ -1011,6 +1011,37 @@ class ProfileController extends GetxController {
       },
     );
   }
+  
+  void showMemoryImagePreview(BuildContext context, Uint8List imageBytes) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          Navigator.of(context).pop();
+        },
+        child: AlertDialog(
+          contentPadding: EdgeInsets.all(0),
+          content: GestureDetector(
+            onTap: () {}, // Keeps the image interaction-free
+            child: Container(
+              width: double.maxFinite,
+              height: 400,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: MemoryImage(imageBytes),
+                  fit: BoxFit.cover, // Fits image to the container
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 
   Future<void> resetPassword(String email, BuildContext context) async {
     try {

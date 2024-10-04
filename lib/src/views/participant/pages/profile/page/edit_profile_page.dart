@@ -54,15 +54,10 @@ class EditProfileView extends StatelessWidget {
                               onTap: () {
                                 if (profileController.imageBytes.value !=
                                     null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ImagePreviewPage(
-                                        imageBytes:
-                                            profileController.imageBytes.value!,
-                                      ),
-                                    ),
-                                  );
+                                  // Tampilkan preview gambar dengan MemoryImage
+                                  profileController.showMemoryImagePreview(
+                                      context,
+                                      profileController.imageBytes.value!);
                                 }
                               },
                               child: Stack(

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:app_kopabali/src/views/participant/pages/service/page/report/report_controller.dart';
 import 'package:app_kopabali/src/core/base_import.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReportPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -71,50 +70,6 @@ class ReportPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // SizedBox(height: 16),
-                  // Row(
-                  //   children: [
-                  //     Text('Category',
-                  //         style: TextStyle(
-                  //             fontSize: 24, fontWeight: FontWeight.bold)),
-                  //     SizedBox(width: 8),
-                  //     Expanded(
-                  //       child: DropdownButtonFormField2<String>(
-                  //         decoration: InputDecoration(
-                  //           contentPadding: EdgeInsets.symmetric(
-                  //               vertical: 12, horizontal: 16),
-                  //           filled: true,
-                  //           hintText: 'Select Category Report',
-                  //           fillColor: Colors.grey[200],
-                  //           border: OutlineInputBorder(
-                  //             borderRadius: BorderRadius.circular(10),
-                  //             borderSide: BorderSide.none,
-                  //           ),
-                  //         ),
-                  //         dropdownStyleData: DropdownStyleData(
-                  //             decoration: BoxDecoration(
-                  //               borderRadius: BorderRadius.circular(10),
-                  //               color: Colors.grey[300],
-                  //             ),
-                  //             width: 280,
-                  //             elevation: 5,
-                  //             padding: EdgeInsets.all(10),
-                  //             maxHeight: 240),
-                  //         items: categoryOptions.map((String category) {
-                  //           return DropdownMenuItem<String>(
-                  //             value: category,
-                  //             child: Text(category),
-                  //           );
-                  //         }).toList(),
-                  //         onChanged: (String? newValue) {
-                  //           categoryController.text = newValue!;
-                  //         },
-                  //         validator: (value) =>
-                  //             value == null ? 'Please select a category' : null,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   SizedBox(height: 28),
                   Text('Description',
                       style:
@@ -142,8 +97,9 @@ class ReportPage extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 28),
+                  SizedBox(height: 28),
                   Text(
-                    'Attachment',
+                    'Attachments',
                     style: TextStyle(
                       color: Colors.grey[800],
                       fontSize: 16,
@@ -151,105 +107,112 @@ class ReportPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 12),
-                  SingleChildScrollView(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey[300]!),
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Attach your photos (Optional)',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 14,
+                          ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Attach your photo (Opsional)',
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: 14,
+                        SizedBox(height: 16),
+                        Obx(() => GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
                               ),
-                            ),
-                            SizedBox(height: 16),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.grey[300]!),
-                              ),
-                              child: Obx(() {
-                                var selectedImage =
-                                    reportController.selectedImage.value;
-                                return Column(
+                              itemCount:
+                                  reportController.selectedImages.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index ==
+                                    reportController.selectedImages.length) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      await reportController.pickImages();
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(Icons.add,
+                                          size: 40, color: Colors.grey[500]),
+                                    ),
+                                  );
+                                }
+                                return Stack(
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (selectedImage != null) {
-                                          // Show image preview or any other action
-                                        }
-                                      },
-                                      child: Container(
-                                        width: Get.width,
-                                        height: 160,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[300],
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          image: selectedImage != null
-                                              ? DecorationImage(
-                                                  image: FileImage(
-                                                    File(selectedImage.path),
-                                                  ),
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : null,
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        image: DecorationImage(
+                                          image: FileImage(File(reportController
+                                              .selectedImages[index].path)),
+                                          fit: BoxFit.cover,
                                         ),
-                                        child: selectedImage == null
-                                            ? Icon(Icons.add,
-                                                size: 100,
-                                                color: Colors.grey[500])
-                                            : null,
                                       ),
                                     ),
-                                    SizedBox(height: 16),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        await reportController.pickImage();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: HexColor('E97717'),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.camera_alt,
-                                              color: Colors.white),
-                                          SizedBox(width: 5),
-                                          Flexible(
-                                            child: Text(
-                                              selectedImage == null
-                                                  ? "Attach"
-                                                  : "Retake",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                    Positioned(
+                                      top: 5,
+                                      right: 5,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          reportController.selectedImages
+                                              .removeAt(index);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(2),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
                                           ),
-                                        ],
+                                          child: Icon(Icons.close,
+                                              size: 20, color: Colors.red),
+                                        ),
                                       ),
                                     ),
                                   ],
                                 );
-                              }),
+                              },
+                            )),
+                        SizedBox(height: 16),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await reportController.pickImages();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: HexColor('E97717'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
-                          ],
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.camera_alt, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                  "Add Photos",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 28),
@@ -262,7 +225,6 @@ class ReportPage extends StatelessWidget {
                           if (_formKey.currentState!.validate()) {
                             reportController.submitReport(
                               title: titleController.text,
-                              // category: categoryController.text,
                               description: descriptionController.text,
                               status: 'Not Started',
                             );

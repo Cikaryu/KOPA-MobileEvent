@@ -56,17 +56,7 @@ class SignupSlide1View extends StatelessWidget {
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                   ),
-                  validator: (value) {
-                    String pattern =
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|co\.id|ac\.id)$';
-                    RegExp regex = RegExp(pattern);
-                    if (value!.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!regex.hasMatch(value)) {
-                      return 'Please enter a valid email.';
-                    }
-                    return null;
-                  },
+                  validator: signupController.emailValidator,
                 ),
                 SizedBox(height: 20),
                 Text("Password", style: TextStyle(fontSize: 14)),

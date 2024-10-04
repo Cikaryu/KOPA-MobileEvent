@@ -20,7 +20,9 @@ class ReportController extends GetxController {
   var statusImageUrls =
       <String, String>{}.obs; // Menyimpan URL gambar berdasarkan status
   final RxBool isLoading = false.obs;
+  final RxList<XFile> selectedImages = <XFile>[].obs;
   late Rx<User?> _user;
+  static const int maxImageCount = 5;
 
   @override
   void onInit() {
@@ -42,7 +44,7 @@ class ReportController extends GetxController {
     return '';
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImages() async {
     final ImageSource? source = await showDialog<ImageSource>(
       context: Get.context!,
       builder: (BuildContext context) {
@@ -101,10 +103,22 @@ class ReportController extends GetxController {
     );
 
     if (source != null) {
-      final XFile? image =
-          await _picker.pickImage(source: source, imageQuality: 50);
-      if (image != null) {
-        selectedImage.value = image;
+      List<XFile>? images = [];
+      if (source == ImageSource.camera) {
+        final XFile? image =
+            await _picker.pickImage(source: source, imageQuality: 50);
+        if (image != null) images.add(image);
+      } else {
+        images = await _picker.pickMultiImage(imageQuality: 50);
+      }
+
+      if (images.isNotEmpty) {
+        if (selectedImages.length + images.length > maxImageCount) {
+          Get.snackbar('Limit Reached',
+              'You can only upload up to $maxImageCount images.');
+          images = images.sublist(0, maxImageCount - selectedImages.length);
+        }
+        selectedImages.addAll(images);
       }
     }
   }
@@ -163,49 +177,53 @@ class ReportController extends GetxController {
   }
 
 // Google Sheet
- Future<void> submitToGoogleSheets(String title, String description, String status) async {
-  final authClient = await getAuthClient();
-  var sheetsApi = sheets.SheetsApi(authClient);
+  Future<void> submitToGoogleSheets(
+      String title, String description, String status) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
 
-  // Replace with your actual spreadsheet ID
-  final spreadsheetId = '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U';
-  final range = 'Sheet1!A:F'; // This will append to the first empty row
+    // Replace with your actual spreadsheet ID
+    final spreadsheetId = '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U';
+    final range = 'Sheet1!A:F'; // This will append to the first empty row
 
-  try {
-    // First, try to get the spreadsheet metadata
-    final spreadsheet = await sheetsApi.spreadsheets.get(spreadsheetId);
-    print('Successfully accessed spreadsheet: ${spreadsheet.properties?.title}');
+    try {
+      // First, try to get the spreadsheet metadata
+      final spreadsheet = await sheetsApi.spreadsheets.get(spreadsheetId);
+      print(
+          'Successfully accessed spreadsheet: ${spreadsheet.properties?.title}');
 
-    String userName = await getUserName();
-    String timestamp = DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.now().toUtc().add(Duration(hours: 8)));
+      String userName = await getUserName();
+      String timestamp = DateFormat('dd/MM/yyyy HH:mm:ss')
+          .format(DateTime.now().toUtc().add(Duration(hours: 8)));
 
-    final values = [
-      [timestamp, userName, title, description, '', status]
-    ];
+      final values = [
+        [timestamp, userName, title, description, '', status]
+      ];
 
-    final valueRange = sheets.ValueRange(values: values);
+      final valueRange = sheets.ValueRange(values: values);
 
-    final result = await sheetsApi.spreadsheets.values.append(
-      valueRange,
-      spreadsheetId,
-      range,
-      valueInputOption: 'USER_ENTERED',
-      insertDataOption: 'INSERT_ROWS',
-    );
+      final result = await sheetsApi.spreadsheets.values.append(
+        valueRange,
+        spreadsheetId,
+        range,
+        valueInputOption: 'USER_ENTERED',
+        insertDataOption: 'INSERT_ROWS',
+      );
 
-    print('Data appended to Google Sheets successfully. Updated range: ${result.updates?.updatedRange}');
-  } catch (e) {
-    print('Error interacting with Google Sheets: $e');
-    if (e is sheets.DetailedApiRequestError) {
-      print('Error status: ${e.status}, message: ${e.message}');
-      print('Error details: ${e.jsonResponse}');
+      print(
+          'Data appended to Google Sheets successfully. Updated range: ${result.updates?.updatedRange}');
+    } catch (e) {
+      print('Error interacting with Google Sheets: $e');
+      if (e is sheets.DetailedApiRequestError) {
+        print('Error status: ${e.status}, message: ${e.message}');
+        print('Error details: ${e.jsonResponse}');
+      }
+      // Handle the error as needed
+      // You might want to show an error message to the user here
     }
-    // Handle the error as needed
-    // You might want to show an error message to the user here
   }
-}
 
-void setLoading(bool value) {
+  void setLoading(bool value) {
     isLoading.value = value;
   }
 
@@ -215,7 +233,6 @@ void setLoading(bool value) {
     required String status,
   }) async {
     try {
-      
       setLoading(true);
 
       String folderId = '14tlzo2Nj7_Fk9t3L5lVqBkBG9yVawHra';
@@ -237,7 +254,7 @@ void setLoading(bool value) {
         await uploadImageToDrive(
             File(selectedImage.value!.path), folderId, title);
       }
-      
+
       // Create new report document
       await _firestore.collection('report').doc(reportId).set({
         'userId': userId,
@@ -252,7 +269,7 @@ void setLoading(bool value) {
       });
 
       // Submit to Google Sheets
-       await submitToGoogleSheets(title, description, status);
+      await submitToGoogleSheets(title, description, status);
       setLoading(false);
       // Show success dialog
       Get.dialog(
