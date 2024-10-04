@@ -4,6 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:googleapis/sheets/v4.dart' as sheets;
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 
 class SearchParticipantController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -232,6 +236,147 @@ class SearchParticipantController extends GetxController {
     return 'Pending'; // Default value if 'Not Received' is not found
   }
 
+  // Load the Google Sheets service account credentials
+  Future<String> loadCredentials() async {
+    return await rootBundle.loadString('assets/credentials/credentials.json');
+  }
+
+  // Authenticate and return the AuthClient
+  Future<AuthClient> getAuthClient() async {
+    String credentials = await loadCredentials();
+    final serviceAccountCredentials =
+        ServiceAccountCredentials.fromJson(json.decode(credentials));
+
+    final scopes = [
+      sheets.SheetsApi.spreadsheetsScope,
+    ];
+
+    return await clientViaServiceAccount(serviceAccountCredentials, scopes);
+  }
+
+  // Function to update Google Sheets status based on the userId and changed statuses
+  Future<void> updateGoogleSheetStatus(
+      String userId, Map<String, String> changedStatuses) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
+
+    String spreadsheetId = '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY';
+    String range =
+        'Sheet1!A2:V'; // Define the range where data exists (Columns A to V)
+
+    // Fetch the sheet data
+    final result =
+        await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+    List<List<dynamic>> rows = result.values ?? [];
+
+    // Find the row by userId (assume userId is in column B)
+    int rowIndex = rows.indexWhere((row) => row[1] == userId);
+
+    if (rowIndex != -1) {
+      // Mapping of kit items to column indices in the spreadsheet
+      Map<String, int> columnMap = {
+        'Polo Shirt': 14, // Column O
+        'T-shirt': 15, // Column P
+        'Luggage Tag': 16, // Column Q
+        'Jas Hujan': 17, // Column R
+        'Gelang Tridatu': 18, // Column S
+        'Selendang/Udeng': 19, // Column T
+        'Voucher Belanja': 20, // Column U
+        'Voucher E-Wallet': 21 // Column V
+      };
+
+      // Update only the changed statuses
+      List<dynamic> updatedRow = List.from(rows[rowIndex]);
+      for (var entry in changedStatuses.entries) {
+        String item = entry.key;
+        String newStatus = entry.value;
+
+        if (columnMap.containsKey(item)) {
+          int columnIndex = columnMap[item]!;
+          updatedRow[columnIndex] = newStatus; // Update the status in the row
+        }
+      }
+
+      // Define the specific range to update (only the row that changed)
+      String updateRange =
+          'Sheet1!A${rowIndex + 2}:V${rowIndex + 2}'; // Row index is 0-based, Google Sheets is 1-based
+
+      // Write the updated row values back to Google Sheets
+      await sheetsApi.spreadsheets.values.update(
+        sheets.ValueRange(values: [updatedRow]),
+        spreadsheetId,
+        updateRange,
+        valueInputOption: 'USER_ENTERED',
+      );
+      print('Google Sheets status updated for userId: $userId');
+    } else {
+      print('UserId not found in Google Sheets');
+    }
+  }
+
+  // Function to mark all items as received in Google Sheets
+  Future<void> updateAllStatusesToReceived(
+      String userId, String category) async {
+    final authClient = await getAuthClient();
+    var sheetsApi = sheets.SheetsApi(authClient);
+
+    String spreadsheetId =
+        '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY'; // Your Google Sheets ID
+    String range =
+        'Sheet1!A2:V'; // Define the range where data exists (Columns A to V)
+
+    // Fetch the sheet data
+    final result =
+        await sheetsApi.spreadsheets.values.get(spreadsheetId, range);
+    List<List<dynamic>> rows = result.values ?? [];
+
+    // Find the row by userId (assume userId is in column B)
+    int rowIndex = rows.indexWhere((row) => row[1] == userId);
+
+    if (rowIndex != -1) {
+      // Define which columns to update based on the category
+      Map<String, List<int>> categoryColumnMap = {
+        'merchandise': [
+          14,
+          15,
+          16,
+          17
+        ], // Columns O to R (Polo Shirt, T-shirt, Luggage Tag, Jas Hujan)
+        'souvenir': [
+          18,
+          19
+        ], // Columns S to T (Gelang Tridatu, Selendang/Udeng)
+        'benefit': [
+          20,
+          21
+        ] // Columns U to V (Voucher Belanja, Voucher E-Wallet)
+      };
+
+      if (categoryColumnMap.containsKey(category)) {
+        List<int> columnsToUpdate = categoryColumnMap[category]!;
+
+        // Set the selected range columns to "Received"
+        for (int columnIndex in columnsToUpdate) {
+          rows[rowIndex][columnIndex] = 'Received';
+        }
+
+        // Write the updated values back to Google Sheets
+        await sheetsApi.spreadsheets.values.update(
+          sheets.ValueRange(values: rows),
+          spreadsheetId,
+          range,
+          valueInputOption: 'USER_ENTERED',
+        );
+        print(
+            'All statuses in $category marked as Received for userId: $userId.');
+      } else {
+        print('Invalid category: $category');
+      }
+    } else {
+      print('UserId not found in Google Sheets');
+    }
+  }
+
   Future<void> updateItemStatus(
     String participantId,
     String field,
@@ -265,6 +410,16 @@ class SearchParticipantController extends GetxController {
         });
       }
 
+      // Update in Google Sheets
+      // Make sure the item name matches exactly with the columnMap keys
+      String itemName = fieldParts[1]
+          .replaceAllMapped(RegExp(r'([A-Z])'), (Match m) => ' ${m.group(1)}')
+          .trim();
+      itemName = itemName[0].toUpperCase() +
+          itemName.substring(1); // Capitalize first letter
+      Map<String, String> changedStatuses = {itemName: newStatus};
+      await updateGoogleSheetStatus(participantId, changedStatuses);
+
       // Update local state
       if (participantKitStatus.containsKey(category) &&
           participantKitStatus[category].containsKey(item)) {
@@ -288,6 +443,10 @@ class SearchParticipantController extends GetxController {
           .collection('participantKit')
           .doc(participantId)
           .update(updates);
+
+      // Mark all selected items as received in Google Sheets
+      await updateAllStatusesToReceived(participantId, category);
+
       final String Activityid = _firestore.collection('activityLogs').doc().id;
       // add logs activity
       final User? user = _auth.currentUser;
@@ -310,13 +469,21 @@ class SearchParticipantController extends GetxController {
       });
       // Refresh the participant kit status
       await fetchParticipantKitStatus(participantId);
-      Get.snackbar("Success", "All items in $category marked as received.",backgroundColor: Colors.green,
-        colorText: Colors.white,);
+      Get.snackbar(
+        "Success",
+        "All items in $category marked as received.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e, stackTrace) {
       print('Error checking all items: $e');
       print('Stack trace: $stackTrace');
-      Get.snackbar("Error", "Failed to update all items: ${e.toString()}",backgroundColor: Colors.red,
-        colorText: Colors.white,);
+      Get.snackbar(
+        "Error",
+        "Failed to update all items: ${e.toString()}",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
