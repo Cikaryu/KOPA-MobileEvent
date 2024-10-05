@@ -21,6 +21,7 @@ class ReportSuperEOController extends GetxController {
   RxList<QueryDocumentSnapshot> allReports = <QueryDocumentSnapshot>[].obs;
   RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
   RxString selectedSortOption = 'Newest'.obs;
+  final currentImageIndex = 0.obs;
 
   // Add this variable to store the stream subscription
   StreamSubscription<QuerySnapshot>? _reportsSubscription;
@@ -264,5 +265,45 @@ void filterReports() {
 
   Stream<QuerySnapshot> getReports() {
     return firestore.collection('report').snapshots();
+  }
+  void showImagePreview(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Container(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width *
+                      0.8, // 80% of screen width
+                  maxHeight: MediaQuery.of(context).size.height *
+                      0.8, // 80% of screen height
+                ),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

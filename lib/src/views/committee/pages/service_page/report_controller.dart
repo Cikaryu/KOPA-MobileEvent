@@ -9,7 +9,6 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 
-
 class ReportCommitteeController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,6 +21,7 @@ class ReportCommitteeController extends GetxController {
   RxList<QueryDocumentSnapshot> allReports = <QueryDocumentSnapshot>[].obs;
   RxList<QueryDocumentSnapshot> filteredReports = <QueryDocumentSnapshot>[].obs;
   RxString selectedSortOption = 'Newest'.obs;
+  final currentImageIndex = 0.obs;
 
   // Add this variable to store the stream subscription
   StreamSubscription<QuerySnapshot>? _reportsSubscription;
@@ -69,55 +69,54 @@ class ReportCommitteeController extends GetxController {
     }
   }
 
+  void sortReportsByDate() {
+    filteredReports.sort((a, b) {
+      final dataA = a.data() as Map<String, dynamic>;
+      final dataB = b.data() as Map<String, dynamic>;
 
+      final Timestamp? timestampA = dataA['createdAt'];
+      final Timestamp? timestampB = dataB['createdAt'];
 
- void sortReportsByDate() {
-  filteredReports.sort((a, b) {
-    final dataA = a.data() as Map<String, dynamic>;
-    final dataB = b.data() as Map<String, dynamic>;
-
-    final Timestamp? timestampA = dataA['createdAt'];
-    final Timestamp? timestampB = dataB['createdAt'];
-
-    // Handle the case where one or both timestamps are null
-    if (timestampA == null && timestampB == null) {
-      return 0; // If both are null, consider them equal
-    } else if (timestampA == null) {
-      return 1; // If A is null, place it after B
-    } else if (timestampB == null) {
-      return -1; // If B is null, place it after A
-    } else {
-      if (selectedSortOption.value == 'Oldest') {
-        return timestampA.compareTo(timestampB);
+      // Handle the case where one or both timestamps are null
+      if (timestampA == null && timestampB == null) {
+        return 0; // If both are null, consider them equal
+      } else if (timestampA == null) {
+        return 1; // If A is null, place it after B
+      } else if (timestampB == null) {
+        return -1; // If B is null, place it after A
       } else {
-        return timestampB.compareTo(timestampA);}
-    }
-  });
-}
-
-
-void applyFilter(String filter) {
-  selectedFilter.value = filter;
-  filterReports();
-}
-
-void filterReports() {
-  if (selectedFilter.isEmpty) {
-    filteredReports.value = List.from(allReports);
-  } else {
-    filteredReports.value = allReports.where((report) {
-      final data = report.data() as Map<String, dynamic>;
-      return data['status'] == selectedFilter.value;
-    }).toList();
+        if (selectedSortOption.value == 'Oldest') {
+          return timestampA.compareTo(timestampB);
+        } else {
+          return timestampB.compareTo(timestampA);
+        }
+      }
+    });
   }
-  sortReportsByDate();
-}
+
+  void applyFilter(String filter) {
+    selectedFilter.value = filter;
+    filterReports();
+  }
+
+  void filterReports() {
+    if (selectedFilter.isEmpty) {
+      filteredReports.value = List.from(allReports);
+    } else {
+      filteredReports.value = allReports.where((report) {
+        final data = report.data() as Map<String, dynamic>;
+        return data['status'] == selectedFilter.value;
+      }).toList();
+    }
+    sortReportsByDate();
+  }
 
   void fetchReports() {
     // Cancel any existing subscription before creating a new one
     _reportsSubscription?.cancel();
 
-    _reportsSubscription = firestore.collection('report').snapshots().listen((snapshot) {
+    _reportsSubscription =
+        firestore.collection('report').snapshots().listen((snapshot) {
       allReports.value = snapshot.docs;
       filterReports();
     });
@@ -129,42 +128,49 @@ void filterReports() {
     _reportsSubscription = null;
   }
 
-    Future<AuthClient> getAuthClient() async {
-    String credentials = await rootBundle.loadString('assets/credentials/credentials.json');
+  Future<AuthClient> getAuthClient() async {
+    String credentials =
+        await rootBundle.loadString('assets/credentials/credentials.json');
     final serviceAccountCredentials = ServiceAccountCredentials.fromJson(
       json.decode(credentials),
     );
 
     final scopes = [sheets.SheetsApi.spreadsheetsScope];
 
-    final authClient = await clientViaServiceAccount(serviceAccountCredentials, scopes);
+    final authClient =
+        await clientViaServiceAccount(serviceAccountCredentials, scopes);
     return authClient;
   }
 
- Future<void> updateGoogleSheets(String reportId, String reply, String status) async {
+  Future<void> updateGoogleSheets(
+      String reportId, String reply, String status) async {
     final authClient = await getAuthClient();
     var sheetsApi = sheets.SheetsApi(authClient);
 
     final spreadsheetId = '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U';
-    
+
     try {
       // Fetch the report data from Firestore
-      DocumentSnapshot reportDoc = await firestore.collection('report').doc(reportId).get();
+      DocumentSnapshot reportDoc =
+          await firestore.collection('report').doc(reportId).get();
       if (!reportDoc.exists) {
         print('Report not found in Firestore');
         return;
       }
-      
-      Map<String, dynamic> reportData = reportDoc.data() as Map<String, dynamic>;
+
+      Map<String, dynamic> reportData =
+          reportDoc.data() as Map<String, dynamic>;
 
       // Fetch all values from the sheet
-      final response = await sheetsApi.spreadsheets.values.get(spreadsheetId, 'Sheet1!A:F');
+      final response =
+          await sheetsApi.spreadsheets.values.get(spreadsheetId, 'Sheet1!A:F');
       final values = response.values;
 
       int rowIndex = -1;
       if (values != null) {
         // Try to find the report by matching timestamp, name, and title
-        for (int i = 1; i < values.length; i++) { // Start from 1 to skip header row
+        for (int i = 1; i < values.length; i++) {
+          // Start from 1 to skip header row
           if (values[i].length > 2 &&
               values[i][1] == reportData['name'] &&
               values[i][2] == reportData['title']) {
@@ -177,7 +183,9 @@ void filterReports() {
       if (rowIndex != -1) {
         // Update existing row
         final updateRange = 'Sheet1!E$rowIndex:F$rowIndex';
-        final valueRange = sheets.ValueRange(values: [[reply, status]]);
+        final valueRange = sheets.ValueRange(values: [
+          [reply, status]
+        ]);
         await sheetsApi.spreadsheets.values.update(
           valueRange,
           spreadsheetId,
@@ -188,14 +196,17 @@ void filterReports() {
       } else {
         // Add new row if report not found
         final appendRange = 'Sheet1!A:F';
-        final valueRange = sheets.ValueRange(values: [[
-          DateFormat('dd/MM/yyyy HH:mm:ss').format(reportData['createdAt'].toDate()),
-          reportData['name'],
-          reportData['title'],
-          reportData['description'],
-          reply,
-          status
-        ]]);
+        final valueRange = sheets.ValueRange(values: [
+          [
+            DateFormat('dd/MM/yyyy HH:mm:ss')
+                .format(reportData['createdAt'].toDate()),
+            reportData['name'],
+            reportData['title'],
+            reportData['description'],
+            reply,
+            status
+          ]
+        ]);
         await sheetsApi.spreadsheets.values.append(
           valueRange,
           spreadsheetId,
@@ -247,16 +258,24 @@ void filterReports() {
 
       // Update Google Sheets
       await updateGoogleSheets(reportId, reply, status);
-      
-      Get.snackbar('Sukses', 'Laporan berhasil diperbarui.',backgroundColor: Colors.green,
-          colorText: Colors.white,);
+
+      Get.snackbar(
+        'Sukses',
+        'Laporan berhasil diperbarui.',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
       // Refresh the reports after updating
       fetchReports();
       return true;
     } catch (e) {
       debugPrint('Error updating report: $e');
-      Get.snackbar('Error', 'Gagal memperbarui laporan.',backgroundColor: Colors.red,
-          colorText: Colors.white,);
+      Get.snackbar(
+        'Error',
+        'Gagal memperbarui laporan.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;
@@ -265,5 +284,46 @@ void filterReports() {
 
   Stream<QuerySnapshot> getReports() {
     return firestore.collection('report').snapshots();
+  }
+
+  void showImagePreview(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Container(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width *
+                      0.8, // 80% of screen width
+                  maxHeight: MediaQuery.of(context).size.height *
+                      0.8, // 80% of screen height
+                ),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

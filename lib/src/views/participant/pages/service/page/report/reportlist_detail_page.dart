@@ -13,8 +13,7 @@ class ReportDetailPage extends StatelessWidget {
 
     return Scaffold(
       body: FutureBuilder<DocumentSnapshot>(
-        future:
-            FirebaseFirestore.instance.collection('report').doc(reportId).get(),
+        future: FirebaseFirestore.instance.collection('report').doc(reportId).get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -35,47 +34,81 @@ class ReportDetailPage extends StatelessWidget {
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Get.back(),
               ),
-
               centerTitle: true,
-
               title: Text(
                 '${reportData['title']}',
                 style: TextStyle(color: Colors.white),
-              ), // Dynamic title
+              ),
             ),
             body: SingleChildScrollView(
-              // Wrap with SingleChildScrollView
               padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 8),
-                  if (reportData['image'] != '-') // Show image if it exists
-                    Image.network(
-                      reportData['image'],
-                      fit: BoxFit.cover, // Adjust fit as needed
-                      width: double.infinity, // Make image take full width
-                      height: 200, // Set height as needed
+                  if (reportData['image'] != null && (reportData['image'] as List).isNotEmpty)
+                    SizedBox(
+                      height: 300,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          PageView.builder(
+                            itemCount: (reportData['image'] as List).length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () => reportController.showImagePreview(
+                                    context, reportData['image'][index]),
+                                child: Image.network(
+                                  reportData['image'][index],
+                                  fit: BoxFit.cover,
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+                              );
+                            },
+                            onPageChanged: (index) {
+                              reportController.currentImageIndex.value = index;
+                            },
+                          ),
+                          Obx(() => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                (reportData['image'] as List).length,
+                                (index) => Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 4),
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: reportController.currentImageIndex.value == index
+                                        ? Colors.white
+                                        : Colors.white.withOpacity(0.5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )),
+                          Obx(() => Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '${reportController.currentImageIndex.value + 1}/${(reportData['image'] as List).length}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          )),
+                        ],
+                      ),
                     ),
                   SizedBox(height: 16),
-                  // Text('Category', style: TextStyle(fontSize: 18)),
-                  // SizedBox(height: 8),
-                  // TextFormField(
-                  //   initialValue: reportData['category'],
-                  //   readOnly: true,
-                  //   decoration: InputDecoration(
-                  //     filled: true,
-                  //     fillColor: Colors.grey[200],
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(10),
-                  //       borderSide: BorderSide.none,
-                  //     ),
-                  //   ),
-                  // ),
-                  SizedBox(height: 8),
                   Text('Description:',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 4),
                   TextFormField(
                     initialValue: reportData['description'],
@@ -92,8 +125,7 @@ class ReportDetailPage extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text('Reply:',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 4),
                   TextFormField(
                     initialValue: reportData['reply'],

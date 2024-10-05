@@ -152,7 +152,7 @@ class SignupController extends GetxController {
     var driveApi = drive.DriveApi(authClient);
 
     var fileToUpload = drive.File();
-    fileToUpload.name = '${area}_${departement}_${divisi}_$user.png';
+    fileToUpload.name = '${user}_${area}_${departement}_$divisi.png';
     fileToUpload.parents = [folderId];
     var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
 
@@ -604,7 +604,7 @@ class SignupController extends GetxController {
   void _pickImage(ImageSource source, String type,
       SignupController signupController) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 50);
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 20);
 
     if (pickedFile != null) {
       if (type == 'selfie') {

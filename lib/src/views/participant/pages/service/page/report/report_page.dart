@@ -97,7 +97,6 @@ class ReportPage extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 28),
-                  SizedBox(height: 28),
                   Text(
                     'Attachments',
                     style: TextStyle(
@@ -117,76 +116,86 @@ class ReportPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Attach your photos (Optional)',
+                          'Attach your photos (Optional, Max 5 Photos)',
                           style: TextStyle(
                             color: Colors.grey[400],
                             fontSize: 14,
                           ),
                         ),
                         SizedBox(height: 16),
-                        Obx(() => GridView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                              ),
-                              itemCount:
-                                  reportController.selectedImages.length + 1,
-                              itemBuilder: (context, index) {
-                                if (index ==
-                                    reportController.selectedImages.length) {
-                                  return GestureDetector(
-                                    onTap: () async {
+                        Obx(() {
+                          int itemCount =
+                              reportController.selectedImages.length < 5
+                                  ? reportController.selectedImages.length + 1
+                                  : 5;
+
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: itemCount,
+                            itemBuilder: (context, index) {
+                              if (index ==
+                                      reportController.selectedImages.length &&
+                                  reportController.selectedImages.length < 5) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    if (reportController.selectedImages.length <
+                                        5) {
                                       await reportController.pickImages();
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(Icons.add,
-                                          size: 40, color: Colors.grey[500]),
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                  );
-                                }
-                                return Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        image: DecorationImage(
-                                          image: FileImage(File(reportController
-                                              .selectedImages[index].path)),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 5,
-                                      right: 5,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          reportController.selectedImages
-                                              .removeAt(index);
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.all(2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(Icons.close,
-                                              size: 20, color: Colors.red),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    child: Icon(Icons.add,
+                                        size: 40, color: Colors.grey[500]),
+                                  ),
                                 );
-                              },
-                            )),
+                              }
+                              return Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: FileImage(File(reportController
+                                            .selectedImages[index].path)),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 5,
+                                    right: 5,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        reportController.selectedImages
+                                            .removeAt(index);
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(Icons.close,
+                                            size: 20, color: Colors.red),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }),
                         SizedBox(height: 16),
                         Center(
                           child: ElevatedButton(
@@ -217,7 +226,7 @@ class ReportPage extends StatelessWidget {
                   ),
                   SizedBox(height: 28),
                   Center(
-                    child: Container(
+                    child: SizedBox(
                       width: Get.width * 0.5,
                       height: 48,
                       child: ElevatedButton(
@@ -233,7 +242,7 @@ class ReportPage extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HexColor("E97717"),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24.0),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         child: Text('Submit',

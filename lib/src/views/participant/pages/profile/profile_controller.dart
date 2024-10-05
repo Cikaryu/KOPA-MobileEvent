@@ -439,7 +439,7 @@ class ProfileController extends GetxController {
     String division = divisiController.text.trim();
 
     // Build the new file name based on user details
-    String newFileName = '${area}_${department}_${division}_$name.png';
+    String newFileName = '${name}_${area}_${department}_$division.png';
 
     // Folder ID for '1. FOTO DIRI' under the base folder
     String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
@@ -918,7 +918,7 @@ class ProfileController extends GetxController {
   void pickImage(
       ImageSource source, ProfileController profileController) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 50);
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 20);
 
     if (pickedFile != null) {
       profileController.setSelfieImage(File(pickedFile.path));
@@ -1011,37 +1011,36 @@ class ProfileController extends GetxController {
       },
     );
   }
-  
+
   void showMemoryImagePreview(BuildContext context, Uint8List imageBytes) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-          Navigator.of(context).pop();
-        },
-        child: AlertDialog(
-          contentPadding: EdgeInsets.all(0),
-          content: GestureDetector(
-            onTap: () {}, // Keeps the image interaction-free
-            child: Container(
-              width: double.maxFinite,
-              height: 400,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: MemoryImage(imageBytes),
-                  fit: BoxFit.cover, // Fits image to the container
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            Navigator.of(context).pop();
+          },
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            content: GestureDetector(
+              onTap: () {}, // Keeps the image interaction-free
+              child: Container(
+                width: double.maxFinite,
+                height: 400,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: MemoryImage(imageBytes),
+                    fit: BoxFit.cover, // Fits image to the container
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   Future<void> resetPassword(String email, BuildContext context) async {
     try {

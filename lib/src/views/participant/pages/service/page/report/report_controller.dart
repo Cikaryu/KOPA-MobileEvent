@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:app_kopabali/src/core/base_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +24,7 @@ class ReportController extends GetxController {
   final RxList<XFile> selectedImages = <XFile>[].obs;
   late Rx<User?> _user;
   static const int maxImageCount = 5;
+  final currentImageIndex = 0.obs;
 
   @override
   void onInit() {
@@ -106,35 +108,84 @@ class ReportController extends GetxController {
       List<XFile>? images = [];
       if (source == ImageSource.camera) {
         final XFile? image =
-            await _picker.pickImage(source: source, imageQuality: 50);
+            await _picker.pickImage(source: source, imageQuality: 20);
         if (image != null) images.add(image);
       } else {
-        images = await _picker.pickMultiImage(imageQuality: 50);
+        images = await _picker.pickMultiImage(imageQuality: 20);
       }
 
       if (images.isNotEmpty) {
-        if (selectedImages.length + images.length > maxImageCount) {
-          Get.snackbar('Limit Reached',
-              'You can only upload up to $maxImageCount images.');
-          images = images.sublist(0, maxImageCount - selectedImages.length);
+        int remainingSlots = 5 - selectedImages.length;
+        if (images.length > remainingSlots) {
+          Get.snackbar('Limit Reached', 'You can only upload up to 5 images.');
+          images = images.sublist(0, remainingSlots);
         }
         selectedImages.addAll(images);
       }
     }
   }
 
-  Future<String> uploadImage(String reportId) async {
-    if (selectedImage.value != null) {
-      try {
-        String filePath = 'report/$reportId/report.jpg';
-        await _storage.ref(filePath).putFile(File(selectedImage.value!.path));
-        return await _storage.ref(filePath).getDownloadURL();
-      } catch (e) {
-        print("Error uploading image: $e");
-        return '-';
-      }
+  void showImagePreview(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Container(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width *
+                      0.8, // 80% of screen width
+                  maxHeight: MediaQuery.of(context).size.height *
+                      0.8, // 80% of screen height
+                ),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Optimize image upload function
+  Future<List<String>> uploadImages(String reportId, List<XFile> images) async {
+    List<Future<String>> uploadFutures = [];
+    for (int i = 0; i < images.length; i++) {
+      uploadFutures.add(_uploadSingleImage(reportId, images[i], i));
     }
-    return '-';
+    return await Future.wait(uploadFutures);
+  }
+
+  Future<String> _uploadSingleImage(
+      String reportId, XFile image, int index) async {
+    try {
+      String fileName = 'report_${index + 1}.jpg';
+      String filePath = 'report/$reportId/$fileName';
+      await _storage.ref(filePath).putFile(File(image.path));
+      return await _storage.ref(filePath).getDownloadURL();
+    } catch (e) {
+      print("Error uploading image: $e");
+      return "";
+    }
   }
 
   Future<String> loadCredentials() async {
@@ -157,23 +208,26 @@ class ReportController extends GetxController {
     return authClient;
   }
 
+  // Optimize Google Drive upload
   Future<void> uploadImageToDrive(
       File imageFile, String folderId, String title) async {
     final authClient = await getAuthClient();
-
     var driveApi = drive.DriveApi(authClient);
 
     String timestamp = DateFormat('ddMMyy').format(DateTime.now());
-
     String fileName = '${timestamp}_$title.png';
-    var fileToUpload = drive.File();
-    fileToUpload.name = fileName;
-    fileToUpload.parents = [folderId];
-    var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
+    var fileToUpload = drive.File()
+      ..name = fileName
+      ..parents = [folderId];
+    var media = drive.Media(imageFile.openRead(), await imageFile.length());
 
-    final response =
-        await driveApi.files.create(fileToUpload, uploadMedia: media);
-    print('Uploaded File ID: ${response.id} with name: $fileName');
+    try {
+      final response =
+          await driveApi.files.create(fileToUpload, uploadMedia: media);
+      print('Uploaded File ID: ${response.id} with name: $fileName');
+    } catch (e) {
+      print('Error uploading to Google Drive: $e');
+    }
   }
 
 // Google Sheet
@@ -246,30 +300,35 @@ class ReportController extends GetxController {
       // Generate a unique reportId
       String reportId = _firestore.collection('report').doc().id;
 
-      // Upload image if selected
-      String imageUrl = await uploadImage(reportId);
+      // Prepare futures for concurrent execution
+      List<Future> futures = [
+        uploadImages(reportId, selectedImages),
+        submitToGoogleSheets(title, description, status),
+      ];
 
-      // Upload image to Google Drive
-      if (selectedImage.value != null) {
-        await uploadImageToDrive(
-            File(selectedImage.value!.path), folderId, title);
-      }
+      // Execute futures concurrently
+      List results = await Future.wait(futures);
+
+      List<String> imageUrls = results[0];
 
       // Create new report document
       await _firestore.collection('report').doc(reportId).set({
         'userId': userId,
         'name': userName,
         'title': title,
-        // 'category': category,
         'description': description,
-        'image': imageUrl,
+        'image': imageUrls,
         'status': status,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      // Submit to Google Sheets
-      await submitToGoogleSheets(title, description, status);
+      // Upload image to Google Drive in parallel
+      for (int i = 0; i < selectedImages.length; i++) {
+        unawaited(uploadImageToDrive(
+            File(selectedImages[i].path), folderId, '${title}_${i + 1}'));
+      }
+
       setLoading(false);
       // Show success dialog
       Get.dialog(
@@ -310,6 +369,7 @@ class ReportController extends GetxController {
       // Reset form
       resetForm();
     } catch (e) {
+      setLoading(false);
       Get.dialog(
         AlertDialog(
           title: Text('Failed',
@@ -344,6 +404,7 @@ class ReportController extends GetxController {
 
   void resetForm() {
     selectedImage.value = null;
+    selectedImages.clear();
   }
 
   void onGoBack() {
