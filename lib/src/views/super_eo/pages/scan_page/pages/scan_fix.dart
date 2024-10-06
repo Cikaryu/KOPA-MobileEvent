@@ -59,14 +59,24 @@ class ScanProfileView extends StatelessWidget {
               children: [
                 SizedBox(height: screenHeight * 0.02),
                 Center(
-                  child: CircleAvatar(
-                    backgroundImage: scanController.imageBytes.value != null
-                        ? MemoryImage(scanController.imageBytes.value!)
-                        : null,
-                    radius: screenWidth * 0.11,
-                    child: scanController.imageBytes.value == null
-                        ? Icon(Icons.person, size: 41, color: Colors.grey[500])
-                        : null,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (scanController.imageBytes.value != null) {
+                        // Tampilkan preview gambar dengan MemoryImage
+                        scanController.showMemoryImagePreview(
+                            context, scanController.imageBytes.value!);
+                      }
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: scanController.imageBytes.value != null
+                          ? MemoryImage(scanController.imageBytes.value!)
+                          : null,
+                      radius: screenWidth * 0.11,
+                      child: scanController.imageBytes.value == null
+                          ? Icon(Icons.person,
+                              size: 41, color: Colors.grey[500])
+                          : null,
+                    ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
@@ -564,7 +574,8 @@ Widget buildStatusRow(ScanController controller, String itemName, String field,
                               ),
                               SvgPicture.asset(
                                 controller.getStatusImagePath(statusOption),
-                                width: screenWidth * 0.06, // Responsive icon size
+                                width:
+                                    screenWidth * 0.06, // Responsive icon size
                                 height: screenWidth * 0.06,
                                 fit: BoxFit.contain,
                               ),

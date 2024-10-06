@@ -28,29 +28,29 @@ class SearchParticipantController extends GetxController {
     super.onInit();
     fetchParticipants();
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      getUserData(user);
-    }
+    if (user != null) {}
   }
 
-  void startRealtimeUpdates() {
-    isLoading(true);
-    _participantSubscription =
-        _firestore.collection('users').snapshots().listen((snapshot) {
-      allParticipants.value =
-          snapshot.docs.map((doc) => Participant.fromDocument(doc)).toList();
+  Future<void> refreshParticipants() async {
+    isLoading.value = true;
+    try {
+      final querySnapshot = await _firestore.collection('users').get();
+      allParticipants.value = querySnapshot.docs
+          .map((doc) => Participant.fromDocument(doc))
+          .toList();
       _applyFiltersAndSort();
-      isLoading(false);
-    }, onError: (error) {
-      print('Error in real-time updates: $error');
-      isLoading(false);
-    });
+    } catch (error) {
+      print('Error refreshing participants: $error');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void _applyFiltersAndSort() {
     searchParticipants(searchController.text);
     sortParticipants();
   }
+
 
   @override
   void onClose() {
@@ -290,6 +290,35 @@ class SearchParticipantController extends GetxController {
       print('Error fetching participant kit status: $e');
     }
     return 'Pending'; // Default value if 'Not Received' is not found
+  }
+    void showMemoryImagePreview(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            Navigator.of(context).pop();
+          },
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            content: GestureDetector(
+              onTap: () {}, // Keeps the image interaction-free
+              child: Container(
+                width: double.maxFinite,
+                height: 400,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(imageUrl),
+                    fit: BoxFit.cover, // Fits image to the container
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

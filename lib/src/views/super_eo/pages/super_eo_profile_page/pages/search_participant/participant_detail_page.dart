@@ -44,17 +44,27 @@ class ParticipantDetailPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: screenHeight * 0.02),
-                Center(
-                  child: CircleAvatar(
-                    backgroundImage: participant.selfieUrl != null &&
-                            participant.selfieUrl!.isNotEmpty
-                        ? NetworkImage(participant.selfieUrl!)
-                        : null,
-                    radius: screenWidth * 0.11,
-                    child: participant.selfieUrl == null ||
-                            participant.selfieUrl!.isEmpty
-                        ? Icon(Icons.person, size: 41, color: Colors.grey[500])
-                        : null,
+                GestureDetector(
+                  onTap: () {
+                    if (participant.selfieUrl != null &&
+                        participant.selfieUrl!.isNotEmpty) {
+                      controller.showMemoryImagePreview(
+                          context, participant.selfieUrl!);
+                    }
+                  },
+                  child: Center(
+                    child: CircleAvatar(
+                      backgroundImage: participant.selfieUrl != null &&
+                              participant.selfieUrl!.isNotEmpty
+                          ? NetworkImage(participant.selfieUrl!)
+                          : null,
+                      radius: screenWidth * 0.11,
+                      child: participant.selfieUrl == null ||
+                              participant.selfieUrl!.isEmpty
+                          ? Icon(Icons.person,
+                              size: 41, color: Colors.grey[500])
+                          : null,
+                    ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.02),

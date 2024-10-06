@@ -36,7 +36,7 @@ dependencies:
   get: ^4.6.6
   flutter_svg: ^2.0.10+1
   image_picker: ^1.1.2
-  mobile_scanner: ^5.1.1
+  mobile_scanner: ^5.2.3
   pretty_qr_code: ^3.3.0
   dropdown_button2: ^2.3.9
   provider: ^6.1.2
@@ -67,7 +67,6 @@ dependencies:
   flutter_dotenv: ^5.1.0
   url_launcher: ^6.3.0
   flutter_launcher_icons: ^0.14.1
-
 
 dev_dependencies:
   flutter_test:

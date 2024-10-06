@@ -63,11 +63,14 @@ class ParticipantKit extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _buildImageItem('assets/images/participant_kit/item1.png'),
+                  _buildImageItem(
+                      context, 'assets/images/participant_kit/item1.png'),
                   const SizedBox(height: 18),
-                  _buildImageItem('assets/images/participant_kit/item2.png'),
+                  _buildImageItem(
+                      context, 'assets/images/participant_kit/item2.png'),
                   const SizedBox(height: 18),
-                  _buildImageItem('assets/images/participant_kit/item3.png'),
+                  _buildImageItem(
+                      context, 'assets/images/participant_kit/item3.png'),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -78,25 +81,28 @@ class ParticipantKit extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk menampilkan gambar item
-  Widget _buildImageItem(String imagePath) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: HexColor('#F2F2F2'),
-            width: 2,
+  Widget _buildImageItem(BuildContext context, String imagePath) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return GestureDetector(
+      onTap: () => controller.showImagePreview(context, imagePath),
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: HexColor('#F2F2F2'),
+              width: screenWidth * 0.01,
+            ),
+            borderRadius: BorderRadius.circular(10),
           ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            imagePath,
-            alignment: Alignment.center,
-            height: 200,
-            width: Get.width / 1,
-            fit: BoxFit.cover,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              imagePath,
+              alignment: Alignment.center,
+              height: 200,
+              width: Get.width / 1,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

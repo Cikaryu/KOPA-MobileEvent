@@ -56,28 +56,42 @@ class ProfileCommitteePage extends StatelessWidget {
                             width: 300,
                             child: Column(
                               children: [
-                                Container(
-                                  width: 82,
-                                  height: 82,
-                                  decoration: ShapeDecoration(
-                                    image: profileCommitteeController
-                                                .imageBytes.value !=
+                                GestureDetector(
+                                  onTap: () {
+                                    if (profileCommitteeController
+                                            .imageBytes.value !=
+                                        null) {
+                                      // Tampilkan preview gambar dengan MemoryImage
+                                      profileCommitteeController
+                                          .showMemoryImagePreview(
+                                              context,
+                                              profileCommitteeController
+                                                  .imageBytes.value!);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 82,
+                                    height: 82,
+                                    decoration: ShapeDecoration(
+                                      image: profileCommitteeController
+                                                  .imageBytes.value !=
+                                              null
+                                          ? DecorationImage(
+                                              image: MemoryImage(
+                                                  profileCommitteeController
+                                                      .imageBytes.value!),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                      shape: OvalBorder(),
+                                    ),
+                                    child: profileCommitteeController
+                                                .imageBytes.value ==
                                             null
-                                        ? DecorationImage(
-                                            image: MemoryImage(
-                                                profileCommitteeController
-                                                    .imageBytes.value!),
-                                            fit: BoxFit.cover,
-                                          )
+                                        ? Icon(Icons.person,
+                                            size: 82, color: Colors.grey[500])
                                         : null,
-                                    shape: OvalBorder(),
                                   ),
-                                  child: profileCommitteeController
-                                              .imageBytes.value ==
-                                          null
-                                      ? Icon(Icons.person,
-                                          size: 82, color: Colors.grey[500])
-                                      : null,
                                 ),
                                 SizedBox(height: 16),
                                 Obx(() => Text(

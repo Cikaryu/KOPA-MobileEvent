@@ -58,28 +58,42 @@ class ProfileSuperEOPage extends StatelessWidget {
                             width: 300,
                             child: Column(
                               children: [
-                                Container(
-                                  width: 82,
-                                  height: 82,
-                                  decoration: ShapeDecoration(
-                                    image: profileSuperEOController
-                                                .imageBytes.value !=
+                                GestureDetector(
+                                  onTap: () {
+                                    if (profileSuperEOController
+                                            .imageBytes.value !=
+                                        null) {
+                                      // Tampilkan preview gambar dengan MemoryImage
+                                      profileSuperEOController
+                                          .showMemoryImagePreview(
+                                              context,
+                                              profileSuperEOController
+                                                  .imageBytes.value!);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 82,
+                                    height: 82,
+                                    decoration: ShapeDecoration(
+                                      image: profileSuperEOController
+                                                  .imageBytes.value !=
+                                              null
+                                          ? DecorationImage(
+                                              image: MemoryImage(
+                                                  profileSuperEOController
+                                                      .imageBytes.value!),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                      shape: OvalBorder(),
+                                    ),
+                                    child: profileSuperEOController
+                                                .imageBytes.value ==
                                             null
-                                        ? DecorationImage(
-                                            image: MemoryImage(
-                                                profileSuperEOController
-                                                    .imageBytes.value!),
-                                            fit: BoxFit.cover,
-                                          )
+                                        ? Icon(Icons.person,
+                                            size: 82, color: Colors.grey[500])
                                         : null,
-                                    shape: OvalBorder(),
                                   ),
-                                  child: profileSuperEOController
-                                              .imageBytes.value ==
-                                          null
-                                      ? Icon(Icons.person,
-                                          size: 82, color: Colors.grey[500])
-                                      : null,
                                 ),
                                 SizedBox(height: 16),
                                 Obx(() => Text(

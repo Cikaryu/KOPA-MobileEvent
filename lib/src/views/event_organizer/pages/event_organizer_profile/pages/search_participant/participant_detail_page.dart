@@ -44,16 +44,26 @@ class ParticipantDetailPage extends StatelessWidget {
               children: [
                 SizedBox(height: 16),
                 Center(
-                  child: CircleAvatar(
-                    backgroundImage: participant.selfieUrl != null &&
-                            participant.selfieUrl!.isNotEmpty
-                        ? NetworkImage(participant.selfieUrl!)
-                        : null,
-                    radius: 41,
-                    child: participant.selfieUrl == null ||
-                            participant.selfieUrl!.isEmpty
-                        ? Icon(Icons.person, size: 41, color: Colors.grey[500])
-                        : null,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (participant.selfieUrl != null &&
+                          participant.selfieUrl!.isNotEmpty) {
+                        controller.showMemoryImagePreview(
+                            context, participant.selfieUrl!);
+                      }
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: participant.selfieUrl != null &&
+                              participant.selfieUrl!.isNotEmpty
+                          ? NetworkImage(participant.selfieUrl!)
+                          : null,
+                      radius: 41,
+                      child: participant.selfieUrl == null ||
+                              participant.selfieUrl!.isEmpty
+                          ? Icon(Icons.person,
+                              size: 41, color: Colors.grey[500])
+                          : null,
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
@@ -180,8 +190,12 @@ class ParticipantDetailPage extends StatelessWidget {
     );
   }
 
-  Widget buildProfileContainer(SearchParticipantController controller,String title, String containerName,
-      List<Widget> children, double screenWidth) {
+  Widget buildProfileContainer(
+      SearchParticipantController controller,
+      String title,
+      String containerName,
+      List<Widget> children,
+      double screenWidth) {
     return Center(
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -276,8 +290,12 @@ class ParticipantDetailPage extends StatelessWidget {
   }
 }
 
-  Widget buildDropdownContainer(SearchParticipantController controller, String title,
-    String containerName, List<Widget> children, double screenWidth) {
+Widget buildDropdownContainer(
+    SearchParticipantController controller,
+    String title,
+    String containerName,
+    List<Widget> children,
+    double screenWidth) {
   return Center(
     child: Container(
       padding: EdgeInsets.symmetric(
@@ -373,8 +391,8 @@ class ParticipantDetailPage extends StatelessWidget {
   );
 }
 
-Widget buildStatusRow(SearchParticipantController controller, String itemName, String field,
-    double screenWidth) {
+Widget buildStatusRow(SearchParticipantController controller, String itemName,
+    String field, double screenWidth) {
   return Obx(() {
     String status =
         controller.getStatusForItem(field.split('.')[0], field.split('.')[1]);
@@ -441,4 +459,3 @@ Widget buildStatusRow(SearchParticipantController controller, String itemName, S
     );
   });
 }
-

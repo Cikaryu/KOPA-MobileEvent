@@ -30,15 +30,32 @@ class SearchParticipantController extends GetxController {
   late StreamSubscription<QuerySnapshot> _participantSubscription;
   RxMap<String, bool> isLoadingMap = <String, bool>{}.obs;
 
-  @override
+   @override
   void onInit() {
     super.onInit();
     fetchParticipants();
-    startRealtimeUpdates();
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      getUserData(user);
+    if (user != null) {}
+  }
+
+  Future<void> refreshParticipants() async {
+    isLoading.value = true;
+    try {
+      final querySnapshot = await _firestore.collection('users').get();
+      allParticipants.value = querySnapshot.docs
+          .map((doc) => Participant.fromDocument(doc))
+          .toList();
+      _applyFiltersAndSort();
+    } catch (error) {
+      print('Error refreshing participants: $error');
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  void _applyFiltersAndSort() {
+    searchParticipants(searchController.text);
+    sortParticipants();
   }
 
   @override
@@ -51,25 +68,6 @@ class SearchParticipantController extends GetxController {
       debugPrint("User not logged in");
     }
     update();
-  }
-
-  void startRealtimeUpdates() {
-    isLoading(true);
-    _participantSubscription =
-        _firestore.collection('users').snapshots().listen((snapshot) {
-      allParticipants.value =
-          snapshot.docs.map((doc) => Participant.fromDocument(doc)).toList();
-      _applyFiltersAndSort();
-      isLoading(false);
-    }, onError: (error) {
-      print('Error in real-time updates: $error');
-      isLoading(false);
-    });
-  }
-
-  void _applyFiltersAndSort() {
-    searchParticipants(searchController.text);
-    sortParticipants();
   }
 
   @override
@@ -583,6 +581,35 @@ class SearchParticipantController extends GetxController {
     } catch (e) {
       print('Error updating participant role: $e');
     }
+  }
+    void showMemoryImagePreview(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            Navigator.of(context).pop();
+          },
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            content: GestureDetector(
+              onTap: () {}, // Keeps the image interaction-free
+              child: Container(
+                width: double.maxFinite,
+                height: 400,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(imageUrl),
+                    fit: BoxFit.cover, // Fits image to the container
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
