@@ -539,7 +539,7 @@ class AttendanceController extends GetxController {
         imageUrl = await uploadImage(imageFile.value!, event);
 
         // Upload to Google Drive
-        await uploadImageToDrive(
+         uploadImageToDrive(
             imageFile.value!, status, day.toString(), displayName);
       }
 
@@ -571,7 +571,7 @@ class AttendanceController extends GetxController {
       }
 
       // Tambahkan pemanggilan submitToGoogleSheets di sini
-      await submitToGoogleSheets(day, event, status);
+       submitToGoogleSheets(day, event, status);
 
       Get.back();
       CustomPopup(

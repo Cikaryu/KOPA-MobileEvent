@@ -14,8 +14,7 @@ class SignupSlide4View extends StatelessWidget {
     final SignupController signupController = Get.put(SignupController());
     final TextEditingController eWalletTypeController = TextEditingController(
         text: signupController.eWalletTypeController.text);
-    final TextEditingController eWalletNumberController = TextEditingController(
-        text: signupController.eWalletNumberController.text);
+    final TextEditingController eWalletNumberController = TextEditingController( text: signupController.eWalletNumberController.text);
     final List<String> eWalletOptions = [
       'OVO',
       'GoPay',
@@ -89,7 +88,7 @@ class SignupSlide4View extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
                 TextFormField(
-                  controller: eWalletNumberController,
+                  controller: signupController.eWalletNumberController,
                   keyboardType: TextInputType.number,
                   maxLength: 13,
                   decoration: InputDecoration(

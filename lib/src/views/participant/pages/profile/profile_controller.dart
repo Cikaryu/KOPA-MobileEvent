@@ -347,12 +347,17 @@ class ProfileController extends GetxController {
                 : CircularProgressIndicator(),
             SizedBox(height: 12),
             Text(
-              userName.value,
+              userName.value.split(' ').take(3).join(' '),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 18,
               ),
             ),
-            Text('Show this QR Code to the commitee')
+            Text(
+              'Show this QR Code to the commitee',
+              textAlign: TextAlign.center,
+            )
           ]),
           actions: [
             Center(
@@ -425,7 +430,7 @@ class ProfileController extends GetxController {
     return authClient;
   }
 
-  Future<void> uploadOrUpdateFileInDrive(File imageFile) async {
+  Future<void> renameFileIfDetailsChanged() async {
     final authClient = await getAuthClient();
     var driveApi = drive.DriveApi(authClient);
 
@@ -449,22 +454,47 @@ class ProfileController extends GetxController {
         .collection('users')
         .doc(user.uid)
         .get();
-    String oldFileName = userDoc['name'] ?? '';
+    String oldName = userDoc['name'] ?? '';
+    String oldArea = userDoc['area'] ?? '';
+    String oldDepartment = userDoc['department'] ?? '';
+    String oldDivision = userDoc['division'] ?? '';
+    String oldFileName =
+        '${oldName}_${oldArea}_${oldDepartment}_$oldDivision.png';
 
-    // If the file name has changed (due to changes in area, department, division, or name)
+    // If the file name has changed, search and rename the file
     if (oldFileName.isNotEmpty && oldFileName != newFileName) {
-      // Search for the old file in Google Drive
       String query =
           "'$photoFolderId' in parents and name = '$oldFileName' and trashed = false";
       var fileList = await driveApi.files.list(q: query, spaces: 'drive');
 
-      // If the old file exists, delete it
+      // If the old file exists, rename it
       if (fileList.files!.isNotEmpty) {
         String oldFileId = fileList.files!.first.id!;
-        await driveApi.files.delete(oldFileId);
-        print('Deleted old file with name: $oldFileName');
+        var updatedFile = drive.File()..name = newFileName;
+        await driveApi.files.update(updatedFile, oldFileId);
+        print('Renamed file from $oldFileName to $newFileName');
       }
     }
+  }
+
+  Future<void> uploadOrReplaceProfileImage(File imageFile) async {
+    final authClient = await getAuthClient();
+    var driveApi = drive.DriveApi(authClient);
+
+    // Fetch user details
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('User not logged in');
+
+    String name = nameController.text.trim();
+    String area = areaController.text.trim();
+    String department = departmentController.text.trim();
+    String division = divisiController.text.trim();
+
+    // Build the new file name based on user details
+    String newFileName = '${name}_${area}_${department}_$division.png';
+
+    // Folder ID for '1. FOTO DIRI' under the base folder
+    String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
 
     // Check if the file already exists with the new name
     String query =
@@ -475,7 +505,6 @@ class ProfileController extends GetxController {
       // File exists, update it
       var existingFileId = fileList.files!.first.id!;
       var media = drive.Media(imageFile.openRead(), imageFile.lengthSync());
-
       var updatedFile = await driveApi.files.update(
         drive.File(), // Add more file metadata if needed here
         existingFileId,
@@ -494,19 +523,6 @@ class ProfileController extends GetxController {
 
       print('Uploaded new File ID: ${response.id} with name: $newFileName');
     }
-
-    // Update the new file name in Firestore to track for future updates
-    await updateOldFileNameInFirestore(newFileName);
-  }
-
-  Future<void> updateOldFileNameInFirestore(String newFileName) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    // Store the new file name in Firestore for tracking
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-      'name': newFileName,
-    });
   }
 
   Future<void> updateGoogleSheets(String userId) async {
@@ -814,9 +830,12 @@ class ProfileController extends GetxController {
       }
       if (noKTP.isNotEmpty) updateData['NIK'] = noKTP;
 
+      await renameFileIfDetailsChanged();
+
       // Update gambar jika ada
-      if (imageBytes.value != null) {
+      if (selfieImage.value != null) {
         // Gantilah path sesuai kebutuhan
+        await uploadOrReplaceProfileImage(selfieImage.value!);
         String imagePath = '/users/participant/${user.uid}/selfie/selfie.jpg';
         UploadTask uploadTask =
             FirebaseStorage.instance.ref(imagePath).putData(imageBytes.value!);
@@ -826,31 +845,39 @@ class ProfileController extends GetxController {
         // Tambahkan URL gambar ke data yang akan diupdate
         updateData['imageUrl'] =
             imageUrl; // Pastikan field ini ada di Firestore
-        await uploadOrUpdateFileInDrive(selfieImage.value!);
       }
+      // Gunakan Future.wait untuk menjalankan tugas async bersamaan
+      await Future.wait([
+        if (updateData.isNotEmpty)
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update(updateData),
+        updateGoogleSheets(user.uid),
+        if (newName.isNotEmpty && newName != userName.value)
+          updateNameOnlyInGoogleSheets(userName.value, newName),
+        updateNameGooglesheetReport(oldName, newName, SpreadsheetIdReport),
+        updateNameGooglesheetFeedback(oldName, newName, SpreadsheetIdFeedback)
+      ]);
 
-      // Pastikan setidaknya ada satu field yang akan diupdate
-      if (updateData.isNotEmpty) {
-        // Update data pengguna di Firestore
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update(updateData);
-      } else {
-        debugPrint('Tidak ada data yang diperbarui');
-      }
+      // // Pastikan setidaknya ada satu field yang akan diupdate
+      // if (updateData.isNotEmpty) {
+      //   // Update data pengguna di Firestore
+      //   await FirebaseFirestore.instance
+      //       .collection('users')
+      //       .doc(user.uid)
+      //       .update(updateData);
+      //   await updateGoogleSheets(user.uid);
 
-      // Setelah data di Firestore berhasil diupdate, panggil updateGoogleSheets untuk mengupdate Google Sheets
-      await updateGoogleSheets(user.uid);
-
-      if (newName.isNotEmpty && newName != oldName) {
-        // Update name in Google Sheets
-        await updateNameOnlyInGoogleSheets(oldName, newName);
-        await updateNameGooglesheetReport(
-            oldName, newName, SpreadsheetIdReport);
-        await updateNameGooglesheetFeedback(
-            oldName, newName, SpreadsheetIdFeedback);
-      }
+      // } else {
+      //   debugPrint('Tidak ada data yang diperbarui');
+      // }
+      // if (newName.isNotEmpty && newName != oldName) {
+      //   // Update name in Google Sheets
+      //   await updateNameOnlyInGoogleSheets(oldName, newName);
+      //   updateNameGooglesheetReport(oldName, newName, SpreadsheetIdReport);
+      //   updateNameGooglesheetFeedback(oldName, newName, SpreadsheetIdFeedback);
+      // }
 
       // Reset form setelah berhasil menyimpan
       fetchUserData();

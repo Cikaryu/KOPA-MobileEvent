@@ -177,13 +177,37 @@ class SignupController extends GetxController {
     print('Uploaded File KTP ID: ${response.id} with name: $user');
   }
 
+  Future<void> uploadQrCodeToDrive(String qrCodePath, String folderId,
+      String username, String departement, String division) async {
+    final authClient = await getAuthClient();
+    var driveApi = drive.DriveApi(authClient);
+
+    var fileToUpload = drive.File();
+    fileToUpload.name =
+        '${division}_${departement}_QR_$username.png'; // Name of the file in Drive
+    fileToUpload.parents = [
+      folderId
+    ]; // Folder ID where the file will be uploaded
+
+    var media =
+        drive.Media(File(qrCodePath).openRead(), File(qrCodePath).lengthSync());
+
+    final response =
+        await driveApi.files.create(fileToUpload, uploadMedia: media);
+    print(
+        'Uploaded QR Code File ID: ${response.id} with name: QR_$username.png');
+  }
+
   Future<void> submitToDrive(
-      String username, String area, String department, String division) async {
+    String username, String area, String department, String division) async {
     String folderIdktp = '1JcyaT5xNKP4iela099E7RnefFhITKTKj';
     String folderIdprofile = '1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode';
-    await uploadImagektpToDrive(ktpImage.value!, folderIdktp, username);
-    await uploadImageToDrive(selfieImage.value!, folderIdprofile, department,
-        area, division, username);
+    String folderIdqr = '15ggM93uLiT7DORNDTeEOdiSDvlRltqWa';
+    await Future.wait([
+      uploadImagektpToDrive(ktpImage.value!, folderIdktp, username),
+      uploadImageToDrive(selfieImage.value!, folderIdprofile, department, area, division, username),
+      uploadQrCodeToDrive(_qrCodePath!, folderIdqr, username, department, division),
+    ]);
   }
 
   Future<void> updateSpreadsheet(
@@ -382,8 +406,7 @@ class SignupController extends GetxController {
         status, // Benefit - Voucher E-wallet
       ];
       print('Submitting new row: $newRow'); // Debug log
-      await updateSpreadsheet(
-          '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:V', newRow);
+      await updateSpreadsheet('1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:V', newRow);
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
