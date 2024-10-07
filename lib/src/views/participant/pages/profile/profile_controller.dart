@@ -430,44 +430,58 @@ class ProfileController extends GetxController {
     return authClient;
   }
 
-  Future<void> renameFileIfDetailsChanged() async {
-    final authClient = await getAuthClient();
-    var driveApi = drive.DriveApi(authClient);
+  Future renameFileIfDetailsChanged() async {
+  final authClient = await getAuthClient();
+  var driveApi = drive.DriveApi(authClient);
 
-    // Fetch user details
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) throw Exception('User not logged in');
+  // Fetch user details
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw Exception('User not logged in');
 
-    String name = nameController.text.trim();
-    String area = areaController.text.trim();
-    String department = departmentController.text.trim();
-    String division = divisiController.text.trim();
+  String name = nameController.text.trim();
+  String area = areaController.text.trim();
+  String department = departmentController.text.trim();
+  String division = divisiController.text.trim();
 
-    // Build the new file name based on user details
-    String newFileName = '${name}_${area}_${department}_$division.png';
+  // Build the new file name based on user details
+  String newFileName = '${name}_${area}_${department}_$division.png';
+  String newFileNameKtp = 'KTP_$name.png';
+  String newFileNameQr = '${division}_${department}_QR_$name.png';
 
-    // Folder ID for '1. FOTO DIRI' under the base folder
-    String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
+  // Folder IDs
+  String photoFolderId = "1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode";
+  String photoFolderIDKtp = "1JcyaT5xNKP4iela099E7RnefFhITKTKj";
+  String photoFolderIdQr = "15ggM93uLiT7DORNDTeEOdiSDvlRltqWa";
 
-    // Fetch the old file name from Firestore (if stored)
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
-    String oldName = userDoc['name'] ?? '';
-    String oldArea = userDoc['area'] ?? '';
-    String oldDepartment = userDoc['department'] ?? '';
-    String oldDivision = userDoc['division'] ?? '';
-    String oldFileName =
-        '${oldName}_${oldArea}_${oldDepartment}_$oldDivision.png';
+  // Fetch the old file name from Firestore (if stored)
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .get();
+  String oldName = userDoc['name'] ?? '';
+  String oldArea = userDoc['area'] ?? '';
+  String oldDepartment = userDoc['department'] ?? '';
+  String oldDivision = userDoc['division'] ?? '';
 
-    // If the file name has changed, search and rename the file
+  // Skip API calls if nothing has changed
+  if (oldName == name && oldArea == area && oldDepartment == department && oldDivision == division) {
+    print('No changes detected, skipping renaming process');
+    return;
+  }
+
+  // Build old file names
+  String oldFileName = '${oldName}_${oldArea}_${oldDepartment}_$oldDivision.png';
+  String oldFileNameKtp = 'KTP_$oldName.png';
+  String oldFileNameQr = '${oldDivision}_${oldDepartment}_QR_$oldName.png';
+
+  // Helper function to rename files
+  Future<void> renameFile(
+      String folderId, String oldFileName, String newFileName) async {
     if (oldFileName.isNotEmpty && oldFileName != newFileName) {
       String query =
-          "'$photoFolderId' in parents and name = '$oldFileName' and trashed = false";
+          "'$folderId' in parents and name = '$oldFileName' and trashed = false";
       var fileList = await driveApi.files.list(q: query, spaces: 'drive');
 
-      // If the old file exists, rename it
       if (fileList.files!.isNotEmpty) {
         String oldFileId = fileList.files!.first.id!;
         var updatedFile = drive.File()..name = newFileName;
@@ -476,6 +490,14 @@ class ProfileController extends GetxController {
       }
     }
   }
+
+  // Run renaming tasks in parallel
+  await Future.wait([
+    renameFile(photoFolderId, oldFileName, newFileName),
+    renameFile(photoFolderIDKtp, oldFileNameKtp, newFileNameKtp),
+    renameFile(photoFolderIdQr, oldFileNameQr, newFileNameQr),
+  ]);
+}
 
   Future<void> uploadOrReplaceProfileImage(File imageFile) async {
     final authClient = await getAuthClient();
@@ -794,16 +816,10 @@ class ProfileController extends GetxController {
   Future<void> saveChanges() async {
     try {
       setLoading(true);
-      await Future.delayed(Duration(milliseconds: 500));
-
       User? user = FirebaseAuth.instance.currentUser;
 
       String newName = nameController.text.trim();
       String oldName = userName.value;
-      String SpreadsheetIdReport =
-          '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U';
-      String SpreadsheetIdFeedback =
-          '1M3gfssXScdFuTzPbGg9wE3Bg9aldOPQKcMglMdRJtwc';
 
       if (user == null) return; // Pastikan pengguna terautentikasi
 
@@ -830,12 +846,14 @@ class ProfileController extends GetxController {
       }
       if (noKTP.isNotEmpty) updateData['NIK'] = noKTP;
 
+      List<Future> tasks = [];
+
       await renameFileIfDetailsChanged();
 
       // Update gambar jika ada
       if (selfieImage.value != null) {
         // Gantilah path sesuai kebutuhan
-        await uploadOrReplaceProfileImage(selfieImage.value!);
+        tasks.add(uploadOrReplaceProfileImage(selfieImage.value!));
         String imagePath = '/users/participant/${user.uid}/selfie/selfie.jpg';
         UploadTask uploadTask =
             FirebaseStorage.instance.ref(imagePath).putData(imageBytes.value!);
@@ -843,41 +861,25 @@ class ProfileController extends GetxController {
         String imageUrl = await snapshot.ref.getDownloadURL();
 
         // Tambahkan URL gambar ke data yang akan diupdate
-        updateData['imageUrl'] =
-            imageUrl; // Pastikan field ini ada di Firestore
+        updateData['imageUrl'] = imageUrl;
       }
-      // Gunakan Future.wait untuk menjalankan tugas async bersamaan
-      await Future.wait([
-        if (updateData.isNotEmpty)
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .update(updateData),
-        updateGoogleSheets(user.uid),
-        if (newName.isNotEmpty && newName != userName.value)
-          updateNameOnlyInGoogleSheets(userName.value, newName),
-        updateNameGooglesheetReport(oldName, newName, SpreadsheetIdReport),
-        updateNameGooglesheetFeedback(oldName, newName, SpreadsheetIdFeedback)
-      ]);
 
-      // // Pastikan setidaknya ada satu field yang akan diupdate
-      // if (updateData.isNotEmpty) {
-      //   // Update data pengguna di Firestore
-      //   await FirebaseFirestore.instance
-      //       .collection('users')
-      //       .doc(user.uid)
-      //       .update(updateData);
-      //   await updateGoogleSheets(user.uid);
+      if (updateData.isNotEmpty) {
+        tasks.add(FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update(updateData));
+        tasks.add(updateGoogleSheets(user.uid));
+        if (newName.isNotEmpty && newName != userName.value) {
+          tasks.add(updateNameOnlyInGoogleSheets(oldName, newName));
+          tasks.add(updateNameGooglesheetReport(oldName, newName,
+              '1HXCINYDRoWg4Xs0sag2g7K7DEbiLCxNypnjOWOTDG9U'));
+          tasks.add(updateNameGooglesheetFeedback(oldName, newName,
+              '1M3gfssXScdFuTzPbGg9wE3Bg9aldOPQKcMglMdRJtwc'));
+        }
+      }
 
-      // } else {
-      //   debugPrint('Tidak ada data yang diperbarui');
-      // }
-      // if (newName.isNotEmpty && newName != oldName) {
-      //   // Update name in Google Sheets
-      //   await updateNameOnlyInGoogleSheets(oldName, newName);
-      //   updateNameGooglesheetReport(oldName, newName, SpreadsheetIdReport);
-      //   updateNameGooglesheetFeedback(oldName, newName, SpreadsheetIdFeedback);
-      // }
+      await Future.wait(tasks);
 
       // Reset form setelah berhasil menyimpan
       fetchUserData();
