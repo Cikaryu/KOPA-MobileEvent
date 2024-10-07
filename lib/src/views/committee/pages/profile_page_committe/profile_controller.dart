@@ -17,7 +17,7 @@ class ProfileCommitteeController extends GetxController {
   var imageUrl = ''.obs;
   var hasPreviouslyBeenCommittee = false.obs;
   var imageBytes = Rxn<Uint8List>();
-  
+
   @override
   void onInit() {
     super.onInit();
@@ -122,16 +122,23 @@ class ProfileCommitteeController extends GetxController {
 
   Future<void> logout() async {
     final HomePageCommitteeController homePageController =
-      Get.put<HomePageCommitteeController>(HomePageCommitteeController());
-   final ReportCommitteeController reportCommitteeController =
-      Get.put<ReportCommitteeController>(ReportCommitteeController());
+        Get.put<HomePageCommitteeController>(HomePageCommitteeController());
+    final ReportCommitteeController reportCommitteeController =
+        Get.put<ReportCommitteeController>(ReportCommitteeController());
 
     try {
       debugPrint("Logging out...");
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId != null) {
+        await FirebaseFirestore.instance
+            .collection('users') // Sesuaikan dengan nama koleksi Firestore kamu
+            .doc(userId)
+            .update({'fcmToken': FieldValue.delete()}); // Hapus field fcmToken
+      }
       // Hentikan listener Firestore
       homePageController.userSubscription?.cancel();
       homePageController.userSubscription = null;
-      reportCommitteeController.cancelReportsSubscription();  
+      reportCommitteeController.cancelReportsSubscription();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
@@ -168,64 +175,73 @@ class ProfileCommitteeController extends GetxController {
   }
 
   void switchRole() async {
-  User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    try {
-      if (role.value == 'Committee') {
-        // Switch ke role Participant
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-          'role': 'Participant',
-          'wasCommittee': true, // Indicate that this user was previously a Committee
-        });
-        role.value = 'Participant';
-        
-        // Tampilkan snackbar
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        if (role.value == 'Committee') {
+          // Switch ke role Participant
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Participant',
+            'wasCommittee':
+                true, // Indicate that this user was previously a Committee
+          });
+          role.value = 'Participant';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Participant role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+
+          Get.offAll(() => ParticipantView());
+        } else if (role.value == 'Participant') {
+          // Switch ke role Committee
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .update({
+            'role': 'Committee',
+            'wasCommittee':
+                true, // Indicate that this user was previously a Committee
+          });
+          role.value = 'Committee';
+
+          // Tampilkan snackbar
+          Get.snackbar(
+            "Role Changed",
+            "You have switched to the Committee role.",
+            snackPosition: SnackPosition.TOP,
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+
+          Get.offAll(() => CommitteeView());
+        }
+      } catch (e) {
+        debugPrint('Error switching role: $e');
+
+        // Tampilkan snackbar untuk error
         Get.snackbar(
-          "Role Changed",
-          "You have switched to the Participant role.",
+          "Error",
+          "Failed to switch role. Please try again.",
           snackPosition: SnackPosition.TOP,
           duration: Duration(seconds: 3),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.red,
           colorText: Colors.white,
         );
-
-        Get.offAll(() => ParticipantView());
-      } else if (role.value == 'Participant') {
-        // Switch ke role Committee
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-          'role': 'Committee',
-          'wasCommittee': true, // Indicate that this user was previously a Committee
-        });
-        role.value = 'Committee';
-        
-        // Tampilkan snackbar
-        Get.snackbar(
-          "Role Changed",
-          "You have switched to the Committee role.",
-          snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-
-        Get.offAll(() => CommitteeView());
       }
-    } catch (e) {
-      debugPrint('Error switching role: $e');
-      
-      // Tampilkan snackbar untuk error
-      Get.snackbar(
-        "Error",
-        "Failed to switch role. Please try again.",
-        snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 3),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
     }
   }
-}
-    void showMemoryImagePreview(BuildContext context, Uint8List imageBytes) {
+
+  void showMemoryImagePreview(BuildContext context, Uint8List imageBytes) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

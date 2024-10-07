@@ -149,19 +149,30 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> logout() async {
-    final HomePageParticipantController homePageController =
-        Get.find<HomePageParticipantController>();
-    await participantKitSubscription?.cancel();
-    participantKitSubscription = null;
-    // Hentikan listener Firestore
-    await homePageController.userSubscription?.cancel();
-    homePageController.userSubscription = null;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    await FirebaseAuth.instance.signOut();
-    return Get.offAllNamed('/signin');
+Future<void> logout() async {
+  final HomePageParticipantController homePageController =
+      Get.find<HomePageParticipantController>();
+  try {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'fcmToken': FieldValue.delete()});
+    }
+  } catch (e) {
+    print('Error deleting FCM token: $e');
   }
+  await participantKitSubscription?.cancel();
+  participantKitSubscription = null;
+  await homePageController.userSubscription?.cancel();
+  homePageController.userSubscription = null;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  await FirebaseAuth.instance.signOut();
+  return Get.offAllNamed('/signin');
+}
+
 
   Future<void> getImageBytes(User user) async {
     try {

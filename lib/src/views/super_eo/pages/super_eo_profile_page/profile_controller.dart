@@ -122,27 +122,46 @@ class ProfileSuperEOController extends GetxController {
     }
   }
 
-  Future<void> logout() async {
+ Future<void> logout() async {
   final HomePageSuperEOController homePageController =
       Get.put(HomePageSuperEOController());
   final DataLogsController datalogs = Get.put(DataLogsController());
   final ReportSuperEOController reportSuperEOController = Get.put(ReportSuperEOController());
+
   try {
     debugPrint("Logging out...");
+
+    // Hapus token FCM dari akun pengguna yang login
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await FirebaseFirestore.instance
+          .collection('users') // Sesuaikan dengan nama koleksi Firestore kamu
+          .doc(userId)
+          .update({'fcmToken': FieldValue.delete()}); // Hapus field fcmToken
+    }
+
     // Cancel Firestore listeners
-    datalogs.logsSubscription.cancel();
-    homePageController.userSubscription?.cancel();
+    await datalogs.logsSubscription.cancel();
+    await homePageController.userSubscription?.cancel();
     homePageController.userSubscription = null;
     reportSuperEOController.cancelReportsSubscription();
+
+    // Hapus semua data lokal dari SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+
+    // Logout dari Firebase Auth
     await FirebaseAuth.instance.signOut();
+
     debugPrint("User signed out.");
+
+    // Arahkan user ke halaman login
     return Get.offAllNamed('/signin');
   } catch (e) {
     debugPrint("Error during logout: $e");
   }
 }
+
 
   Future<void> getUserRole() async {
     User? user = FirebaseAuth.instance.currentUser;

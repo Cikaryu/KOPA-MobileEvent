@@ -129,6 +129,13 @@ class ProfileEventOrganizerController extends GetxController {
 
     try {
       debugPrint("Logging out...");
+      String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await FirebaseFirestore.instance
+          .collection('users') // Sesuaikan dengan nama koleksi Firestore kamu
+          .doc(userId)
+          .update({'fcmToken': FieldValue.delete()}); // Hapus field fcmToken
+    }
       // Hentikan listener Firestore
       homePageController.userSubscription?.cancel();
       homePageController.userSubscription = null;

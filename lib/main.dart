@@ -7,6 +7,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,22 +69,48 @@ Future<bool> requestPermissions() async {
   }
 }
 
-
-// Initialize notifications firebase messaging
+// Initialize notifications and Firebase Messaging
 Future<void> _initNotifications() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   await analytics.setAnalyticsCollectionEnabled(true);
 
+  // Request permission for notifications
   await messaging.requestPermission();
   await messaging.subscribeToTopic('kopaevent-testing');
   await messaging.setAutoInitEnabled(true);
+
+  // Get the FCM token
   final String token = await messaging.getToken() ?? '';
-  print('Token: $token');
+  print('Initial FCM Token: $token');
+  await updateFCMToken(token);
+
+  // Listen for token refresh and update Firestore
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    updateFCMToken(newToken);
+  });
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
 
+// Update FCM token to Firestore
+Future<void> updateFCMToken(String token) async {
+  try {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      await FirebaseFirestore.instance
+          .collection('users') // Sesuaikan dengan koleksi Firestore
+          .doc(userId)
+          .update({'fcmToken': token}); // Update token FCM ke Firestore
+      print('FCM token updated: $token');
+    }
+  } catch (e) {
+    print('Error updating FCM token: $e');
+  }
+}
+
+// Handle background messages
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message ${message.messageId}');
 }
