@@ -6,6 +6,7 @@ import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide1_view.d
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide3_view.dart';
 import 'package:app_kopabali/src/views/authpage/signup/page/signup_slide4_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:googleapis/cloudsearch/v1.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
@@ -39,6 +40,8 @@ class SignupController extends GetxController {
   var selfieImage = ValueNotifier<File?>(null);
   var ktpImage = ValueNotifier<File?>(null);
   String? _qrCodePath;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void onInit() {
@@ -199,14 +202,16 @@ class SignupController extends GetxController {
   }
 
   Future<void> submitToDrive(
-    String username, String area, String department, String division) async {
+      String username, String area, String department, String division) async {
     String folderIdktp = '1JcyaT5xNKP4iela099E7RnefFhITKTKj';
     String folderIdprofile = '1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode';
     String folderIdqr = '15ggM93uLiT7DORNDTeEOdiSDvlRltqWa';
     await Future.wait([
       uploadImagektpToDrive(ktpImage.value!, folderIdktp, username),
-      uploadImageToDrive(selfieImage.value!, folderIdprofile, department, area, division, username),
-      uploadQrCodeToDrive(_qrCodePath!, folderIdqr, username, department, division),
+      uploadImageToDrive(selfieImage.value!, folderIdprofile, department, area,
+          division, username),
+      uploadQrCodeToDrive(
+          _qrCodePath!, folderIdqr, username, department, division),
     ]);
   }
 
@@ -278,143 +283,72 @@ class SignupController extends GetxController {
     required String role,
     required String status,
   }) async {
+    OverlayEntry? loadingOverlay;
     try {
       setLoading(true);
+      loadingOverlay = OverlayEntry(
+        builder: (context) => Container(
+          color: Colors.black.withOpacity(0.5),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+      Overlay.of(context).insert(loadingOverlay);
       UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Center(child: CircularProgressIndicator());
-        },
-      );
+      String uid = userCredential.user!.uid;
 
-      // Upload images to Firebase Storage
-      String selfieUrl = await _uploadImageToStorage(selfieImage.value!,
-          '/users/participant/${userCredential.user!.uid}/selfie/selfie.jpg');
-      String ktpUrl = await _uploadImageToStorage(ktpImage.value!,
-          '/users/participant/${userCredential.user!.uid}/ktp/ktp.jpg');
-
-      // Generate unique QR code
-      String uniqueId = Uuid().v4();
-      await _generateQRCode(uniqueId, userCredential.user!.uid);
-
-      // Upload QR code image to Firebase Storage
-      String qrCodeUrl = await _uploadImageToStorage(File(_qrCodePath!),
-          '/users/participant/${userCredential.user!.uid}/qr/qr.jpg');
-
-      // Save user data to Firestore
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({
-        'email': email,
-        'name': name,
-        'area': area,
-        'division': division,
-        'department': department,
-        'address': address,
-        'whatsappNumber': whatsappNumber,
-        'NIK': ktpNumber,
-        'selfieUrl': selfieUrl,
-        'ktpUrl': ktpUrl,
-        'tShirtSize': tShirtSize,
-        'poloShirtSize': poloShirtSize,
-        'eWalletType': eWalletType,
-        'eWalletNumber': eWalletNumber,
-        'qrCodeUrl': qrCodeUrl,
-        'emailVerified': false,
-        'role': role,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
-      await FirebaseFirestore.instance
-          .collection('participantKit')
-          .doc(userCredential.user!.uid)
-          .set({
-        'merchandise': {
-          'poloShirt': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          },
-          'tShirt': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          },
-          'luggageTag': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          },
-          'jasHujan': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          },
-        },
-        'souvenir': {
-          'gelangTridatu': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          },
-          'selendangUdeng': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          }
-        },
-        'benefit': {
-          'voucherBelanja': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          },
-          'voucherEwallet': {
-            'status': status,
-            'updatedAt': FieldValue.serverTimestamp(),
-          }
-        }
-      });
-      // Add Google Drive upload
-      await submitToDrive(name, area, department, division);
-      final timestamp = DateTime.now().toIso8601String();
-      List<Object> newRow = [
-        timestamp,
-        userCredential.user!.uid,
-        email,
-        name,
-        area,
-        division,
-        department,
-        address,
-        whatsappNumber,
-        ktpNumber,
-        tShirtSize,
-        poloShirtSize,
-        eWalletType,
-        eWalletNumber,
-        // New columns for Participant Kit
-        status, // Merchandise - Polo Shirt
-        status, // Merchandise - T-Shirt
-        status, // Merchandise - Luggage Tag
-        status, // Merchandise - Jas Hujan
-        status, // Souvenir - Gelang Tridatu
-        status, // Souvenir - Selendang Udeng
-        status, // Benefit - Voucher Belanja
-        status, // Benefit - Voucher E-wallet
+      // Prepare all futures
+      List<Future> futures = [
+        _uploadImages(uid),
+        _saveUserData(
+            uid,
+            email,
+            name,
+            area,
+            division,
+            department,
+            address,
+            whatsappNumber,
+            ktpNumber,
+            tShirtSize,
+            poloShirtSize,
+            eWalletType,
+            eWalletNumber,
+            role,
+            status),
+        _saveParticipantKit(uid, status),
+        _submitToDrive(name, area, department, division),
+        _updateSpreadsheet(
+            uid,
+            email,
+            name,
+            area,
+            division,
+            department,
+            address,
+            whatsappNumber,
+            ktpNumber,
+            tShirtSize,
+            poloShirtSize,
+            eWalletType,
+            eWalletNumber,
+            status),
+        userCredential.user!.sendEmailVerification(),
       ];
-      print('Submitting new row: $newRow'); // Debug log
-      await updateSpreadsheet('1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:V', newRow);
 
-      // Send email verification
-      await userCredential.user!.sendEmailVerification();
+      // Execute all futures concurrently
+      await Future.wait(futures);
 
+      // Reset form and show success dialog
       await logout();
       resetForm();
-      Navigator.of(context).pop();
-
+      
+      loadingOverlay.remove();
+      setLoading(false);
       // Show success dialog and navigate to login
       showDialog(
         barrierDismissible: false,
@@ -463,6 +397,11 @@ class SignupController extends GetxController {
       } else {
         errorMessage = e.message ?? 'An unknown error occurred.';
       }
+
+      if (loadingOverlay != null) {
+        loadingOverlay.remove();
+      }
+      setLoading(false);
       // Show error dialog
       showDialog(
         context: context,
@@ -503,10 +442,273 @@ class SignupController extends GetxController {
           );
         },
       );
-    } finally {
+    } catch (e) {
+      // Remove loading indicator
+      if (loadingOverlay != null) {
+        loadingOverlay.remove();
+      }
       setLoading(false);
+
+      // Show general error dialog
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Error',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              '$e',
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 70),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: HexColor("E97717"),
+                    border: Border(
+                      top: BorderSide(color: Colors.orange[400]!),
+                    ),
+                  ),
+                  child: TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
+
+  Future<void> _uploadImages(String uid) async {
+    String selfieUrl = await _uploadImageToStorage(
+        selfieImage.value!, '/users/participant/$uid/selfie/selfie.jpg');
+    String ktpUrl = await _uploadImageToStorage(
+        ktpImage.value!, '/users/participant/$uid/ktp/ktp.jpg');
+    String uniqueId = Uuid().v4();
+    await _generateQRCode(uniqueId, uid);
+    String qrCodeUrl = await _uploadImageToStorage(
+        File(_qrCodePath!), '/users/participant/$uid/qr/qr.jpg');
+
+    await _firestore.collection('users').doc(uid).update({
+      'selfieUrl': selfieUrl,
+      'ktpUrl': ktpUrl,
+      'qrCodeUrl': qrCodeUrl,
+    });
+  }
+
+  Future<void> _saveUserData(
+      String uid,
+      String email,
+      String name,
+      String area,
+      String division,
+      String department,
+      String address,
+      String whatsappNumber,
+      String ktpNumber,
+      String tShirtSize,
+      String poloShirtSize,
+      String eWalletType,
+      String eWalletNumber,
+      String role,
+      String status) async {
+    await _firestore.collection('users').doc(uid).set({
+      'email': email,
+      'name': name,
+      'area': area,
+      'division': division,
+      'department': department,
+      'address': address,
+      'whatsappNumber': whatsappNumber,
+      'NIK': ktpNumber,
+      'tShirtSize': tShirtSize,
+      'poloShirtSize': poloShirtSize,
+      'eWalletType': eWalletType,
+      'eWalletNumber': eWalletNumber,
+      'emailVerified': false,
+      'role': role,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> _saveParticipantKit(String uid, String status) async {
+    await _firestore.collection('participantKit').doc(uid).set({
+      'merchandise': {
+        'poloShirt': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+        'tShirt': {'status': status, 'updatedAt': FieldValue.serverTimestamp()},
+        'luggageTag': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+        'jasHujan': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+      },
+      'souvenir': {
+        'gelangTridatu': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+        'selendangUdeng': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+      },
+      'benefit': {
+        'voucherBelanja': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+        'voucherEwallet': {
+          'status': status,
+          'updatedAt': FieldValue.serverTimestamp()
+        },
+      },
+    });
+  }
+
+  Future<void> _submitToDrive(
+      String username, String area, String department, String division) async {
+    String folderIdktp = '1JcyaT5xNKP4iela099E7RnefFhITKTKj';
+    String folderIdprofile = '1ct2JFxdNvEjWUb0slhBROiPGvy5v5Ode';
+    String folderIdqr = '15ggM93uLiT7DORNDTeEOdiSDvlRltqWa';
+
+    await Future.wait([
+      uploadImagektpToDrive(ktpImage.value!, folderIdktp, username),
+      uploadImageToDrive(selfieImage.value!, folderIdprofile, department, area,
+          division, username),
+      uploadQrCodeToDrive(
+          _qrCodePath!, folderIdqr, username, department, division),
+    ]);
+  }
+
+  Future<void> _updateSpreadsheet(
+      String uid,
+      String email,
+      String name,
+      String area,
+      String division,
+      String department,
+      String address,
+      String whatsappNumber,
+      String ktpNumber,
+      String tShirtSize,
+      String poloShirtSize,
+      String eWalletType,
+      String eWalletNumber,
+      String status) async {
+    final timestamp = DateTime.now().toIso8601String();
+    List<Object> newRow = [
+      timestamp,
+      uid,
+      email,
+      name,
+      area,
+      division,
+      department,
+      address,
+      whatsappNumber,
+      ktpNumber,
+      tShirtSize,
+      poloShirtSize,
+      eWalletType,
+      eWalletNumber,
+      status,
+      status,
+      status,
+      status,
+      status,
+      status,
+      status,
+      status,
+    ];
+    await updateSpreadsheet(
+        '1zOgCl7ngSUkTJTI9NortPjgfZeKrUA4YRsj0xNSbsVY', 'Sheet1!A:V', newRow);
+  }
+
+  // Future<void> _showSuccessDialog(BuildContext context) async {
+  //   await showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Registration Successful',
+  //             textAlign: TextAlign.center,
+  //             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+  //         content: Text('Please check your email for verification !',
+  //             textAlign: TextAlign.center),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Center(
+  //                 child: Container(
+  //                     padding:
+  //                         EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+  //                     decoration: BoxDecoration(
+  //                       borderRadius: BorderRadius.all(Radius.circular(20)),
+  //                       color: HexColor("E97717"),
+  //                       border:
+  //                           Border(top: BorderSide(color: Colors.orange[400]!)),
+  //                     ),
+  //                     child:
+  //                         Text('OK', style: TextStyle(color: Colors.white)))),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               Get.offAllNamed('/signin');
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  // void _showErrorDialog(BuildContext context, String errorMessage) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Registration Failed',
+  //             textAlign: TextAlign.center,
+  //             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+  //         content: Text(errorMessage, textAlign: TextAlign.center),
+  //         actions: <Widget>[
+  //           Center(
+  //             child: Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 70),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.all(Radius.circular(20)),
+  //                 color: HexColor("E97717"),
+  //                 border: Border(top: BorderSide(color: Colors.orange[400]!)),
+  //               ),
+  //               child: TextButton(
+  //                 child: Text('OK', style: TextStyle(color: Colors.white)),
+  //                 onPressed: () => Navigator.of(context).pop(),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
