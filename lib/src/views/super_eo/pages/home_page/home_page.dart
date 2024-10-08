@@ -611,6 +611,7 @@ class _VenueCardState extends State<VenueCard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
+                      _controller.pause();
                       final currentPosition = _controller.value.position;
                       Navigator.push(
                         context,
