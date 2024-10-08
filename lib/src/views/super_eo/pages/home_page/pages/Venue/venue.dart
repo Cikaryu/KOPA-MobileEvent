@@ -55,7 +55,7 @@ class VenueViewPage extends StatelessWidget {
             ),
             // Konten hari berdasarkan tab yang dipilih
             SizedBox(
-              height: 750,
+              height: MediaQuery.of(context).size.height * 0.98,
               child: ValueListenableBuilder<int>(
                 valueListenable: controller.selectedDay,
                 builder: (context, value, child) {

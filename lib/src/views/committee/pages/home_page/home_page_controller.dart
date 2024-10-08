@@ -62,7 +62,7 @@ class HomePageCommitteeController extends GetxController {
 
   void startCountdown() async {
     DateTime serverTime = await getServerTime();
-    DateTime eventDate = DateTime(2024, 9, 22, 0, 0, 0);
+    DateTime eventDate = DateTime(2024, 10, 22, 0, 0, 0);
 
     duration.value = eventDate.difference(serverTime);
 

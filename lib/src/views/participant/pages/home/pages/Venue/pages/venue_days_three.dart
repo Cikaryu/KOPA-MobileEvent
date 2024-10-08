@@ -1,4 +1,5 @@
 import 'package:app_kopabali/src/core/base_import.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VenuePagedaythree extends StatelessWidget {
@@ -12,7 +13,7 @@ class VenuePagedaythree extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 2),
-          child: Text("Friday, 23th September", style: TextStyle(fontSize: 16)),
+          child: Text("Friday, 22th September", style: TextStyle(fontSize: 16)),
         ),
         SizedBox(height: 8),
         VenueCard(
@@ -61,11 +62,9 @@ class _VenueCardState extends State<VenueCard> {
       flags: YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
-        disableDragSeek: true,
         enableCaption: false,
         hideControls: false,
-        hideThumbnail: false,
-        showLiveFullscreenButton: false,
+        showLiveFullscreenButton: true,
         useHybridComposition: true,
       ),
     );
@@ -83,9 +82,8 @@ class _VenueCardState extends State<VenueCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Wrap the YoutubePlayer widget in ClipRRect to apply border radius
           ClipRRect(
-            borderRadius: BorderRadius.circular(20), // Set your desired radius here
+            borderRadius: BorderRadius.circular(20),
             child: AspectRatio(
               aspectRatio: 16 / 9,
               child: YoutubePlayer(
@@ -106,6 +104,24 @@ class _VenueCardState extends State<VenueCard> {
                   CurrentPosition(),
                   ProgressBar(isExpanded: true),
                   RemainingDuration(),
+                  IconButton(
+                    icon: Icon(
+                      Icons.fullscreen,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      final currentPosition = _controller.value.position;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenVideoPage(
+                            youtubeUrl: widget.youtubeUrl,
+                            initialPosition: currentPosition,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -135,6 +151,90 @@ class _VenueCardState extends State<VenueCard> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class FullScreenVideoPage extends StatefulWidget {
+  final String youtubeUrl;
+  final Duration initialPosition;
+
+  const FullScreenVideoPage({
+    Key? key,
+    required this.youtubeUrl,
+    required this.initialPosition,
+  }) : super(key: key);
+
+  @override
+  _FullScreenVideoPageState createState() => _FullScreenVideoPageState();
+}
+
+class _FullScreenVideoPageState extends State<FullScreenVideoPage> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final videoId = YoutubePlayer.convertUrlToId(widget.youtubeUrl);
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId!,
+      flags: YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        enableCaption: false,
+        hideControls: false,
+        showLiveFullscreenButton: true,  // Keep the default fullscreen button visible
+        useHybridComposition: true,
+        startAt: widget.initialPosition.inSeconds,
+      ),
+    );
+
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: Colors.red,
+          progressColors: ProgressBarColors(
+            playedColor: Colors.red,
+            handleColor: Colors.redAccent,
+          ),
+          onReady: () {
+            print('Player siap di fullscreen.');
+          },
+          onEnded: (YoutubeMetaData metaData) {
+            _controller.pause();
+          },
+          bottomActions: [
+            CurrentPosition(),
+            ProgressBar(isExpanded: true),
+            RemainingDuration(),
+            IconButton(
+              icon: Icon(Icons.fullscreen_exit),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+        builder: (context, player) {
+          return player;
+        },
       ),
     );
   }
