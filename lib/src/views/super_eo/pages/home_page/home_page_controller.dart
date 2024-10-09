@@ -70,7 +70,8 @@ class HomePageSuperEOController extends GetxController {
     if (timestamp != null) {
       return timestamp.toDate();
     } else {
-      throw Exception('Timestamp value is null');
+      print('Timestamp value is null, using current time as fallback.');
+      return DateTime.now();
     }
   }
 
