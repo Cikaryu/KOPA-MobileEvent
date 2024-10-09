@@ -56,7 +56,7 @@ class HomePageCommitteeController extends GetxController {
     if (timestamp != null) {
       return timestamp.toDate();
     } else {
-      throw Exception('Timestamp value is null');
+      return DateTime.now(); // Provide a default value if timestamp is null
     }
   }
 
