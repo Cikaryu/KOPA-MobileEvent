@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'pages/Participant_Benefit/participant_Benefit_view.dart';
+import 'pages/embed_content/embed_content_page.dart';
 import 'pages/participant_kit/participant_kit.dart';
 
 class HomePageParticipant extends StatelessWidget {
@@ -234,8 +235,70 @@ class HomePageParticipant extends StatelessWidget {
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.034),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => EmbedContentPage()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.225,
+                          decoration: ShapeDecoration(
+                            image: DecorationImage(
+                              image:
+                                  AssetImage('assets/images/history_map.png'),
+                              fit: BoxFit.fill,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFFE97717),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Story Map',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(Icons.arrow_forward,
+                                          size: 24, color: Colors.white),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.034),
                       Container(
-                        width: Get.width,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.225,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
@@ -243,7 +306,7 @@ class HomePageParticipant extends StatelessWidget {
                             fit: BoxFit.fill,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         child: Column(
@@ -267,8 +330,8 @@ class HomePageParticipant extends StatelessWidget {
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                width: 60,
-                                height: 60,
+                                width: 52,
+                                height: 52,
                                 decoration: ShapeDecoration(
                                   color: Color(0xFFE97717),
                                   shape: OvalBorder(),
@@ -618,7 +681,6 @@ class _VenueCardState extends State<VenueCard> {
                           ),
                         ),
                       );
-                      
                     },
                   ),
                 ],
