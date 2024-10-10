@@ -8,12 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class HomePageCommittee extends StatefulWidget {
-  @override
-  State<HomePageCommittee> createState() => _HomePageParticipantState();
-}
+import 'pages/embed_content/embed_content_page.dart';
 
-class _HomePageParticipantState extends State<HomePageCommittee> {
+class HomePageCommittee extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomePageCommitteeController homePageController =
@@ -115,7 +112,9 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                         height: MediaQuery.of(context).size.height * 0.06,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.05),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -237,8 +236,70 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.034),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => EmbedContentPage()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.225,
+                          decoration: ShapeDecoration(
+                            image: DecorationImage(
+                              image:
+                                  AssetImage('assets/images/history_map.png'),
+                              fit: BoxFit.fill,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFFE97717),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Story Map',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(Icons.arrow_forward,
+                                          size: 24, color: Colors.white),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.054),
                       Container(
-                        width: Get.width,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.225,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
@@ -246,7 +307,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                             fit: BoxFit.fill,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         child: Column(
@@ -270,8 +331,8 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                width: 60,
-                                height: 60,
+                                width: 52,
+                                height: 52,
                                 decoration: ShapeDecoration(
                                   color: Color(0xFFE97717),
                                   shape: OvalBorder(),
@@ -292,8 +353,7 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1175,
-                      ),
+                          height: MediaQuery.of(context).size.height * 0.054),
                     ],
                   ),
                 ),
@@ -303,7 +363,10 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 29),
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.05,
+                          ),
                           child: Container(
                             padding: EdgeInsets.only(top: 16),
                             decoration: BoxDecoration(
@@ -460,7 +523,8 @@ class _HomePageParticipantState extends State<HomePageCommittee> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 100),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.054),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 56.0),
                           child: Column(
@@ -612,6 +676,7 @@ class _VenueCardState extends State<VenueCard> {
                     onPressed: () {
                       _controller.pause();
                       final currentPosition = _controller.value.position;
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -661,13 +726,15 @@ class _FullScreenVideoPageState extends State<FullScreenVideoPage> {
         mute: false,
         enableCaption: false,
         hideControls: false,
-        showLiveFullscreenButton: true,  // Keep the default fullscreen button visible
+        showLiveFullscreenButton:
+            true, // Keep the default fullscreen button visible
         useHybridComposition: true,
         startAt: widget.initialPosition.inSeconds,
       ),
     );
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 

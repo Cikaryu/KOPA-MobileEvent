@@ -113,7 +113,9 @@ class HomePageParticipant extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.06,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.05),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -296,7 +298,7 @@ class HomePageParticipant extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.034),
+                          height: MediaQuery.of(context).size.height * 0.054),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.225,
@@ -352,8 +354,7 @@ class HomePageParticipant extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1175,
-                      ),
+                          height: MediaQuery.of(context).size.height * 0.054),
                     ],
                   ),
                 ),
@@ -363,7 +364,10 @@ class HomePageParticipant extends StatelessWidget {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 29),
+                          padding: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.05,
+                          ),
                           child: Container(
                             padding: EdgeInsets.only(top: 16),
                             decoration: BoxDecoration(
@@ -520,7 +524,8 @@ class HomePageParticipant extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 100),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.054),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 56.0),
                           child: Column(
@@ -670,8 +675,9 @@ class _VenueCardState extends State<VenueCard> {
                       color: Colors.white,
                     ),
                     onPressed: () {
+                      _controller.pause();
                       final currentPosition = _controller.value.position;
-                      _controller.reload();
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
