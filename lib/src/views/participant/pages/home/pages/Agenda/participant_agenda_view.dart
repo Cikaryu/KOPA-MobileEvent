@@ -61,16 +61,16 @@ class ParticipantAgendaView extends StatelessWidget {
                 double height;
                 switch (value) {
                   case 0:
-                    height = 1150;
+                    height = 1170;
                     break;
                   case 1:
-                    height = 825;
+                    height = 725;
                     break;
                   case 2:
                     height = 875;
                     break;
                   default:
-                    height = 1150; // Default height
+                    height = 1150;
                 }
                 return SizedBox(
                   height: height,
